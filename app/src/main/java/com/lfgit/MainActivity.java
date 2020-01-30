@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
     }
 
 
-
     private Boolean isFirstRun() {
 
         final String PREFS_NAME = "MyPrefsFile";

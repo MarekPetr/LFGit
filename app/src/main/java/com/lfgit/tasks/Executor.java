@@ -9,13 +9,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.lfgit.Constants.*;
+
 import static com.lfgit.Constants.binDir;
 import static com.lfgit.Constants.filesDir;
 import static com.lfgit.Constants.libDir;
@@ -59,12 +58,6 @@ abstract class Executor {
             result =  "Media not mounted";
             return -1;
         }
-
-
-        String res = "EMPTY";
-        InputStream response;
-        InputStream error;
-        OutputStream input;
 
         List<String> args = new ArrayList<>();
         args.add(exeDir);
