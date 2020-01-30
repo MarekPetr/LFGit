@@ -10,8 +10,8 @@ public class GitLfsExec extends Executor {
         super(activity);
     }
 
-    private String install() {
-        envExeForRes("git-lfs",reposDir, "install");
+    public String install(String dest) {
+        envExeForRes("git-lfs",dest, "install");
         return getResult();
     }
 }

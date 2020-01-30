@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.lfgit.importer.AssetImporter;
 import com.lfgit.tasks.GitExec;
+import com.lfgit.tasks.GitLfsExec;
 
 
 public class MainActivity extends AppCompatActivity implements TaskListener{
@@ -37,15 +38,29 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
         final Button button = findViewById(R.id.action_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String res = "";
-                GitExec gitExec = new GitExec(MainActivity.this);
-                res = gitExec.init("new");
-
-                TextView tv1 = findViewById(R.id.MiddleText);
-                tv1.setText(res);
+                LFSExec();
             }
         });
     }
+
+    private void init() {
+        String res = "";
+        GitExec gitExec = new GitExec(MainActivity.this);
+        res = gitExec.init("new");
+
+        TextView tv1 = findViewById(R.id.MiddleText);
+        tv1.setText(res);
+    }
+
+    private void LFSExec() {
+        String res = "";
+        GitLfsExec GitLfsExec = new GitLfsExec(MainActivity.this);
+        res = GitLfsExec.install("new");
+
+        TextView tv1 = findViewById(R.id.MiddleText);
+        tv1.setText(res);
+    }
+
 
 
     private Boolean isFirstRun() {
