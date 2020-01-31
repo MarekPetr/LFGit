@@ -18,6 +18,12 @@ public class GitExec extends Executor {
         LogAny(getResult());
     }
 
+    public String busybox_echo() {
+        envExeForRes("busybox", "", "echo", "ahoj");
+        return getResult();
+    }
+
+
     public String init(String dest) {
         String gitOperation = "init";
         envExeForRes("git", dest, gitOperation);

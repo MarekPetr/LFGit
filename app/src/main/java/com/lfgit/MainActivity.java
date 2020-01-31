@@ -3,7 +3,9 @@ package com.lfgit;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +31,6 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         if (isFirstRun()) {
             AssetImporter importer = new AssetImporter(getAssets(), this);
             importer.execute(true);
@@ -38,10 +39,19 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
         final Button button = findViewById(R.id.action_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LFSExec();
+                busybox_echo();
             }
         });
     }
+
+    private void busybox_echo() {
+        String res = "";
+        GitExec gitExec = new GitExec(MainActivity.this);
+        res = gitExec.busybox_echo();
+
+        TextView tv1 = findViewById(R.id.MiddleText);
+        tv1.setText(res);}
+
 
     private void init() {
         String res = "";
@@ -135,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
 
     @Override
     public void onTaskStarted() {
+        lockScreenOrientation();
         progressDialog = ProgressDialog.show(this, "Installing...", "Getting things ready..");
     }
 
@@ -142,7 +153,21 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
     public void onTaskFinished() {
         if (progressDialog != null) {
             progressDialog.dismiss();
+            unlockScreenOrientation();
         }
+    }
+
+    private void lockScreenOrientation() {
+        int currentOrientation = getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+    }
+
+    private void unlockScreenOrientation() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     }
 }
 
