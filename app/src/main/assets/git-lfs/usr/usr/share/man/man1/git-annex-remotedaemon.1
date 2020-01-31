@@ -1,0 +1,52 @@
+.TH git-annex-remotedaemon 1
+.SH NAME
+git-annex-remotedaemon \- persistent communication with remotes
+.PP
+.SH SYNOPSIS
+git annex remotedaemon
+.PP
+.SH DESCRIPTION
+The remotedaemon provides persistent communication with remotes.
+.PP
+Several types of remotes are supported:
+.PP
+For ssh remotes, the remotedaemon tries to maintain a connection to the
+remote git repository, and uses git-annex\-shell notifychanges to detect
+when the remote git repository has changed, and fetches changes from it.
+For this to work, the git remote must have git-annex\-shell(1)
+installed, with notifychanges support. The first version of git-annex\-shell
+that supports it is 5.20140405.
+.PP
+For tor\-annex remotes, the remotedaemon runs a tor hidden service,
+accepting connections from other nodes and serving up the contents of the
+repository. This is only done if you first run \fBgit annex enable\-tor\fP.
+Use \fBgit annex p2p\fP to configure access to tor\-annex remotes.
+.PP
+Note that when \fBremote.<name>.annex\-pull\fP is set to false, the remotedaemon
+will avoid fetching changes from that remote.
+.PP
+.SH OPTIONS
+.IP "\fB\-\-foreground\fP"
+.IP
+Don't fork to the background, and communicate on stdin/stdout using a
+simple textual protocol. The assistant runs the remotedaemon this way.
+.IP
+Commands in the protocol include LOSTNET, which tells the remotedaemon
+that the network connection has been lost, and causes it to stop any TCP
+connctions. That can be followed by RESUME when the network connection
+comes back up.
+.IP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-assistant(1)
+.PP
+git-annex\-enable\-tor(1)
+.PP
+git-annex\-p2p(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

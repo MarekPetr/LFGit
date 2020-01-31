@@ -1,0 +1,56 @@
+.TH git-annex-inprogress 1
+.SH NAME
+git-annex-inprogress \- access files while they're being downloaded
+.PP
+.SH SYNOPSIS
+git annex inprogress \fB[path ...]\fP
+.PP
+.SH DESCRIPTION
+This command allows accessing the content of an annexed file while
+it is still being downloaded. It outputs to standard output the
+name of the temporary file that is being used to download the specified
+annexed file.
+.PP
+This can sometimes be used to stream a file before it's been fully
+downloaded, for example:
+.PP
+ git annex get video.mpeg &
+ vlc $(git annex inprogress video.mpeg)
+.PP
+Of course if the file is downloading too slowly, the media player will
+reach the end too soon and not show the whole thing. And of course, only
+some file formats can be usefully streamed in this way.
+.PP
+.SH OPTIONS
+.IP "\fB[path ..]\fP"
+.IP
+The files or directories whose partially downloaded content you want to
+access.
+.IP
+Note that, when no path is specified, it defaults to all files in the
+current working directory, and subdirectories, which can take a while to
+traverse. It's most efficient to specify a the file you are interested
+in, or to use \fB\-\-all\fP
+.IP
+.IP "\fB\-\-all\fP \fB\-A\fP"
+Rather than specifying a filename or path, this option can be
+used to access all files that are currently being downloaded.
+.IP
+.IP "file matching options"
+The git-annex\-matching\-options(1)
+can be used to specify files to access.
+.IP
+.SH EXIT STATUS
+If any of the requested files are not currently being downloaded,
+the exit status will be 1.
+.PP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-get(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

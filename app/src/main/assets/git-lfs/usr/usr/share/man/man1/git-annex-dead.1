@@ -1,0 +1,44 @@
+.TH git-annex-dead 1
+.SH NAME
+git-annex-dead \- hide a lost repository or key
+.PP
+.SH SYNOPSIS
+git annex dead \fB[repository ...] [\-\-key key]\fP
+.PP
+.SH DESCRIPTION
+This command exists to deal with situations where data has been lost,
+and you know it has, and you want to stop being reminded of that fact.
+.PP
+When a repository is specified, indicates that the repository has
+been irretrievably lost, so it will not be listed in eg, \fBgit annex info\fP.
+Repositories can be specified using their remote name, their
+description, or their UUID. (To undo, use \fBgit-annex semitrust\fP.)
+.PP
+When a key is specified, indicates that the content of that key has been
+irretrievably lost. This prevents commands like \fBgit annex fsck \-\-all\fP
+from complaining about it; \fB\-\-all\fP will not operate on the key anymore.
+(To undo, add the key's content back to the repository, 
+by using eg, \fBgit-annex reinject\fP.)
+.PP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-trust(1)
+.PP
+git-annex\-semitrust(1)
+.PP
+git-annex\-untrust(1)
+.PP
+git-annex\-renameremote(1)
+.PP
+git-annex\-expire(1)
+.PP
+git-annex\-fsck(1)
+.PP
+git-annex\-reinject(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

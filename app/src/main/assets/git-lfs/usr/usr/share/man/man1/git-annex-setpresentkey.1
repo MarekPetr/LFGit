@@ -1,0 +1,28 @@
+.TH git-annex-setpresentkey 1
+.SH NAME
+git-annex-setpresentkey \- change records of where key is present
+.PP
+.SH SYNOPSIS
+git annex setpresentkey \fBkey uuid [1|0]\fP
+.PP
+.SH DESCRIPTION
+This plumbing\-level command changes git-annex's records about whether
+the specified key's content is present in a remote with the specified uuid.
+.PP
+Use 1 to indicate the key is present, or 0 to indicate the key is
+not present.
+.PP
+.SH OPTIONS
+.IP "\fB\-\-batch\fP"
+.IP
+Enables batch mode, in which lines are read from stdin.
+The line format is "key uuid [1|0]"
+.IP
+.SH SEE ALSO
+git-annex(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

@@ -1,0 +1,181 @@
+.TH git-annex-import 1
+.SH NAME
+git-annex-import \- add files from a non\-versioned directory or a special remote
+.PP
+.SH SYNOPSIS
+git annex import \fB[path ...]\fP | git annex import \-\-from remote branch[:subdir]
+.PP
+.SH DESCRIPTION
+This command is a way to import files from elsewhere into your git-annex
+repository. It can import files from a directory into your repository, 
+or it can import files from a git-annex special remote.
+.PP
+.SH IMPORTING FROM A SPECIAL REMOTE
+Importing from a special remote first downloads all new content from it,
+and then constructs a git commit that reflects files that have changed on
+the special remote since the last time git-annex looked at it. Merging that
+commit into your repository will update it to reflect changes made on the
+special remote.
+.PP
+This way, something can be using the special remote for file storage,
+adding files, modifying files, and deleting files, and you can track those
+changes using git-annex.
+.PP
+You can combine using \fBgit annex import\fP to fetch changes from a special 
+remote with \fBgit annex export\fP to send your local changes to the special
+remote.
+.PP
+You can only import from special remotes that were configured with
+\fBimporttree=yes\fP when set up with git-annex\-initremote(1). Only some
+kinds of special remotes will let you configure them this way.
+.PP
+To import from a special remote, you must specify the name of a branch.
+A corresponding remote tracking branch will be updated by git annex
+import\fB. After that point, it's the same as if you had run a \fPgit fetch
+from a regular git remote; you can merge the changes into your
+currently checked out branch.
+.PP
+For example:
+.PP
+ git annex import master \-\-from myremote
+ git annex merge myremote/master
+.PP
+You could just as well use \fBgit merge myremote/master\fP as the second step,
+but using \fBgit-annex merge\fP avoids a couple of gotchas. When using adjusted
+branches, it adjusts the branch before merging from it. And it avoids
+the merge failing on the first merge from an import due to unrelated
+histories.
+.PP
+If you do use \fBgit merge\fP, you can pass \fB\-\-allow\-unrelated\-histories\fP the
+first time you \fBgit merge\fP from an import. Think of this as the remote
+being a separate git repository with its own files. If you first
+\fBgit annex export\fP files to a remote, and then \fBgit annex import\fP from it,
+you won't need that option.
+.PP
+You can import into a subdirectory, using the "branch:subdir" syntax. For
+example, if "camera" is a special remote that accesses a camera, and you
+want to import those into the photos directory, rather than to the root of
+your repository:
+.PP
+ git annex import master:photos \-\-from camera
+ git merge camera/master
+.PP
+The \fBgit annex sync \-\-content\fP command (and the git-annex assistant)
+can also be used to import from a special remote.
+To do this, you need to configure "remote.<name>.annex\-tracking\-branch"
+to tell it what branch to track. For example:
+.PP
+ git config remote.myremote.annex\-tracking\-branch master
+ git annex sync \-\-content
+.PP
+If a preferred content expression is configured for the special remote,
+it will be honored when importing from it. Files that are not preferred
+content of the remote will not be imported from it, but will be left on the
+remote. 
+.PP
+However, preferred content expressions that relate to the key
+can't be matched when importing, because the content of the file is not
+known. Importing will fail when such a preferred content expression is
+set. This includes expressions containing "copies=", "metadata=", and other
+things that depend on the key. Preferred content expressions containing
+"include=", "exclude=" "smallerthan=", "largerthan=" will work.
+.PP
+.SH IMPORTING FROM A DIRECTORY
+When run with a path, \fBgit annex import\fP moves files from somewhere outside
+the git working copy, and adds them to the annex.
+.PP
+Individual files to import can be specified. If a directory is specified,
+the entire directory is imported.
+.PP
+ git annex import /media/camera/DCIM/*
+.PP
+When importing files, there's a possibility of importing a duplicate
+of a file that is already known to git-annex \-\- its content is either
+present in the local repository already, or git-annex knows of another
+repository that contains it, or it was present in the annex before but has
+been removed now.
+.PP
+By default, importing a duplicate of a known file will result in
+a new filename being added to the repository, so the duplicate file
+is present in the repository twice. (With all checksumming backends,
+including the default SHA256E, only one copy of the data will be stored.)
+.PP
+Several options can be used to adjust handling of duplicate files, see
+\fB\-\-duplicate\fP, \fB\-\-deduplicate\fP, \fB\-\-skip\-duplicates\fP, \fB\-\-clean\-duplicates\fP,
+and \fB\-\-reinject\-duplicates\fP documentation below.
+.PP
+.SH OPTIONS FOR IMPORTING FROM A DIRECTORY
+.IP "\fB\-\-duplicate\fP"
+.IP
+Do not delete files from the import location.
+.IP
+Running with this option repeatedly can import the same files into
+different git repositories, or branches, or different locations in a git
+repository.
+.IP
+.IP "\fB\-\-deduplicate\fP"
+Only import files that are not duplicates;
+duplicate files will be deleted from the import location.
+.IP
+.IP "\fB\-\-skip\-duplicates\fP"
+Only import files that are not duplicates. Avoids deleting any
+files from the import location.
+.IP
+.IP "\fB\-\-clean\-duplicates\fP"
+Does not import any files, but any files found in the import location
+that are duplicates are deleted.
+.IP
+.IP "\fB\-\-reinject\-duplicates\fP"
+Imports files that are not duplicates. Files that are duplicates have
+their content reinjected into the annex (similar to
+git-annex\-reinject(1)).
+.IP
+.IP "\fB\-\-force\fP"
+Allow existing files to be overwritten by newly imported files.
+.IP
+Also, causes .gitignore to not take effect when adding files.
+.IP
+.IP "file matching options"
+Many of the git-annex\-matching\-options(1)
+can be used to specify files to import.
+.IP
+ 	git annex import /dir \-\-include='*.png'
+.IP
+## COMMON OPTIONS
+.IP
+.IP "\fB\-\-jobs=N\fP \fB\-JN\fP"
+Imports multiple files in parallel. This may be faster.
+For example: \fB\-J4\fP  
+.IP
+Setting this to "cpus" will run one job per CPU core.
+.IP
+.IP "\fB\-\-json\fP"
+Enable JSON output. This is intended to be parsed by programs that use
+git-annex. Each line of output is a JSON object.
+.IP
+.IP "\fB\-\-json\-error\-messages\fP"
+Messages that would normally be output to standard error are included in
+the json instead.
+.IP
+.SH CAVEATS
+Note that using \fB\-\-deduplicate\fP or \fB\-\-clean\-duplicates\fP with the WORM
+backend does not look at file content, but filename and mtime.
+.PP
+If annex.largefiles is configured, and does not match a file, git annex
+import will add the non\-large file directly to the git repository,
+instead of to the annex.
+.PP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-add(1)
+.PP
+git-annex\-export(1)
+.PP
+git-annex\-preferred\-content(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

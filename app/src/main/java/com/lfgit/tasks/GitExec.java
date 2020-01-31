@@ -11,18 +11,23 @@ public class GitExec extends Executor {
         super(activity);
     }
 
+    public String busybox_echo() {
+        envExeForRes("busybox", "", "echo", "ahoj");
+        return getResult();
+    }
+
+    public String uname() {
+        envExeForRes("uname", "", "-o");
+        return getResult();
+    }
+
+
     public void config() {
         envExeForRes("git", "","config", "--global", "user.email", "petr.marek18@gmail.com");
         LogAny(getResult());
         envExeForRes("git", "", "config", "--global", "user.name", "MarekPetr");
         LogAny(getResult());
     }
-
-    public String busybox_echo() {
-        envExeForRes("busybox", "", "echo", "ahoj");
-        return getResult();
-    }
-
 
     public String init(String dest) {
         String gitOperation = "init";

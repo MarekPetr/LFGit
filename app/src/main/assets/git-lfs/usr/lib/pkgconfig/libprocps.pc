@@ -1,0 +1,11 @@
+prefix=/data/data/com.lfgit/files/usr
+exec_prefix=${prefix}
+libdir=/data/data/com.lfgit/files/usr/lib
+includedir=${prefix}/include
+
+Name: libprocps
+Description: Library to control and query process state
+Version: 3.3.16
+Libs: -L${libdir} -lprocps
+Libs.private:
+Cflags: -I${includedir}

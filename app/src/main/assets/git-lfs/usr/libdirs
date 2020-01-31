@@ -1,0 +1,5 @@
+/lib/aarch64-linux-gnu
+/lib
+/etc/ld.so.conf.d
+/usr/lib/aarch64-linux-gnu/audit
+/usr/lib/aarch64-linux-gnu/gconv

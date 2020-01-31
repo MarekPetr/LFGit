@@ -1,0 +1,72 @@
+.TH git-annex-enableremote 1
+.SH NAME
+git-annex-enableremote \- enables git-annex to use a remote
+.PP
+.SH SYNOPSIS
+git annex enableremote \fBname|uuid|desc [param=value ...]\fP
+.PP
+.SH DESCRIPTION
+Enables use of an existing remote in the current repository.
+.PP
+This is often used to enable use of a special (non\-git) remote, by
+a different repository than the one in which it was
+originally created with the initremote command. 
+.PP
+It can also be used to explicitly enable a git remote,
+so that git-annex can store the contents of files there. First
+run \fBgit remote add\fP, and then \fBgit annex enableremote\fP with the name of
+the remote.
+.PP
+When enabling a special remote, specify the same name used when originally
+creating that remote with \fBgit annex initremote\fP. Run 
+\fBgit annex enableremote\fP without any name to get a list of
+special remote names. Or you can specify the uuid or description of the
+special remote.
+.PP
+Some special remotes may need parameters to be specified every time they are
+enabled. For example, the directory special remote requires a directory=
+parameter every time.
+.PP
+This command can also be used to modify the configuration of an existing
+special remote, by specifying new values for parameters that are
+usually set when using initremote. (However, some settings such as
+the as the encryption scheme cannot be changed once a special remote
+has been created.)
+.PP
+The GPG keys that an encrypted special remote is encrypted with can be
+changed using the keyid+= and keyid\-= parameters. These respectively
+add and remove keys from the list. However, note that removing a key
+does NOT necessarily prevent the key's owner from accessing data
+in the encrypted special remote
+(which is by design impossible, short of deleting the remote).
+.PP
+One use\-case of keyid\-= is to replace a revoked key with
+a new key:
+.PP
+ git annex enableremote mys3 keyid\-=revokedkey keyid+=newkey
+.PP
+Also, note that for encrypted special remotes using plain public\-key
+encryption (encryption=pubkey), adding or removing a key has NO effect
+on files that have already been copied to the remote. Hence using
+keyid+= and keyid\-= with such remotes should be used with care, and
+make little sense except in cases like the revoked key example above.
+.PP
+If you get tired of manually enabling a special remote in each new clone,
+you can pass "autoenable=true". Then when git-annex\-init(1) is run in
+a new clone, it will will attempt to enable the special remote. Of course,
+this works best when the special remote does not need anything special
+to be done to get it enabled.
+.PP
+(This command also can be used to enable a remote that git-annex has been
+prevented from using by the \fBremote.<name>.annex\-ignore\fP setting.)
+.PP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-initremote(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

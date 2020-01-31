@@ -1,0 +1,2 @@
+#!/data/data/com.lfgit/files/usr/bin/sh
+exec grep -F "$@"

@@ -1,0 +1,61 @@
+.TH git-annex-importfeed 1
+.SH NAME
+git-annex-importfeed \- import files from podcast feeds
+.PP
+.SH SYNOPSIS
+git annex importfeed \fB[url ...]\fP
+.PP
+.SH DESCRIPTION
+Imports the contents of podcasts and other feeds. Only downloads files whose
+content has not already been added to the repository before, so you can
+delete, rename, etc the resulting files and repeated runs won't duplicate
+them.
+.PP
+When \fByoutube\-dl\fP is installed, it can be used to download links in the feed.
+This allows importing e.g., YouTube playlists.
+(However, this is disabled by default as it can be a security risk. 
+See the documentation of annex.security.allowed\-ip\-addresses
+in git-annex(1) for details.)
+.PP
+To make the import process add metadata to the imported files from the feed,
+\fBgit config annex.genmetadata true\fP
+.PP
+.SH OPTIONS
+.IP "\fB\-\-force\fP"
+.IP
+Force downloading items it's seen before.
+.IP
+.IP "\fB\-\-template\fP"
+Controls where the files are stored.
+.IP
+The default template is '${feedtitle}/${itemtitle}${extension}'
+.IP
+Other available variables for templates: feedauthor, itemauthor, itemsummary, itemdescription, itemrights, itemid, itempubdate, title, author
+.IP
+.IP "\fB\-\-relaxed\fP, \fB\-\-fast\fP, \fB\-\-raw\fP"
+These options behave the same as when using git-annex\-addurl(1).
+.IP
+.IP "\fB\-\-fast\fP"
+Avoid immediately downloading urls. The url is still checked
+(via HEAD) to verify that it exists, and to get its size if possible.
+.IP
+.IP "\fB\-\-relaxed\fP"
+Don't immediately download urls, and avoid storing the size of the
+url's content. This makes git-annex accept whatever content is there
+at a future point.
+.IP
+.IP "\fB\-\-raw\fP"
+Prevent special handling of urls by youtube\-dl, bittorrent, and other
+special remotes. This will for example, make importfeed
+download a .torrent file and not the contents it points to.
+.IP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-addurl(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

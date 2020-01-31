@@ -1,0 +1,44 @@
+.TH git-annex-registerurl 1
+.SH NAME
+git-annex-registerurl \- registers an url for a key
+.PP
+.SH SYNOPSIS
+git annex registerurl \fB[key url]\fP
+.PP
+.SH DESCRIPTION
+This plumbing\-level command can be used to register urls where a
+key can be downloaded from.
+.PP
+No verification is performed of the url's contents.
+.PP
+If no key and url pair are specified on the command line,
+batch input is used, the same as if the \-\-batch option were
+specified.
+.PP
+Normally the key is a git-annex formatted key. However, to make it easier
+to use this to add urls, if the key cannot be parsed as a key, and is a
+valid url, an URL key is constructed from the url.
+.PP
+.SH OPTIONS
+.IP "\fB\-\-batch\fP"
+.IP
+In batch input mode, lines are read from stdin, and each line
+should contain a key and url, separated by a single space.
+.IP
+.IP "\fB\-z\fP"
+When in batch mode, the input is delimited by nulls instead of the usual
+newlines.
+.IP
+(Note that for this to be used, you have to explicitly enable batch mode
+with \fB\-\-batch\fP)
+.IP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-addurl(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

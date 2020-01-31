@@ -1,0 +1,41 @@
+.TH git-annex-required 1
+.SH NAME
+git-annex-required \- get or set required content expression
+.PP
+.SH SYNOPSIS
+git annex required \fBrepository [expression]\fP
+.PP
+.SH DESCRIPTION
+When run with an expression, configures the content that is required
+to be held in the archive.
+.PP
+For example:
+.PP
+ git annex required . "include=*.mp3 or include=*.ogg"
+.PP
+Without an expression, displays the current required content setting
+of the repository.
+.PP
+While git-annex\-wanted(1) is just a preference, this designates content
+that should really not be removed. For example a file that is \fBwanted\fP can
+be removed with \fBgit annex drop\fP, but if that file is \fBrequired\fP, it would
+need to be removed with \fBgit annex drop \-\-force\fP. 
+.PP
+Also, \fBgit-annex fsck\fP will warn about required contents that are not
+present.
+.PP
+.SH NOTES
+The \fBrequired\fP command was added in git-annex 5.20150420.
+.PP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-wanted(1)
+.PP
+git-annex\-preferred\-content(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

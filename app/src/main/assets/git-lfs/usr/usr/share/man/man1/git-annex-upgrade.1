@@ -1,0 +1,38 @@
+.TH git-annex-upgrade 1
+.SH NAME
+git-annex-upgrade \- upgrade repository
+.PP
+.SH SYNOPSIS
+git annex upgrade
+.PP
+.SH DESCRIPTION
+Upgrades the repository.
+.PP
+Each git-annex repository has an annex.version in its git configuration,
+that indicates the repository version. When an old repository version
+becomes deprecated, git-annex will automatically upgrade it
+(unless annex.autoupgraderepository is set to false). To manually upgrade,
+you can use this command.
+.PP
+Sometimes there's a newer repository version that is not the default yet,
+and then you can use this command to upgrade to it.
+.PP
+Currently, git-annex supports upgrades all the way back to version 0, which
+was only used by its author. It's expected that git-annex will always
+support upgrading from all past repository versions \-\- this is necessary to
+allow archives to be taken offline for years and later used.
+.PP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-migrate(1)
+.PP
+Upgrades procedures and history: <http://git-annex.branchable.com/upgrades>
+.PP
+News and release notes: <http://git-annex.branchable.com/news/>
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

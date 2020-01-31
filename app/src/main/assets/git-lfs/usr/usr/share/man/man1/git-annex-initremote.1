@@ -1,0 +1,99 @@
+.TH git-annex-initremote 1
+.SH NAME
+git-annex-initremote \- creates a special (non\-git) remote
+.PP
+.SH SYNOPSIS
+git annex initremote \fBname type=value [param=value ...]\fP
+.PP
+.SH DESCRIPTION
+Creates a new special remote, and adds it to \fB.git/config\fP.
+.PP
+Example Amazon S3 remote:
+.PP
+ git annex initremote mys3 type=S3 encryption=hybrid keyid=me@example.com datacenter=EU
+.PP
+Many different types of special remotes are supported by git-annex.
+For a list and details, see <https://git-annex.branchable.com/special_remotes/>
+.PP
+The remote's configuration is specified by the parameters passed
+to this command. Different types of special remotes need different
+configuration values. The command will prompt for parameters as needed. A
+few parameters that are supported by all special remotes are documented in
+the next section below.
+.PP
+Once a special remote has been initialized once with this command,
+other clones of the repository can also be set up to access it using
+\fBgit annex enableremote\fP.
+.PP
+The name you provide for the remote can't be one that's been used for any
+other special remote before, because \fBgit-annex enableremote\fP uses the name
+to identify which special remote to enable. If some old special remote
+that's no longer used has taken the name you want to reuse, you might
+want to use \fBgit annex renameremote\fP.
+.PP
+.SH OPTIONS
+.IP "\fB\-\-fast\fP"
+.IP
+When initializing a remote that uses encryption, a cryptographic key is
+created. This requires sufficient entropy. If initremote seems to hang
+or take a long time while generating the key, you may want to Ctrl\-c it
+and re\-run with \fB\-\-fast\fP, which causes it to use a lower\-quality source of
+randomness. (Ie, /dev/urandom instead of /dev/random)
+.IP
+.IP "\fB\-\-sameas=remote\fP"
+Use this when the new special remote uses the same underlying storage
+as some other remote. This will result in the new special remote having
+the same uuid as the specified remote, and either can be used to access
+the same content.
+.IP
+The \fBremote\fP can be the name of a git remote, or the description
+or uuid of any git-annex repository.
+.IP
+When using this option, the new remote inherits the encryption settings
+of the existing remote, so you should not specify any encryption
+parameters. No other configuration is inherited from the existing remote.
+.IP
+This will only work if both remotes use the underlying storage in
+compatible ways. See this page for information about known
+compatabilities.
+<http://git-annex.branchable.com/tips/multiple_remotes_accessing_the_same_data_store/>
+.IP
+.SH COMMON CONFIGURATION PARAMETERS
+.IP "\fBencryption\fP"
+.IP
+All special remotes support encryption. You will need to specify
+what encryption, if any, to use. 
+.IP
+If you do not want any encryption, use \fBencryption=none\fP
+.IP
+To encrypt to a GPG key, use \fBencryption=hybrid keyid=$keyid ...\fP
+and fill in the GPG key id (or an email address associated with a GPG key).
+.IP
+For details about this and other encrpytion settings, see
+<https://git-annex.branchable.com/encryption/>
+.IP
+.IP "\fBautoenable\fP"
+To avoid \fBgit annex enableremote\fP needing to be run,
+you can pass "autoenable=true". Then when git-annex\-init(1)
+is run in a new clone, it will attempt to enable the special remote. Of
+course, this works best when the special remote does not need anything
+special to be done to get it enabled.
+.IP
+.IP "\fBuuid\fP"
+Normally, git-annex initremote generates a new UUID for the new special
+remote. If you want to, you can specify a UUID for it to use, by passing a
+uuid=whatever parameter. This can be useful in some unusual situations.
+But if in doubt, don't do this.
+.IP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-enableremote(1)
+.PP
+git-annex\-renameremote(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

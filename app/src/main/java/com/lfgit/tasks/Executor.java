@@ -45,7 +45,7 @@ abstract class Executor {
             if (isWriteStoragePermissionGranted(mActivity)) {
                 dirPath = Environment.getExternalStorageDirectory().toString() + "/" + destDir;
                 File f = new File(Environment.getExternalStorageDirectory(), destDir);
-                if (strings[0].equals("init")) {
+                if (strings.length > 0 && strings[0].equals("init")) {
                     if (!f.exists()) {
                         f.mkdirs();
                     }
@@ -71,7 +71,7 @@ abstract class Executor {
         Map<String, String> env = pb.environment();
         Log.d("petr", "LibDir: " + libDir);
         env.put("LD_LIBRARY_PATH", libDir);
-        env.put("PATH", binDir);
+        env.put("PATH", binDir + ":" + libDir);
         env.put("HOME", filesDir);
 
         Process javap = null;

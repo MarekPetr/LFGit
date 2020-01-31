@@ -1,0 +1,139 @@
+.TH git-annex-export 1
+.SH NAME
+git-annex-export \- export content to a remote
+.PP
+.SH SYNOPSIS
+git annex export \fBtreeish \-\-to remote\fP
+.PP
+.SH DESCRIPTION
+Use this command to export a tree of files from a git-annex repository.
+.PP
+Normally files are stored on a git-annex special remote named by their
+keys. That is great for reliable data storage, but your filenames are
+obscured. Exporting replicates the tree to the special remote as\-is.
+.PP
+Mixing key/value storage and exports in the same remote would be a mess and
+so is not allowed. You have to configure a special remote with
+\fBexporttree=yes\fP when initially setting it up with
+git-annex\-initremote(1).
+.PP
+The treeish to export can be the name of a git branch, or a tag, or any
+other treeish accepted by git, including eg master:subdir to only export a
+subdirectory from a branch.
+.PP
+When the remote has a preferred content setting, the treeish is filtered
+through it, excluding files it does not want from being exported to it.
+.PP
+Repeated exports are done efficiently, by diffing the old and new tree,
+and transferring only the changed files, and renaming files as necessary.
+.PP
+Exports can be interrupted and resumed. However, partially uploaded files
+will be re\-started from the beginning in most cases.
+.PP
+Once content has been exported to a remote, commands like \fBgit annex get\fP
+can download content from there the same as from other remotes. However,
+since an export is not a key/value store, git-annex has to do more
+verification of content downloaded from an export. Some types of keys,
+that are not based on checksums, cannot be downloaded from an export.
+And, git-annex will never trust an export to retain the content of a key.
+.PP
+However, some special remotes, notably S3, support keeping track of old
+versions of files stored in them. If a special remote is set up to do 
+that, it can be used as a key/value store and the limitations in the above
+paragraph do not apply. Note that dropping content from such a remote is
+not supported. See individual special remotes' documentation for
+details of how to enable such versioning.
+.PP
+The \fBgit annex sync \-\-content\fP command (and the git-annex assistant)
+can also be used to export a branch to a special remote, 
+updating the special remote whenever the branch is changed.
+To do this, you need to configure "remote.<name>.annex\-tracking\-branch"
+to tell it what branch to track.
+For example:
+.PP
+ git config remote.myremote.annex\-tracking\-branch master
+ git annex sync \-\-content
+.PP
+You can combine using \fBgit annex export\fP to send changes to a special 
+remote with \fBgit annex import\fP to fetch changes from a special remote.
+When a file on a special remote has been modified by software other than
+git-annex, exporting to it will not overwrite the modified file, and the
+export will not succeed. You can resolve this conflict by using
+\fBgit annex import\fP.
+.PP
+(Some types of special remotes such as S3 with versioning may instead
+let an export overwrite the modified file; then \fBgit annex import\fP
+will create a sequence of commits that includes the modified file,
+so the overwritten modification is not lost.)
+.PP
+.SH OPTIONS
+.IP "\fB\-\-to=remote\fP"
+.IP
+Specify the special remote to export to.
+.IP
+.IP "\fB\-\-tracking\fP"
+This is a deprecated way to set "remote.<name>.annex\-tracking\-branch".
+Instead of using this option, you should just set the git configuration
+yourself.
+.IP
+.IP "\fB\-\-fast\fP"
+This sets up an export of a tree, but avoids any expensive file uploads to
+the remote. You can later run \fBgit annex sync \-\-content\fP to upload
+the files to the export.
+.IP
+.SH EXAMPLE
+ git annex initremote myremote type=directory directory=/mnt/myremote \
+ 	exporttree=yes encryption=none
+ git annex export master \-\-to myremote
+.PP
+After that, /mnt/myremote will contain the same tree of files as the master
+branch does.
+.PP
+ git mv myfile subdir/myfile
+ git commit \-m renamed
+ git annex export master \-\-to myremote
+.PP
+That updates /mnt/myremote to reflect the renamed file.
+.PP
+ git annex export master:subdir \-\-to myremote
+.PP
+That updates /mnt/myremote, to contain only the files in the "subdir"
+directory of the master branch.
+.PP
+.SH EXPORT CONFLICTS
+If two different git-annex repositories are both exporting different trees
+to the same special remote, it's possible for an export conflict to occur.
+This leaves the special remote with some files from one tree, and some
+files from the other. Files in the special remote may have entirely the
+wrong content as well.
+.PP
+It's not possible for git-annex to detect when making an export will result
+in an export conflict. The best way to avoid export conflicts is to either
+only ever export to a special remote from a single repository, or to have a
+rule about the tree that you export to the special remote. For example, if
+you always export origin/master after pushing to origin, then an export
+conflict can't happen.
+.PP
+An export conflict can only be detected after the two git repositories
+that produced it get back in sync. Then the next time you run git annex
+export, it will detect the export conflict, and resolve it.
+.PP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-initremote(1)
+.PP
+git-annex\-import(1)
+.PP
+git-annex\-sync(1)
+.PP
+git-annex\-preferred\-content(1)
+.PP
+.SH HISTORY
+The \fBexport\fP command was introduced in git-annex version 6.20170925.
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

@@ -1,0 +1,39 @@
+.TH git-annex-calckey 1
+.SH NAME
+git-annex-calckey \- calulate key for a file
+.PP
+.SH SYNOPSIS
+git annex calckey \fB[file ...]\fP
+.PP
+.SH DESCRIPTION
+This plumbing\-level command calculates the key that would be used
+to refer to a file. The file is not added to the annex by this command.
+The key is output to stdout.
+.PP
+The backend used is the one from the annex.backend configuration
+setting, which can be overridden by the \-\-backend option.
+For example, to force use of the SHA1 backend:
+.PP
+ git annex calckey \-\-backend=SHA1 file
+.PP
+.SH OPTIONS
+.IP "\fB\-\-backend=name\fP"
+.IP
+Specifies which key\-value backend to use.
+.IP
+.IP "\fB\-\-batch\fP"
+Enable batch mode, in which a line containing the filename is read from
+stdin, the key is output to stdout (with a trailing newline), and repeat.
+.IP
+.IP "\fB\-z\fP"
+Makes the \fB\-\-batch\fP input be delimited by nulls instead of the usual
+newlines.
+.IP
+.SH SEE ALSO
+git-annex(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

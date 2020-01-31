@@ -1,0 +1,38 @@
+.TH git-annex-renameremote 1
+.SH NAME
+git-annex-renameremote \- changes name of a special remote
+.PP
+.SH SYNOPSIS
+git annex renameremote \fBname|uuid|desc newname\fP
+.PP
+.SH DESCRIPTION
+Changes the name that is used to enable a special remote.
+.PP
+Normally the current name is used to identify the special remote to rename, 
+but its uuid or description can also be used.
+.PP
+This is especially useful when an old special remote used a name, and now you
+want to use that name for a new special remote. \fBgit annex initremote\fP
+won't let you create a remote with a conflicting name, so rename the old
+remote first.
+.PP
+ git annex renameremote phone lost\-phone
+ git annex initremote phone ...
+.PP
+This only updates the name that git-annex has stored for use 
+by \fBgit annex enableremote\fP. It does not update the git config stanza
+for the special remote to use the new name, but of course you can edit
+the git config if you want to rename it there.
+.PP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-initremote(1)
+.PP
+git-annex\-enableremote(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

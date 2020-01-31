@@ -1,0 +1,29 @@
+.TH git-annex-post-receive 1
+.SH NAME
+git-annex-post\-receive \- run by git post\-receive hook
+.PP
+.SH SYNOPSIS
+git annex post\-receive
+.PP
+.SH DESCRIPTION
+This is meant to be called from git's post\-receive hook. \fBgit annex init\fP
+automatically creates a post\-receive hook using this.
+.PP
+When a repository is configured with receive.denyCurrentBranch=updateInstead,
+pushes to the repository update its work tree. However, that does not work
+for repositories that have an adjusted branch checked
+out. The hook updates the work tree when run in such a repository,
+the same as running \fBgit-annex merge\fP would.
+.PP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-adjust(1)
+.PP
+git-annex\-merge(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

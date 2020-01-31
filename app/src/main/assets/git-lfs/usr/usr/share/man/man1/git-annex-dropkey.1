@@ -1,0 +1,41 @@
+.TH git-annex-dropkey 1
+.SH NAME
+git-annex-dropkey \- drops annexed content for specified keys
+.PP
+.SH SYNOPSIS
+git annex dropkey \fB[key ...]\fP
+.PP
+.SH DESCRIPTION
+This plumbing\-level command drops the annexed data for the specified
+keys from this repository.
+.PP
+This can be used to drop content for arbitrary keys, which do not need
+to have a file in the git repository pointing at them.
+.PP
+Warning: This command does not check that enough other copies of the content
+exist; using it can easily result in data loss.
+.PP
+.SH OPTIONS
+.IP "\fB\-\-batch\fP"
+.IP
+Enables batch mode, in which lines containing keys to drop are read from
+stdin.
+.IP
+.IP "\fB\-\-json\fP"
+Enable JSON output. This is intended to be parsed by programs that use
+git-annex. Each line of output is a JSON object.
+.IP
+.IP "\fB\-\-json\-error\-messages\fP"
+Messages that would normally be output to standard error are included in
+the json instead.
+.IP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-setkey(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+

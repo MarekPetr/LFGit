@@ -1,0 +1,159 @@
+.TH git-annex-metadata 1
+.SH NAME
+git-annex-metadata \- sets or gets metadata of a file
+.PP
+.SH SYNOPSIS
+git annex metadata \fB[path ...]\fP
+.PP
+.SH DESCRIPTION
+The content of an annexed file can have any number of metadata fields
+attached to it to describe it. Each metadata field can in turn
+have any number of values.
+.PP
+This command can be used to set metadata, or show the currently set
+metadata.
+.PP
+When run without any \-s or \-t parameters, displays the current metadata.
+.PP
+Each metadata field has its own "field\-lastchanged" metadata, which
+contains the date the field was last changed. Unlike other metadata,
+this cannot be directly modified by this command. It is updated
+automatically.
+.PP
+Note that the metadata is attached to git-annex key corresponding to the 
+content of a file, not to a particular filename on a particular git branch.
+All files with the same key share the same metadata, which is
+stored in the git-annex branch. If a file is modified, the metadata
+of the previous version will be copied to the new key when git-annex adds
+the modified file.
+.PP
+.SH OPTIONS
+.IP "\fB\-g field\fP / \fB\-\-get field\fP"
+.IP
+Get the value(s) of a single field.
+.IP
+The values will be output one per line, with no other output, so
+this is suitable for use in a script.
+.IP
+.IP "\fB\-s field=value\fP / \fB\-\-set field=value\fP"
+Set a field's value, removing any old values.
+.IP
+.IP "\fB\-s field+=value\fP / \fB\-\-set field+=value\fP"
+Add an additional value, preserving any old values.
+.IP
+.IP "\fB\-s field?=value\fP / \fB\-\-set field?=value\fP"
+Set a value, but only if the field does not already have a value set.
+.IP
+.IP "\fB\-s field\-=value\fP / \fB\-\-set field\-=value\fP"
+Remove a value from a field, leaving any other values that the field has
+set.
+.IP
+.IP "\fB\-r field\fP / \fB\-\-remove field\fP"
+Remove all current values of the field.
+.IP
+.IP "\fB\-t tag\fP / \fB\-\-tag tag\fP"
+Set a tag. Note that a tag is just a value of the "tag" field.
+.IP
+.IP "\fB\-u tag\fP / \fB\-\-unset tag\fP"
+Unset a tag.
+.IP
+.IP "\fB\-\-remove\-all\fP"
+Remove all metadata from the specified files.
+.IP
+When a file is modified and the new version added, git-annex will copy
+over the metadata from the old version of the file. In situations where
+you don't want that copied metadata, you can use this option to remove
+it.
+.IP
+.IP "\fB\-\-force\fP"
+By default, \fBgit annex metadata\fP refuses to recursively set metadata
+throughout the files in a directory. This option enables such recursive
+setting.
+.IP
+.IP "file matching options"
+The git-annex\-matching\-options(1)
+can be used to specify files to act on.
+.IP
+.IP "\fB\-\-all\fP \fB\-A\fP"
+Specify instead of a file to get/set metadata on all known keys.
+.IP
+.IP "\fB\-\-branch=ref\fP"
+Specify instead of a file to get/set metadata on all files in the
+specified branch or treeish.
+.IP
+.IP "\fB\-\-unused\fP"
+Specify instead of a file to get/set metadata on
+files found by last run of git-annex unused.
+.IP
+.IP "\fB\-\-key=keyname\fP"
+Specify instead of a file to get/set metadata of the specified key.
+.IP
+.IP "\fB\-\-json\fP"
+Enable JSON output (and input). Each line is a JSON object.
+.IP
+The format of the JSON objects changed in git-annex version 6.20160726.
+.IP
+Example of the new format:
+.IP
+ {"command":"metadata","file":"foo","key":"...","fields":{"author":["bar"],...},"note":"...","success":true}
+.IP
+Example of the old format, which lacks the inner fields object:
+.IP
+ {"command":"metadata","file":"foo","key":"...","author":["bar"],...,"note":"...","success":true}
+.IP
+.IP "\fB\-\-json\-error\-messages\fP"
+Messages that would normally be output to standard error are included in
+the json instead.
+.IP
+.IP "\fB\-\-batch\fP"
+Enables batch mode, which can be used to both get, store, and unset
+metadata for multiple files or keys.
+.IP
+Batch currently only supports JSON input. So, you must
+enable \fB\-\-json\fP along with \fB\-\-batch\fP.
+.IP
+In batch mode, git-annex reads lines from stdin, which contain
+JSON objects. It replies to each input with an output JSON object.
+.IP
+The format of the JSON sent to git-annex can be the same as the JSON that
+it outputs. Or, a simplified version. Only the "file" (or "key") field
+is actually necessary.
+.IP
+For example, to get the current metadata of file foo:
+.IP
+ {"file":"foo"}
+.IP
+To get the current metadata of the key k:
+ 
+ {"key":"k"}
+.IP
+Any metadata fields included in the JSON object will be stored,
+replacing whatever values the fields had before.
+To unset a field, include it with an empty list of values.
+.IP
+To change the author of file foo to bar:
+.IP
+ {"file":"foo","fields":{"author":["bar"]}}
+.IP
+To remove the author of file foo:
+.IP
+ {"file":"foo","fields":{"author":[]}}
+.IP
+Note that file matching options do not affect the files that are
+processed when in batch mode.
+.IP
+.SH EXAMPLES
+To set some tags on a file and also its author:
+.PP
+ git annex metadata annexscreencast.ogv \-t video \-t screencast \-s author+=Alice
+.PP
+.SH SEE ALSO
+git-annex(1)
+.PP
+git-annex\-view(1)
+.PP
+.SH AUTHOR
+Joey Hess <id@joeyh.name>
+.PP
+.PP
+
