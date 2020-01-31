@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.lfgit.importer.AssetImporter;
-import com.lfgit.tasks.GitAnnexExec;
 import com.lfgit.tasks.GitExec;
 import com.lfgit.tasks.GitLfsExec;
 
@@ -40,38 +39,18 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
         final Button button = findViewById(R.id.action_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                annex();
+                busybox_echo();
             }
         });
     }
 
-    private void uname() {
-        String res = "";
-        GitExec gitExec = new GitExec(MainActivity.this);
-        res = gitExec.uname();
-
-        TextView tv1 = findViewById(R.id.MiddleText);
-        tv1.setText(res);
-    }
-
-    private void annex() {
-        String res = "";
-        GitAnnexExec gitAnnexExec = new GitAnnexExec(MainActivity.this);
-        res = gitAnnexExec.annex();
-
-        TextView tv1 = findViewById(R.id.MiddleText);
-        tv1.setText(res);
-    }
-
-
     private void busybox_echo() {
         String res = "";
-        GitExec gitAnnexExec = new GitExec(MainActivity.this);
-        res = gitAnnexExec.busybox_echo();
+        GitExec gitExec = new GitExec(MainActivity.this);
+        res = gitExec.busybox_echo();
 
         TextView tv1 = findViewById(R.id.MiddleText);
-        tv1.setText(res);
-    }
+        tv1.setText(res);}
 
 
     private void init() {
