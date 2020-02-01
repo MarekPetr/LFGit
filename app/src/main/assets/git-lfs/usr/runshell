@@ -73,9 +73,9 @@ PATH="$base/bin:$PATH:$base/extra"
 export PATH
 
 # These env vars are used by the shim wrapper around each binary.
-for lib in $(cat "$base/libdirs"); do
-    GIT_ANNEX_LD_LIBRARY_PATH="$base/$lib:$GIT_ANNEX_LD_LIBRARY_PATH"
-done
+#for lib in $(cat "$base/libdirs"); do
+#    GIT_ANNEX_LD_LIBRARY_PATH="$base/$lib:$GIT_ANNEX_LD_LIBRARY_PATH"
+#done
 
 export GIT_ANNEX_LD_LIBRARY_PATH
 GIT_ANNEX_DIR="$base"
@@ -83,7 +83,7 @@ export GIT_ANNEX_DIR
 
 ORIG_GCONV_PATH="$GCONV_PATH"
 export ORIG_GCONV_PATH
-GCONV_PATH="$base/$(cat "$base/gconvdir")"
+GCONV_PATH="$base/usr/lib/aarch64-linux-gnu/gconv"
 export GCONV_PATH
 
 ORIG_GIT_EXEC_PATH="$GIT_EXEC_PATH"
@@ -128,7 +128,8 @@ fi
 
 if [ -z "$tbase" ]; then
     if [ "$useproot" ]; then
-        exec proot "$cmd" "$@"
+        echo "exec proot bin/$cmd $@"
+        exec proot "bin/$cmd" "$@"
     else
         exec "$cmd" "$@"
     fi
