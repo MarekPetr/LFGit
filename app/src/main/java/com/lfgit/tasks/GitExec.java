@@ -21,6 +21,11 @@ public class GitExec extends Executor {
         return getResult();
     }
 
+    public String proot() {
+        envExeForRes("proot", binDir, "echo ahoj");
+        return getResult();
+    }
+
 
     public void config() {
         envExeForRes("git", "","config", "--global", "user.email", "petr.marek18@gmail.com");

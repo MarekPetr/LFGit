@@ -2,6 +2,7 @@ package com.lfgit;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -40,7 +41,18 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
         final Button button = findViewById(R.id.action_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                annex();
+                // scriptUri is URI path to script file.
+                Intent executeIntent = new Intent("com.termux.service_execute", );
+                executeIntent.setClassName("com.termux", "com.termux.app.TermuxService");
+
+// Whether to execute script in background.
+//executeIntent.putExtra("com.termux.execute.background", true);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    getApplicationContext().startForegroundService(executeIntent);
+                } else {
+                    getApplicationContext().startService(executeIntent);
+                }
             }
         });
     }
@@ -73,6 +85,14 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
         tv1.setText(res);
     }
 
+    private void proot() {
+        String res = "";
+        GitExec gitExec = new GitExec(MainActivity.this);
+        res = gitExec.proot();
+
+        TextView tv1 = findViewById(R.id.MiddleText);
+        tv1.setText(res);
+    }
 
     private void init() {
         String res = "";
