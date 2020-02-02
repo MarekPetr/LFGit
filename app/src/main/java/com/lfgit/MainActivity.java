@@ -2,10 +2,12 @@ package com.lfgit;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +21,8 @@ import androidx.core.app.ActivityCompat;
 import com.lfgit.importer.AssetImporter;
 import com.lfgit.tasks.GitExec;
 import com.lfgit.tasks.GitLfsExec;
+
+import static com.lfgit.permissions.PermissionRequester.isTermuxExePermissionGranted;
 
 
 public class MainActivity extends AppCompatActivity implements TaskListener{
@@ -39,9 +43,26 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
         final Button button = findViewById(R.id.action_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                busybox_echo();
+                exeTermux();
             }
         });
+    }
+
+    private void exeTermux() {
+        if (isTermuxExePermissionGranted(MainActivity.this)) {
+            Uri myUri = Uri.parse("git-annex");
+            Intent executeIntent = new Intent("com.termux.service_execute", myUri);
+            executeIntent.setClassName("com.termux", "com.termux.app.TermuxService");
+
+// Whether to execute script in background.
+//executeIntent.putExtra("com.termux.execute.background", true);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                getApplicationContext().startForegroundService(executeIntent);
+            } else {
+                getApplicationContext().startService(executeIntent);
+            }
+        }
     }
 
     private void busybox_echo() {
