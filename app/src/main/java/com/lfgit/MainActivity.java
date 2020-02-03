@@ -50,12 +50,12 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
 
     private void exeTermux() {
         if (isTermuxExePermissionGranted(MainActivity.this)) {
-            Uri myUri = Uri.parse("git-annex");
+            Uri myUri = Uri.parse("com.termux.file:/data/data/com.termux/files/home/git-annex.linux/git-annex" );
             Intent executeIntent = new Intent("com.termux.service_execute", myUri);
             executeIntent.setClassName("com.termux", "com.termux.app.TermuxService");
 
-// Whether to execute script in background.
-//executeIntent.putExtra("com.termux.execute.background", true);
+            // Whether to execute script in background.
+            //executeIntent.putExtra("com.termux.execute.background", true);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 getApplicationContext().startForegroundService(executeIntent);
@@ -122,30 +122,13 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
         return true;
     }
 
-    public  Boolean isReadStoragePermissionGranted() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAG,"Permission is granted1");
-                return true;
-            } else {
 
-                Log.v(TAG,"Permission is revoked1");
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 3);
-                return false;
-            }
-        }
-        else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAG,"Permission to read is granted1");
-            return true;
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case 2:
+            case 1:
                 Log.d(TAG, "External storage2");
                 if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
                     Log.v(TAG,"Permission: "+permissions[0]+ "was "+grantResults[0]);
@@ -154,8 +137,16 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
                 }
                 break;
 
-            case 3:
+            case 2:
                 Log.d(TAG, "External storage1");
+                if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                    Log.v(TAG,"Permission: "+permissions[0]+ "was "+grantResults[0]);
+                    //resume tasks needing this permission
+                }
+                break;
+
+            case 3:
+                Log.d(TAG, "Exe permission");
                 if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
                     Log.v(TAG,"Permission: "+permissions[0]+ "was "+grantResults[0]);
                     //resume tasks needing this permission
