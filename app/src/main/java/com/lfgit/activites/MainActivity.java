@@ -1,6 +1,5 @@
-package com.lfgit;
+package com.lfgit.activites;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,29 +10,46 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.lfgit.BuildConfig;
+import com.lfgit.R;
+import com.lfgit.TaskListener;
+import com.lfgit.adapters.RepoOperationsAdapter;
 import com.lfgit.importer.AssetImporter;
 import com.lfgit.tasks.GitExec;
 import com.lfgit.tasks.GitLfsExec;
 
+import static com.lfgit.Logger.LogAny;
 import static com.lfgit.permissions.PermissionRequester.isTermuxExePermissionGranted;
 
 
-public class MainActivity extends AppCompatActivity implements TaskListener{
+public class MainActivity extends AppCompatActivity implements TaskListener {
 
     String TAG = "petr";
     ProgressDialog progressDialog;
+    private RelativeLayout mRightDrawer;
+    private DrawerLayout mDrawerLayout;
+    private ListView mRepoOperationList;
+    private RepoOperationsAdapter mDrawerAdapter;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setupDrawer();
 
         if (isFirstRun()) {
             AssetImporter importer = new AssetImporter(getAssets(), this);
@@ -48,10 +64,53 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_tasks, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Toast.makeText(this, "Selected Item: " +item.getTitle(), Toast.LENGTH_SHORT).show();
+        switch (item.getItemId()) {
+            case R.id.toggle_drawer:
+                Toast.makeText(this, "toggle selected", Toast.LENGTH_SHORT).show();
+                if (mRightDrawer != null) {
+                    if (mDrawerLayout.isDrawerOpen(mRightDrawer)) {
+                        mDrawerLayout.closeDrawer(mRightDrawer);
+                    } else {
+                        mDrawerLayout.openDrawer(mRightDrawer);
+                    }
+                } else {
+                    Toast.makeText(this, "drawer null", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void setupDrawer() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (mDrawerLayout == null) {LogAny("DrawerLayout null");}
+        mRightDrawer = (RelativeLayout) findViewById(R.id.right_drawer);
+        if (mRightDrawer == null) {LogAny("rightDrawer null");}
+
+        mRepoOperationList = (ListView) findViewById(R.id.repoOperationList);
+        mDrawerAdapter = new RepoOperationsAdapter(this);
+        if (mRepoOperationList != null) {
+            mRepoOperationList.setAdapter(mDrawerAdapter);
+            mRepoOperationList.setOnItemClickListener(mDrawerAdapter);
+        }
+    }
+
     private void exeTermux() {
         if (isTermuxExePermissionGranted(MainActivity.this)) {
+            String str = "am start-service --user 0 -a com.termux.service_execute -n com.termux/com.termux.app.TermuxService -d com.termux.file:/data/data/com.termux/files/home/exe.sh";
+            Uri newUri = Uri.parse(str);
             Uri myUri = Uri.parse("com.termux.file:/data/data/com.termux/files/home/git-annex.linux/git-annex" );
-            Intent executeIntent = new Intent("com.termux.service_execute", myUri);
+            Intent executeIntent = new Intent("com.termux.service_execute", newUri);
             executeIntent.setClassName("com.termux", "com.termux.app.TermuxService");
 
             // Whether to execute script in background.
