@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_repo_detail);
 
         setupDrawer();
 
@@ -72,18 +72,12 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Toast.makeText(this, "Selected Item: " +item.getTitle(), Toast.LENGTH_SHORT).show();
         switch (item.getItemId()) {
             case R.id.toggle_drawer:
-                Toast.makeText(this, "toggle selected", Toast.LENGTH_SHORT).show();
-                if (mRightDrawer != null) {
-                    if (mDrawerLayout.isDrawerOpen(mRightDrawer)) {
-                        mDrawerLayout.closeDrawer(mRightDrawer);
-                    } else {
-                        mDrawerLayout.openDrawer(mRightDrawer);
-                    }
+                if (mDrawerLayout.isDrawerOpen(mRightDrawer)) {
+                    mDrawerLayout.closeDrawer(mRightDrawer);
                 } else {
-                    Toast.makeText(this, "drawer null", Toast.LENGTH_SHORT).show();
+                    mDrawerLayout.openDrawer(mRightDrawer);
                 }
                 return true;
             default:
@@ -92,17 +86,13 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
     }
 
     private void setupDrawer() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (mDrawerLayout == null) {LogAny("DrawerLayout null");}
-        mRightDrawer = (RelativeLayout) findViewById(R.id.right_drawer);
-        if (mRightDrawer == null) {LogAny("rightDrawer null");}
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mRightDrawer = findViewById(R.id.right_drawer);
 
-        mRepoOperationList = (ListView) findViewById(R.id.repoOperationList);
+        mRepoOperationList = findViewById(R.id.repoOperationList);
         mDrawerAdapter = new RepoOperationsAdapter(this);
-        if (mRepoOperationList != null) {
-            mRepoOperationList.setAdapter(mDrawerAdapter);
-            mRepoOperationList.setOnItemClickListener(mDrawerAdapter);
-        }
+        mRepoOperationList.setAdapter(mDrawerAdapter);
+        mRepoOperationList.setOnItemClickListener(mDrawerAdapter);
     }
 
     private void exeTermux() {
