@@ -22,6 +22,8 @@ import com.lfgit.tasks.GitAnnexExec;
 import com.lfgit.tasks.GitExec;
 import com.lfgit.tasks.GitLfsExec;
 
+import static com.lfgit.Logger.LogMsg;
+
 
 public class MainActivity extends AppCompatActivity implements TaskListener {
 
@@ -89,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
         tv1.setText(lfsExec.install("new"));
     }
 
-
     private Boolean isFirstRun() {
 
         final String PREFS_NAME = "MyPrefsFile";
@@ -123,17 +124,16 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAG,"Permission is granted1");
+                LogMsg("Permission is granted1");
                 return true;
             } else {
-
-                Log.v(TAG,"Permission is revoked1");
+                LogMsg("Permission is revoked1");
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 3);
                 return false;
             }
         }
         else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAG,"Permission to read is granted1");
+            LogMsg("Permission to read is granted1");
             return true;
         }
     }
@@ -143,18 +143,18 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 2:
-                Log.d(TAG, "External storage2");
+                LogMsg("External storage2");
                 if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
-                    Log.v(TAG,"Permission: "+permissions[0]+ "was "+grantResults[0]);
+                    LogMsg("Permission: "+permissions[0]+ "was "+grantResults[0]);
                     //resume tasks needing this permission
 
                 }
                 break;
 
             case 3:
-                Log.d(TAG, "External storage1");
+                LogMsg("External storage1");
                 if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
-                    Log.v(TAG,"Permission: "+permissions[0]+ "was "+grantResults[0]);
+                    LogMsg("Permission: "+permissions[0]+ "was "+grantResults[0]);
                     //resume tasks needing this permission
                 }
                 break;
@@ -174,8 +174,6 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
             unlockScreenOrientation();
         }
     }
-
-
 
     private void lockScreenOrientation() {
         int currentOrientation = getResources().getConfiguration().orientation;

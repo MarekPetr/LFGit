@@ -3,7 +3,7 @@ import android.app.Activity;
 
 import static com.lfgit.Constants.*;
 import static com.lfgit.Constants.reposDir;
-import static com.lfgit.Logger.LogAny;
+import static com.lfgit.Logger.LogMsg;
 
 public class GitExec extends Executor {
 
@@ -13,7 +13,7 @@ public class GitExec extends Executor {
 
     public String ldd() {
         envExeForRes("readelf", "", "-d", "/data/data/com.lfgit/files/usr/shimmed/git-annex/git-annex");
-        LogAny(getResult());
+        LogMsg(getResult());
         return getResult();
     }
 
@@ -36,9 +36,9 @@ public class GitExec extends Executor {
 
     public void config() {
         envExeForRes("git", "","config", "--global", "user.email", "petr.marek18@gmail.com");
-        LogAny(getResult());
+        LogMsg(getResult());
         envExeForRes("git", "", "config", "--global", "user.name", "MarekPetr");
-        LogAny(getResult());
+        LogMsg(getResult());
     }
 
     public String init(String dest) {
