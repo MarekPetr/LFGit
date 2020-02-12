@@ -18,6 +18,7 @@ import java.util.Map;
 import static com.lfgit.Constants.binDir;
 import static com.lfgit.Constants.filesDir;
 import static com.lfgit.Constants.libDir;
+import static com.lfgit.Logger.LogMsg;
 import static com.lfgit.permissions.PermissionRequester.isWriteStoragePermissionGranted;
 
 abstract class Executor {
@@ -32,11 +33,11 @@ abstract class Executor {
     }
 
     String getResult() {
-        return this.result;
+        return result;
     }
 
     Integer envExeForRes(String binary, String destDir, String... strings) {
-        this.result = "";
+        result = "";
         String exeDir = exe + binary;
         Integer errCode = 0;
 
@@ -52,11 +53,11 @@ abstract class Executor {
                     }
                 }
             } else {
-                result =  "Permission denied";
+                result = "Permission denied";
                 return -1;
             }
         } else {
-            result =  "Media not mounted";
+            result = "Media not mounted";
             return -1;
         }
 
@@ -70,9 +71,9 @@ abstract class Executor {
         pb.redirectErrorStream(true); // redirect error stream to input stream
         pb.directory(new File(dirPath));
         Map<String, String> env = pb.environment();
-        Log.d("petr", "LibDir: " + libDir);
-        env.put("LD_LIBRARY_PATH", libDir);
-        env.put("PATH", binDir + ":" + libDir);
+
+        env.put("LD_LIBRARY_PATH", env.get("LD_LIBRARY_PATH") + ":" + libDir + ":" + libDir+"aarch64-linux-gnu");
+        env.put("PATH", env.get("PATH") + ":" + binDir + ":" + libDir);
         env.put("HOME", filesDir);
 
         Process javap = null;
@@ -85,6 +86,8 @@ abstract class Executor {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+
+        LogMsg(result);
 
         if (errCode == 0) {
             result += "\nOperation successful";

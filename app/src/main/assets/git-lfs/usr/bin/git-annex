@@ -2,7 +2,7 @@
 echo "executing bin/git_annex script"
 GIT_ANNEX_PROGRAMPATH="$0"
 export GIT_ANNEX_PROGRAMPATH
-#export -p
+
 BASE="/data/data/com.lfgit/files/usr"
 GIT_ANNEX_LD_LIBRARY_PATH=$BASE/lib/aarch64-linux-gnu:$BASE/lib:$BASE/etc/ld.so.conf.d:$BASE/usr/lib/aarch64-linux-gnu/audit:$BASE/usr/lib/aarch64-linux-gnu/gconv
 #exec "/data/data/com.bk.gitbintest/files/exe/git-annex" --library-path "$GIT_ANNEX_LD_LIBRARY_PATH" "/data/data/com.bk.gitbintest/files/shimmed/git-annex/git-annex" "$@"

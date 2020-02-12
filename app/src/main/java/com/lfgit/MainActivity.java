@@ -2,6 +2,7 @@ package com.lfgit;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -33,25 +34,30 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
     GitExec gitExec;
     GitLfsExec lfsExec;
 
+    Button installButton;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tv1 = findViewById(R.id.MiddleText);
 
-        boolean install = false;
+        installButton = findViewById(R.id.install_button);
 
-        if (isFirstRun() || install) {
-            AssetImporter importer = new AssetImporter(getAssets(), this);
-            importer.execute(true);
-        }
+        installButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AssetImporter importer = new AssetImporter(getAssets(),MainActivity.this);
+                importer.execute(true);
+            }
+        });
 
         initGit();
 
         final Button button = findViewById(R.id.action_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ldd();
+                proot();
             }
         });
     }
@@ -63,9 +69,7 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
     }
 
     private void ldd() {
-        String res = gitExec.ldd();
-        tv1.setText(res);
-        LogMsg(res);
+        tv1.setText(gitExec.ldd());
     }
 
     private void uname() {
@@ -74,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
 
     private void annex() {
         tv1.setText(annexExec.annex());
+
     }
 
     private void busybox_echo() {
