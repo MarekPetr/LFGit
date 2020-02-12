@@ -27,7 +27,7 @@ public class GitExec extends Executor {
     }
 
     public String proot() {
-        envExeForRes("proot", "", "git", "--help");
+        envExeForRes("proot", "", "/data/data/com.lfgit/files/usr/bin/git", "--help");
         return getResult();
     }
 

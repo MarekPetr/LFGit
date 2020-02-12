@@ -46,10 +46,12 @@ abstract class Executor {
         if (state.equals(Environment.MEDIA_MOUNTED)) {
             if (isWriteStoragePermissionGranted(mActivity)) {
                 dirPath = Environment.getExternalStorageDirectory().toString() + "/" + destDir;
-                File f = new File(Environment.getExternalStorageDirectory(), destDir);
-                if (strings.length > 0 && strings[0].equals("init")) {
-                    if (!f.exists()) {
-                        f.mkdirs();
+                if (!destDir.isEmpty()) {
+                    File f = new File(Environment.getExternalStorageDirectory(), destDir);
+                    if (strings.length > 0 && strings[0].equals("init")) {
+                        if (!f.exists()) {
+                            f.mkdirs();
+                        }
                     }
                 }
             } else {
@@ -72,12 +74,11 @@ abstract class Executor {
         pb.directory(new File(dirPath));
         Map<String, String> env = pb.environment();
 
-        env.put("LD_LIBRARY_PATH", env.get("LD_LIBRARY_PATH") + ":" + libDir + ":" + libDir+"aarch64-linux-gnu");
+        env.put("LD_LIBRARY_PATH", libDir + ":" + libDir + "aarch64-linux-gnu");
         env.put("PATH", env.get("PATH") + ":" + binDir + ":" + libDir);
         env.put("HOME", filesDir);
-
-        Process javap = null;
-        Buffer buffer = null;
+        Process javap;
+        Buffer buffer;
         try {
             javap = pb.start();
             buffer = new Buffer(javap.getInputStream());
