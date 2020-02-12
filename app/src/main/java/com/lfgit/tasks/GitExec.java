@@ -11,6 +11,13 @@ public class GitExec extends Executor {
         super(activity);
     }
 
+    public String ldd() {
+        envExeForRes("readelf", "", "-d", "/data/data/com.lfgit/files/usr/shimmed/git-annex/git-annex");
+        LogAny(getResult());
+        return getResult();
+    }
+
+
     public String busybox_echo() {
         envExeForRes("busybox", "", "echo", "ahoj");
         return getResult();

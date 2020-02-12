@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.system.Os;
 import android.util.Log;
 
-import com.lfgit.TaskListener;
+import com.lfgit.interfaces.TaskListener;
 
 import java.io.File;
 import java.io.FileOutputStream;

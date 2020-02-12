@@ -2,7 +2,6 @@ package com.lfgit;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -18,100 +17,76 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.lfgit.importer.AssetImporter;
+import com.lfgit.interfaces.TaskListener;
 import com.lfgit.tasks.GitAnnexExec;
 import com.lfgit.tasks.GitExec;
 import com.lfgit.tasks.GitLfsExec;
 
 
-public class MainActivity extends AppCompatActivity implements TaskListener{
+public class MainActivity extends AppCompatActivity implements TaskListener {
 
     String TAG = "petr";
     ProgressDialog progressDialog;
+    TextView tv1;
+    GitAnnexExec annexExec;
+    GitExec gitExec;
+    GitLfsExec lfsExec;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tv1 = findViewById(R.id.MiddleText);
 
-        //if (isFirstRun()) {
+        boolean install = true;
+
+        if (isFirstRun() && install) {
             AssetImporter importer = new AssetImporter(getAssets(), this);
             importer.execute(true);
-        ///}
+        }
+
+        initGit();
 
         final Button button = findViewById(R.id.action_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                /*// scriptUri is URI path to script file.
-                Intent executeIntent = new Intent("com.termux.service_execute", );
-                executeIntent.setClassName("com.termux", "com.termux.app.TermuxService");
-
-// Whether to execute script in background.
-//executeIntent.putExtra("com.termux.execute.background", true);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    getApplicationContext().startForegroundService(executeIntent);
-                } else {
-                    getApplicationContext().startService(executeIntent);
-                }*/
-
                 annex();
             }
         });
     }
 
-    private void uname() {
-        String res = "";
-        GitExec gitExec = new GitExec(MainActivity.this);
-        res = gitExec.uname();
+    private void initGit() {
+        annexExec = new GitAnnexExec(MainActivity.this);
+        gitExec = new GitExec(MainActivity.this);
+        lfsExec = new GitLfsExec(MainActivity.this);
+    }
 
-        TextView tv1 = findViewById(R.id.MiddleText);
-        tv1.setText(res);
+    private void ldd() {
+        tv1.setText(gitExec.ldd());
+    }
+
+    private void uname() {
+        tv1.setText(gitExec.uname());
     }
 
     private void annex() {
-        String res = "";
-        GitAnnexExec gitAnnexExec = new GitAnnexExec(MainActivity.this);
-        res = gitAnnexExec.annex();
-
-        TextView tv1 = findViewById(R.id.MiddleText);
-        tv1.setText(res);
+        tv1.setText(annexExec.annex());
     }
 
-
     private void busybox_echo() {
-        String res = "";
-        GitExec gitAnnexExec = new GitExec(MainActivity.this);
-        res = gitAnnexExec.busybox_echo();
-
-        TextView tv1 = findViewById(R.id.MiddleText);
-        tv1.setText(res);
+        tv1.setText(gitExec.busybox_echo());
     }
 
     private void proot() {
-        String res = "";
-        GitExec gitExec = new GitExec(MainActivity.this);
-        res = gitExec.proot();
-
-        TextView tv1 = findViewById(R.id.MiddleText);
-        tv1.setText(res);
+        tv1.setText(gitExec.proot());
     }
 
     private void init() {
-        String res = "";
-        GitExec gitExec = new GitExec(MainActivity.this);
-        res = gitExec.init("new");
-
-        TextView tv1 = findViewById(R.id.MiddleText);
-        tv1.setText(res);
+        tv1.setText(gitExec.init("new"));
     }
 
     private void LFSExec() {
-        String res = "";
-        GitLfsExec GitLfsExec = new GitLfsExec(MainActivity.this);
-        res = GitLfsExec.install("new");
-
-        TextView tv1 = findViewById(R.id.MiddleText);
-        tv1.setText(res);
+        tv1.setText(lfsExec.install("new"));
     }
 
 
@@ -199,6 +174,8 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
             unlockScreenOrientation();
         }
     }
+
+
 
     private void lockScreenOrientation() {
         int currentOrientation = getResources().getConfiguration().orientation;
