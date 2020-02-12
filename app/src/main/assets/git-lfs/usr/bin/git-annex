@@ -9,5 +9,5 @@ GIT_ANNEX_LD_LIBRARY_PATH=$BASE/lib/aarch64-linux-gnu:$BASE/lib:$BASE/etc/ld.so.
 #echo "annex_ld -$GIT_ANNEX_LD_LIBRARY_PATH-"
 
 #exec "$GIT_ANNEX_DIR/exe/git-annex" --help
-#exec "$GIT_ANNEX_DIR/exe/git-annex" --library-path "$GIT_ANNEX_LD_LIBRARY_PATH" "$GIT_ANNEX_DIR/shimmed/git-annex/git-annex" "$@"
-exec "$GIT_ANNEX_DIR/exe/git-annex" --library-path "$GIT_ANNEX_LD_LIBRARY_PATH" "$GIT_ANNEX_DIR/shimmed/uname/uname"
+exec "$GIT_ANNEX_DIR/exe/git-annex" --library-path "$GIT_ANNEX_LD_LIBRARY_PATH" "$GIT_ANNEX_DIR/shimmed/git-annex/git-annex" "$@"
+#exec "$GIT_ANNEX_DIR/exe/git-annex" --library-path "$GIT_ANNEX_LD_LIBRARY_PATH" "$GIT_ANNEX_DIR/shimmed/uname/uname"

@@ -12,11 +12,9 @@ public class GitExec extends Executor {
     }
 
     public String ldd() {
-        envExeForRes("readelf", "", "-d", "/data/data/com.lfgit/files/usr/shimmed/git-annex/git-annex");
-        LogMsg(getResult());
+        envExeForRes("ldd", "", "/data/data/com.lfgit/files/usr/shimmed/git-annex/git-annex");
         return getResult();
     }
-
 
     public String busybox_echo() {
         envExeForRes("busybox", "", "echo", "ahoj");

@@ -36,6 +36,7 @@ abstract class Executor {
     }
 
     Integer envExeForRes(String binary, String destDir, String... strings) {
+        this.result = "";
         String exeDir = exe + binary;
         Integer errCode = 0;
 
@@ -88,7 +89,7 @@ abstract class Executor {
         if (errCode == 0) {
             result += "\nOperation successful";
         } else {
-            result += "\nOperation failed";
+            result += "\nOperation failed with error " + errCode;
         }
 
         return errCode;

@@ -27,7 +27,6 @@ import static com.lfgit.Logger.LogMsg;
 
 public class MainActivity extends AppCompatActivity implements TaskListener {
 
-    String TAG = "petr";
     ProgressDialog progressDialog;
     TextView tv1;
     GitAnnexExec annexExec;
@@ -40,9 +39,9 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
         setContentView(R.layout.activity_main);
         tv1 = findViewById(R.id.MiddleText);
 
-        boolean install = true;
+        boolean install = false;
 
-        if (isFirstRun() && install) {
+        if (isFirstRun() || install) {
             AssetImporter importer = new AssetImporter(getAssets(), this);
             importer.execute(true);
         }
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
         final Button button = findViewById(R.id.action_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                annex();
+                ldd();
             }
         });
     }
@@ -64,7 +63,9 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
     }
 
     private void ldd() {
-        tv1.setText(gitExec.ldd());
+        String res = gitExec.ldd();
+        tv1.setText(res);
+        LogMsg(res);
     }
 
     private void uname() {
