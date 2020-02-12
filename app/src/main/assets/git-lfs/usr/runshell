@@ -128,8 +128,8 @@ fi
 
 if [ -z "$tbase" ]; then
     if [ "$useproot" ]; then
-        echo "exec proot bin/$cmd $@"
-        exec proot "bin/$cmd" "$@"
+        echo "exec proot /data/data/com.lfgit/files/usr/bin/$cmd $@"
+        exec proot "/data/data/com.lfgit/files/usr/bin/$cmd" "$@"
     else
         exec "$cmd" "$@"
     fi

@@ -33,15 +33,15 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (isFirstRun()) {
+        //if (isFirstRun()) {
             AssetImporter importer = new AssetImporter(getAssets(), this);
             importer.execute(true);
-        }
+        ///}
 
         final Button button = findViewById(R.id.action_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // scriptUri is URI path to script file.
+                /*// scriptUri is URI path to script file.
                 Intent executeIntent = new Intent("com.termux.service_execute", );
                 executeIntent.setClassName("com.termux", "com.termux.app.TermuxService");
 
@@ -52,7 +52,9 @@ public class MainActivity extends AppCompatActivity implements TaskListener{
                     getApplicationContext().startForegroundService(executeIntent);
                 } else {
                     getApplicationContext().startService(executeIntent);
-                }
+                }*/
+
+                annex();
             }
         });
     }

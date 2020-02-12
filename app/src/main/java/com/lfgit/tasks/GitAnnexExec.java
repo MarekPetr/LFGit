@@ -16,8 +16,8 @@ public class GitAnnexExec extends Executor {
 
 
     public String annex() {
-        //envExeForRes("git-annex", "", "init");
-        envExeForRes("exe/git-annex", "clone", "--library-path", usrDir + "lib/aarch64-linux-gnu:"+ usrDir + "lib:" + usrDir + "etc/ld.so.conf.d:" + usrDir + "usr/lib/aarch64-linux-gnu/audit:" + usrDir + "usr/lib/aarch64-linux-gnu/gconv", usrDir + "shimmed/git-annex/git-annex", "init");
+        envExeForRes("git-annex", "", "--help");
+        //envExeForRes("exe/git-annex", "clone", "--library-path", usrDir + "lib/aarch64-linux-gnu:"+ usrDir + "lib:" + usrDir + "etc/ld.so.conf.d:" + usrDir + "usr/lib/aarch64-linux-gnu/audit:" + usrDir + "usr/lib/aarch64-linux-gnu/gconv", usrDir + "shimmed/git-annex/git-annex", "init");
         return getResult();
     }
 
