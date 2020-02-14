@@ -82,8 +82,8 @@ abstract class Executor {
         try {
             javap = pb.start();
             buffer = new Buffer(javap.getInputStream());
-            errCode = javap.waitFor();
             result = buffer.getOutput();
+            errCode = javap.waitFor();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

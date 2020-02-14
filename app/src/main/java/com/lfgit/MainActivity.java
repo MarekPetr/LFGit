@@ -68,6 +68,11 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
         lfsExec = new GitLfsExec(MainActivity.this);
     }
 
+    private void jtrace() {
+        tv1.setText(gitExec.jtrace());
+    }
+
+
     private void ldd() {
         tv1.setText(gitExec.ldd());
     }

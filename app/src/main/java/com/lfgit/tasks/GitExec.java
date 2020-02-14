@@ -11,6 +11,13 @@ public class GitExec extends Executor {
         super(activity);
     }
 
+    public String jtrace() {
+        envExeForRes("strace", "", "/data/data/com.lfgit/files/usr/git-annex", "init");
+        //envExeForRes("strace", "", "echo", "ahoj");
+        //envExeForRes("strace", "", "/data/data/com.lfgit/files/usr/bin/git", "--help");
+        return getResult();
+    }
+
     public String ldd() {
         envExeForRes("ldd", "", "/data/data/com.lfgit/files/usr/shimmed/git-annex/git-annex");
         return getResult();

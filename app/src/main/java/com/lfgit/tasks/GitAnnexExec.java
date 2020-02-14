@@ -14,7 +14,7 @@ public class GitAnnexExec extends Executor {
     }
 
     public String annex() {
-        envExeForRes("git-annex", "", "--help");
+        envExeForRes("git-annex", "");
         return getResult();
     }
 }
