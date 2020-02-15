@@ -3,8 +3,6 @@ package com.lfgit.activities;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +20,7 @@ import com.lfgit.adapters.RepoOperationsAdapter;
 import com.lfgit.importer.AssetImporter;
 
 
-public class RepoListActivity extends BasicActivity implements TaskListener {
+public class RepoListActivity extends BasicAbstractActivity implements TaskListener {
 
     String TAG = "petr";
     ProgressDialog progressDialog;
@@ -30,7 +28,6 @@ public class RepoListActivity extends BasicActivity implements TaskListener {
     private DrawerLayout mDrawerLayout;
     private ListView mRepoOperationList;
     private RepoOperationsAdapter mDrawerAdapter;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

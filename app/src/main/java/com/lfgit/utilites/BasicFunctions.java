@@ -1,17 +1,17 @@
 package com.lfgit.utilites;
 
 
-import com.lfgit.activities.BasicActivity;
+import com.lfgit.activities.BasicAbstractActivity;
 
 public class BasicFunctions {
 
-    private static BasicActivity mActiveActivity;
+    private static BasicAbstractActivity mActiveActivity;
 
-    public static BasicActivity getActiveActivity() {
+    public static BasicAbstractActivity getActiveActivity() {
         return mActiveActivity;
     }
 
-    public static void setActiveActivity(BasicActivity activity) {
+    public static void setActiveActivity(BasicAbstractActivity activity) {
         mActiveActivity = activity;
     }
 }

@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat;
 
 import com.lfgit.utilites.BasicFunctions;
 
-public class BasicActivity extends AppCompatActivity {
+public abstract class BasicAbstractActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST = 1;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,11 +49,11 @@ public class BasicActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(BasicActivity.this, msg, Toast.LENGTH_LONG).show();
+                Toast.makeText(BasicAbstractActivity.this, msg, Toast.LENGTH_LONG).show();
             }
         });
     }
-    
+
     protected void lockScreenOrientation() {
         int currentOrientation = getResources().getConfiguration().orientation;
         if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {

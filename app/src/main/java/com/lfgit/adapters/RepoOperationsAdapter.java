@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter.DrawerItem;
 
+// source:
+// https://github.com/maks/MGit/blob/master/app/src/main/java/me/sheimi/sgit/adapters/RepoOperationsAdapter.java
 public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
         implements OnItemClickListener {
 
@@ -34,7 +36,7 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.drawer_list_item, parent, false);
         DrawerItemHolder holder = new DrawerItemHolder();
-        holder.name = (TextView) view.findViewById(R.id.name);
+        holder.name = view.findViewById(R.id.name);
         view.setTag(holder);
         return view;
     }
