@@ -1,15 +1,10 @@
 package com.lfgit.tasks;
 import android.app.Activity;
 
-import static com.lfgit.Constants.*;
-import static com.lfgit.Constants.reposDir;
-import static com.lfgit.Logger.LogAny;
+import static com.lfgit.utilites.Constants.reposDir;
+import static com.lfgit.utilites.Logger.LogAny;
 
 public class GitExec extends Executor {
-
-    public GitExec( Activity activity) {
-        super(activity);
-    }
 
     public void config() {
         envExeForRes("git", "","config", "--global", "user.email", "petr.marek18@gmail.com");

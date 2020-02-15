@@ -1,4 +1,4 @@
-package com.lfgit;
+package com.lfgit.utilites;
 
 import android.util.Log;
 

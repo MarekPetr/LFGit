@@ -15,19 +15,16 @@ import java.util.List;
 import java.util.Map;
 
 
-import static com.lfgit.Constants.binDir;
-import static com.lfgit.Constants.filesDir;
-import static com.lfgit.Constants.libDir;
-import static com.lfgit.permissions.PermissionRequester.isWriteStoragePermissionGranted;
+import static com.lfgit.utilites.Constants.binDir;
+import static com.lfgit.utilites.Constants.filesDir;
+import static com.lfgit.utilites.Constants.libDir;
 
 abstract class Executor {
 
     private String result;
     String exe;
-    private Activity mActivity;
 
-    Executor(Activity activity) {
-        this.mActivity = activity;
+    Executor() {
         this.exe = binDir;
     }
 
@@ -40,25 +37,13 @@ abstract class Executor {
         Integer errCode = 0;
 
         String dirPath = "";
-        String state = Environment.getExternalStorageState();
-        if (state.equals(Environment.MEDIA_MOUNTED)) {
-            if (isWriteStoragePermissionGranted(mActivity)) {
-                dirPath = Environment.getExternalStorageDirectory().toString() + "/" + destDir;
-                File f = new File(Environment.getExternalStorageDirectory(), destDir);
-                if (strings[0].equals("init")) {
-                    if (!f.exists()) {
-                        f.mkdirs();
-                    }
-                }
-            } else {
-                result =  "Permission denied";
-                return -1;
+        dirPath = Environment.getExternalStorageDirectory().toString() + "/" + destDir;
+        File f = new File(Environment.getExternalStorageDirectory(), destDir);
+        if (strings[0].equals("init")) {
+            if (!f.exists()) {
+                f.mkdirs();
             }
-        } else {
-            result =  "Media not mounted";
-            return -1;
         }
-
         List<String> args = new ArrayList<>();
         args.add(exeDir);
         args.addAll(Arrays.asList(strings));

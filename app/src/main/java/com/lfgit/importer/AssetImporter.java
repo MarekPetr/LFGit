@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.system.Os;
 import android.util.Log;
 
-import com.lfgit.TaskListener;
+import com.lfgit.interfaces.TaskListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,8 +15,8 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static com.lfgit.Constants.appDir;
-import static com.lfgit.Constants.filesDir;
+import static com.lfgit.utilites.Constants.appDir;
+import static com.lfgit.utilites.Constants.filesDir;
 
 
 public class AssetImporter extends AsyncTask<Boolean, Void, Boolean> {
