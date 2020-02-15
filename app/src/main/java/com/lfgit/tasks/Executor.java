@@ -93,7 +93,7 @@ abstract class Executor {
 
         return errCode;
     }
-
+    // source https://github.com/jjNford/android-shell/blob/master/src/com/jjnford/android/util/Shell.java
     private static class Buffer extends Thread {
         private InputStream mInputStream;
         private StringBuffer mBuffer;
