@@ -13,6 +13,9 @@ import androidx.annotation.NonNull;
 import com.lfgit.R;
 import com.lfgit.database.Repo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
 
@@ -54,6 +57,20 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         holder.repoTitle.setText(repo.getDisplayName());
         // TODO delete repo from DB if it doesn't exist
 
+    }
+
+    // TODO database
+    public void addAllRepos() {
+        Repo repo1 = new Repo("prvni");
+        Repo repo2 = new Repo("druhy");
+
+        List<Repo> repos = new ArrayList<>();
+        repos.add(repo1);
+        repos.add(repo2);
+
+        clear();
+        addAll(repos);
+        notifyDataSetChanged();
     }
 
 

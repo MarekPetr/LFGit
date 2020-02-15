@@ -1,38 +1,43 @@
 package com.lfgit.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.lfgit.BuildConfig;
 import com.lfgit.R;
+import com.lfgit.adapters.RepoListAdapter;
+import com.lfgit.databinding.RepoListBinding;
 import com.lfgit.interfaces.TaskListener;
 import com.lfgit.adapters.RepoOperationsAdapter;
 import com.lfgit.importer.AssetImporter;
-
+import com.lfgit.view_models.RepoListViewModel;
 
 public class RepoListActivity extends BasicAbstractActivity implements TaskListener {
 
     String TAG = "petr";
-    ProgressDialog progressDialog;
+    ProgressDialog mProgressDialog;
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;
     private ListView mRepoOperationList;
     private RepoOperationsAdapter mDrawerAdapter;
+    private RepoListBinding mBinding;
+    private RepoListAdapter mRepoListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_repo_list);
 
         setupDrawer();
         checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -41,12 +46,16 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
             AssetImporter importer = new AssetImporter(getAssets(), this);
             importer.execute(true);
         }
+        RepoListViewModel viewModel = ViewModelProviders.of(this).get(RepoListViewModel.class);
 
-        final Button button = findViewById(R.id.action_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            }
-        });
+        mBinding = DataBindingUtil.setContentView(this, R.layout.repo_list);
+        mBinding.setLifecycleOwner(this);
+        mBinding.setViewModel(viewModel);
+        mRepoListAdapter = new RepoListAdapter(this);
+        mRepoListAdapter.addAllRepos();
+        mBinding.repoList.setAdapter(mRepoListAdapter);
+        mBinding.repoList.setOnItemClickListener(mRepoListAdapter);
+        mBinding.repoList.setOnItemLongClickListener(mRepoListAdapter);
     }
 
     @Override
@@ -57,17 +66,15 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.toggle_drawer:
-                if (mDrawerLayout.isDrawerOpen(mRightDrawer)) {
-                    mDrawerLayout.closeDrawer(mRightDrawer);
-                } else {
-                    mDrawerLayout.openDrawer(mRightDrawer);
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.toggle_drawer) {
+            if (mDrawerLayout.isDrawerOpen(mRightDrawer)) {
+                mDrawerLayout.closeDrawer(mRightDrawer);
+            } else {
+                mDrawerLayout.openDrawer(mRightDrawer);
+            }
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupDrawer() {
@@ -112,13 +119,13 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
     @Override
     public void onTaskStarted() {
         lockScreenOrientation();
-        progressDialog = ProgressDialog.show(this, "Installing...", "Getting things ready..");
+        mProgressDialog = ProgressDialog.show(this, "Installing...", "Getting things ready..");
     }
 
     @Override
     public void onTaskFinished() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
             unlockScreenOrientation();
         }
     }

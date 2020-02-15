@@ -15,8 +15,8 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static com.lfgit.utilites.Constants.appDir;
-import static com.lfgit.utilites.Constants.filesDir;
+import static com.lfgit.utilites.Constants.APP_DIR;
+import static com.lfgit.utilites.Constants.FILES_DIR;
 
 
 public class AssetImporter extends AsyncTask<Boolean, Void, Boolean> {
@@ -39,7 +39,7 @@ public class AssetImporter extends AsyncTask<Boolean, Void, Boolean> {
             }
             copyFileOrDir(assetDir);
         }
-        File dir = new File(appDir + "repos");
+        File dir = new File(APP_DIR + "repos");
         if (!dir.exists()) {
             dir.mkdir();
         }
@@ -74,7 +74,7 @@ public class AssetImporter extends AsyncTask<Boolean, Void, Boolean> {
             if (assets.length == 0) {
                 copyFile(path, noArchDir);
             } else {
-                String fullPath = filesDir + noArchDir;
+                String fullPath = FILES_DIR + noArchDir;
                 File dir = new File(fullPath);
                 if (!dir.exists())
                     dir.mkdir();
@@ -95,7 +95,7 @@ public class AssetImporter extends AsyncTask<Boolean, Void, Boolean> {
         OutputStream out = null;
         try {
             in = assetManager.open(filename);
-            String newFileName = filesDir + "/" + noArchDir;
+            String newFileName = FILES_DIR + "/" + noArchDir;
             File file = new File(newFileName);
             out = new FileOutputStream(newFileName);
 
