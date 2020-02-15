@@ -32,7 +32,7 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_repo_detail);
+        setContentView(R.layout.activity_main);
 
         setupDrawer();
         checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);

@@ -1,10 +1,11 @@
 package com.lfgit.tasks;
 
-import static com.lfgit.utilites.Constants.usrDir;
+
+import static com.lfgit.utilites.Constants.USR_DIR;
 
 public class GitAnnexExec extends Executor {
 
     public GitAnnexExec() {
-        super.exe = usrDir;
+        super.mExeDir = USR_DIR;
     }
 }

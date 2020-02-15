@@ -1,7 +1,7 @@
 package com.lfgit.tasks;
 import android.app.Activity;
 
-import static com.lfgit.utilites.Constants.reposDir;
+import static com.lfgit.utilites.Constants.REPOS_DIR;
 import static com.lfgit.utilites.Logger.LogAny;
 
 public class GitExec extends Executor {
@@ -28,7 +28,7 @@ public class GitExec extends Executor {
     public String commit() {
         String gitOperation = "commit";
         String message = "-m\"newFileToCommit\"";
-        String destDir = reposDir + "clone/test";
+        String destDir = REPOS_DIR + "clone/test";
         envExeForRes("git", destDir, gitOperation, message);
         return getResult();
     }
@@ -42,21 +42,21 @@ public class GitExec extends Executor {
 
     public String status() {
         String gitOperation = "status";
-        String destDir = reposDir + "repo/";
+        String destDir = REPOS_DIR + "repo/";
         envExeForRes("git", destDir, gitOperation);
         return getResult();
     }
 
     public String add() {
         String gitOperation = "add";
-        String destDir = reposDir + "clone/test";
+        String destDir = REPOS_DIR + "clone/test";
         envExeForRes("git", destDir, gitOperation, ".");
         return getResult();
     }
 
     public String push() {
         String gitOperation = "push";
-        String destDir = reposDir + "clone/test";
+        String destDir = REPOS_DIR + "clone/test";
          envExeForRes("git", destDir, gitOperation);
         return getResult();
     }

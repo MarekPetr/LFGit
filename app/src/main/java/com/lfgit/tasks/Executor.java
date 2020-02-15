@@ -15,25 +15,25 @@ import java.util.List;
 import java.util.Map;
 
 
-import static com.lfgit.utilites.Constants.binDir;
-import static com.lfgit.utilites.Constants.filesDir;
-import static com.lfgit.utilites.Constants.libDir;
+import static com.lfgit.utilites.Constants.BIN_DIR;
+import static com.lfgit.utilites.Constants.FILES_DIR;
+import static com.lfgit.utilites.Constants.LIB_DIR;
 
 abstract class Executor {
 
-    private String result;
-    String exe;
+    private String mResult;
+    String mExeDir;
 
     Executor() {
-        this.exe = binDir;
+        mExeDir = BIN_DIR;
     }
 
     String getResult() {
-        return this.result;
+        return mResult;
     }
 
     Integer envExeForRes(String binary, String destDir, String... strings) {
-        String exeDir = exe + binary;
+        String exeBin = mExeDir + binary;
         Integer errCode = 0;
 
         String dirPath = "";
@@ -45,7 +45,7 @@ abstract class Executor {
             }
         }
         List<String> args = new ArrayList<>();
-        args.add(exeDir);
+        args.add(exeBin);
         args.addAll(Arrays.asList(strings));
 
         Log.d("petr", "exe: " + Arrays.toString(args.toArray()));
@@ -54,26 +54,26 @@ abstract class Executor {
         pb.redirectErrorStream(true); // redirect error stream to input stream
         pb.directory(new File(dirPath));
         Map<String, String> env = pb.environment();
-        Log.d("petr", "LibDir: " + libDir);
-        env.put("LD_LIBRARY_PATH", libDir);
-        env.put("PATH", binDir);
-        env.put("HOME", filesDir);
+        Log.d("petr", "LIB_DIR: " + LIB_DIR);
+        env.put("LD_LIBRARY_PATH", LIB_DIR);
+        env.put("PATH", BIN_DIR);
+        env.put("HOME", FILES_DIR);
 
-        Process javap = null;
-        Buffer buffer = null;
+        Process javap;
+        Buffer buffer;
         try {
             javap = pb.start();
             buffer = new Buffer(javap.getInputStream());
             errCode = javap.waitFor();
-            result = buffer.getOutput();
+            mResult = buffer.getOutput();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
         if (errCode == 0) {
-            result += "\nOperation successful";
+            mResult += "\nOperation successful";
         } else {
-            result += "\nOperation failed";
+            mResult += "\nOperation failed";
         }
 
         return errCode;

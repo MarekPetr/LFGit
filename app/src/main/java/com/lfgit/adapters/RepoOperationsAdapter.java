@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter.DrawerItem;
 
+import org.jetbrains.annotations.NotNull;
+
 // source:
 // https://github.com/maks/MGit/blob/master/app/src/main/java/me/sheimi/sgit/adapters/RepoOperationsAdapter.java
 public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
@@ -23,8 +25,9 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
         setupDrawerItem();
     }
 
+    @NotNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NotNull ViewGroup parent) {
         if (convertView == null) {
             convertView = newView(getContext(), parent);
         }
@@ -32,7 +35,7 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
         return convertView;
     }
 
-    public View newView(Context context, ViewGroup parent) {
+    private View newView(Context context, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.drawer_list_item, parent, false);
         DrawerItemHolder holder = new DrawerItemHolder();
@@ -41,9 +44,10 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
         return view;
     }
 
-    public void bindView(View view, int position) {
+    private void bindView(View view, int position) {
         DrawerItemHolder holder = (DrawerItemHolder) view.getTag();
         DrawerItem item = getItem(position);
+        assert item != null;
         holder.name.setText(item.name);
     }
 
@@ -53,11 +57,9 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
 
     public static class DrawerItem {
         public String name;
-        public int icon;
 
-        public DrawerItem(String name, int icon) {
+        DrawerItem(String name) {
             this.name = name;
-            this.icon = icon;
         }
     }
 
@@ -65,7 +67,7 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
         String[] ops = getContext().getResources().getStringArray(
                 R.array.repo_operation_names);
         for (String op : ops) {
-            add(new DrawerItem(op, 0));
+            add(new DrawerItem(op));
         }
     }
 
