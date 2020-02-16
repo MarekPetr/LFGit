@@ -13,7 +13,8 @@ import androidx.annotation.NonNull;
 
 import com.lfgit.R;
 import com.lfgit.activities.RepoDetailActivity;
-import com.lfgit.database.models.Repo;
+import com.lfgit.database.RepoDatabase;
+import com.lfgit.database.Repo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,19 +60,22 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
     private void bindView(View view, int position) {
         RepoListItemHolder holder = (RepoListItemHolder) view.getTag();
         final Repo repo = getItem(position);
-        holder.repoTitle.setText(repo.getDisplayName());
+        if (repo != null) {
+            holder.repoTitle.setText(repo.getDisplayName());
+        }
         // TODO delete repo from DB if it doesn't exist
-
     }
 
     // TODO database
     public void addAllRepos() {
+        RepoDatabase repoDb = RepoDatabase.getInstance(mContext);
         Repo repo1 = new Repo("prvni");
         Repo repo2 = new Repo("druhy");
 
         List<Repo> repos = new ArrayList<>();
         repos.add(repo1);
         repos.add(repo2);
+        repoDb.repoDao().insertList(repos);
 
         clear();
         addAll(repos);

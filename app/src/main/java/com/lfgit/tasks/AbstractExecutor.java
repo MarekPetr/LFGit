@@ -14,17 +14,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-
 import static com.lfgit.utilites.Constants.BIN_DIR;
 import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Constants.LIB_DIR;
 
-abstract class Executor {
+abstract class AbstractExecutor {
 
     private String mResult;
     String mExeDir;
 
-    Executor() {
+    AbstractExecutor() {
         mExeDir = BIN_DIR;
     }
 

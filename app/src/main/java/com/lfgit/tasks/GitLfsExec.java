@@ -1,8 +1,6 @@
 package com.lfgit.tasks;
 
-import android.app.Activity;
-
-public class GitLfsExec extends Executor {
+public class GitLfsExec extends AbstractExecutor {
 
     public String install(String dest) {
         envExeForRes("git-lfs",dest, "install");
