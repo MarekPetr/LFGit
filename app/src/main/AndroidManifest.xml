@@ -22,6 +22,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.RepoDetailActivity"
+            android:parentActivityName=".activities.RepoListActivity">
+        </activity>
     </application>
 
 </manifest>

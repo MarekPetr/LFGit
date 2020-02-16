@@ -1,23 +1,20 @@
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
-    <include layout="@layout/repo_list" />
-
-    <RelativeLayout
-        android:id="@+id/right_drawer"
-        android:layout_width="240dp"
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.lfgit.view_models.RepoListViewModel"/>
+    </data>
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:background="@color/white">
+        android:orientation="vertical"
+        tools:context=".activities.RepoListActivity">
 
         <ListView
-            android:id="@+id/repoOperationList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:dividerHeight="0dp" >
-        </ListView>
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:id="@+id/repoList"/>
+    </LinearLayout>
+</layout>
 
-</androidx.drawerlayout.widget.DrawerLayout>

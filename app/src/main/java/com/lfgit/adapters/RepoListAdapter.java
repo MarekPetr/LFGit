@@ -1,6 +1,7 @@
 package com.lfgit.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.lfgit.R;
-import com.lfgit.database.Repo;
+import com.lfgit.activities.RepoDetailActivity;
+import com.lfgit.database.models.Repo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +21,16 @@ import java.util.List;
 public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
 
+    private Context mContext;
     public RepoListAdapter(@NonNull Context context) {
         super(context, 0);
+        mContext = context;
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+        Intent intent = new Intent(mContext, RepoDetailActivity.class);
+        mContext.startActivity(intent);
     }
 
     @Override

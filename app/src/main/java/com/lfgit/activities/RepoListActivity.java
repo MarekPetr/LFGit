@@ -1,54 +1,41 @@
 package com.lfgit.activities;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.lfgit.BuildConfig;
 import com.lfgit.R;
 import com.lfgit.adapters.RepoListAdapter;
-import com.lfgit.databinding.RepoListBinding;
+import com.lfgit.databinding.ActivityRepoListBinding;
 import com.lfgit.interfaces.TaskListener;
-import com.lfgit.adapters.RepoOperationsAdapter;
-import com.lfgit.importer.AssetImporter;
+import com.lfgit.installer.AssetInstaller;
 import com.lfgit.view_models.RepoListViewModel;
 
 public class RepoListActivity extends BasicAbstractActivity implements TaskListener {
 
     String TAG = "petr";
     ProgressDialog mProgressDialog;
-    private RelativeLayout mRightDrawer;
-    private DrawerLayout mDrawerLayout;
-    private ListView mRepoOperationList;
-    private RepoOperationsAdapter mDrawerAdapter;
-    private RepoListBinding mBinding;
+    private ActivityRepoListBinding mBinding;
     private RepoListAdapter mRepoListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_repo_list);
 
-        setupDrawer();
         checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (isFirstRun()) {
-            AssetImporter importer = new AssetImporter(getAssets(), this);
-            importer.execute(true);
+            AssetInstaller installer = new AssetInstaller(getAssets(), this);
+            installer.execute(true);
         }
         RepoListViewModel viewModel = ViewModelProviders.of(this).get(RepoListViewModel.class);
 
-        mBinding = DataBindingUtil.setContentView(this, R.layout.repo_list);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_list);
         mBinding.setLifecycleOwner(this);
         mBinding.setViewModel(viewModel);
         mRepoListAdapter = new RepoListAdapter(this);
@@ -56,35 +43,6 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
         mBinding.repoList.setAdapter(mRepoListAdapter);
         mBinding.repoList.setOnItemClickListener(mRepoListAdapter);
         mBinding.repoList.setOnItemLongClickListener(mRepoListAdapter);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_tasks, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.toggle_drawer) {
-            if (mDrawerLayout.isDrawerOpen(mRightDrawer)) {
-                mDrawerLayout.closeDrawer(mRightDrawer);
-            } else {
-                mDrawerLayout.openDrawer(mRightDrawer);
-            }
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setupDrawer() {
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        mRightDrawer = findViewById(R.id.right_drawer);
-
-        mRepoOperationList = findViewById(R.id.repoOperationList);
-        mDrawerAdapter = new RepoOperationsAdapter(this);
-        mRepoOperationList.setAdapter(mDrawerAdapter);
-        mRepoOperationList.setOnItemClickListener(mDrawerAdapter);
     }
 
     private Boolean isFirstRun() {
@@ -102,7 +60,6 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
 
         // Check for first run or upgrade
         if (currentVersionCode == savedVersionCode) {
-
             // This is just a normal run
             return false;
         } else if (savedVersionCode == DOESNT_EXIST) {

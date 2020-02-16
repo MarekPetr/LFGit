@@ -1,4 +1,4 @@
-package com.lfgit.importer;
+package com.lfgit.installer;
 
 public enum Arch {
     x86(0),

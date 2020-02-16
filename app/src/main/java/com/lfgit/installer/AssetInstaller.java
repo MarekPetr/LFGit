@@ -1,4 +1,4 @@
-package com.lfgit.importer;
+package com.lfgit.installer;
 
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
@@ -19,16 +19,16 @@ import static com.lfgit.utilites.Constants.APP_DIR;
 import static com.lfgit.utilites.Constants.FILES_DIR;
 
 
-public class AssetImporter extends AsyncTask<Boolean, Void, Boolean> {
+public class AssetInstaller extends AsyncTask<Boolean, Void, Boolean> {
     private AssetManager assetManager;
     private TaskListener listener;
 
-    public AssetImporter(AssetManager assets, TaskListener listener)  {
+    public AssetInstaller(AssetManager assets, TaskListener listener)  {
         this.assetManager = assets;
         this.listener = listener;
     }
 
-    private Boolean importAssets(final Boolean copyAssets) {
+    private Boolean installAssets(final Boolean copyAssets) {
         Arch targetDev = Arch.arm64_v8a;//
         String assetDir = "git-lfs";
 
@@ -113,12 +113,11 @@ public class AssetImporter extends AsyncTask<Boolean, Void, Boolean> {
         } catch (Exception e) {
             Log.e("tag", Objects.requireNonNull(e.getMessage()));
         }
-
     }
 
     @Override
     protected Boolean doInBackground(Boolean... params) {
-        return importAssets(params[0]);
+        return installAssets(params[0]);
     }
 
     @Override

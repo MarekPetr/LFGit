@@ -1,4 +1,4 @@
-package com.lfgit.database;
+package com.lfgit.database.models;
 
 public class Repo {
     private String mLocalPath;
