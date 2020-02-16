@@ -18,8 +18,17 @@ import java.util.Objects;
 import static com.lfgit.utilites.Constants.APP_DIR;
 import static com.lfgit.utilites.Constants.FILES_DIR;
 
-
 public class AssetInstaller extends AsyncTask<Boolean, Void, Boolean> {
+    private enum Arch {
+        x86(0),
+        arm64_v8a(1);
+        int value;
+
+        Arch(int value) {
+            this.value = value;
+        }
+    }
+
     private AssetManager assetManager;
     private TaskListener listener;
 
