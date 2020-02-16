@@ -1,16 +1,20 @@
 package com.lfgit.database;
 
 import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.lfgit.database.model.Repo;
+
 import java.util.List;
 
+@Dao
 public interface RepoDao {
     @Query("SELECT * from repo")
-    List<Repo> getAll();
+    LiveData<List<Repo>> getAll();
 
     // Insert one repository
     @Insert (onConflict = OnConflictStrategy.ABORT)

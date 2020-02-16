@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import com.lfgit.R;
 import com.lfgit.activities.RepoDetailActivity;
 import com.lfgit.database.RepoDatabase;
-import com.lfgit.database.Repo;
+import com.lfgit.database.model.Repo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +75,7 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         List<Repo> repos = new ArrayList<>();
         repos.add(repo1);
         repos.add(repo2);
+
         repoDb.repoDao().insertList(repos);
 
         clear();
