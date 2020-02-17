@@ -8,6 +8,8 @@ import androidx.room.RoomDatabase;
 
 import com.lfgit.database.model.Repo;
 
+import java.util.List;
+
 @Database(entities = {Repo.class}, version = 1, exportSchema = false)
 public abstract class RepoDatabase extends RoomDatabase {
     public abstract RepoDao repoDao();
@@ -21,6 +23,10 @@ public abstract class RepoDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             RepoDatabase.class, "DB_REPO")
+                            // Wipes and rebuilds instead of migrating
+                            // if no Migration object.
+                            // TODO migration if needed
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
