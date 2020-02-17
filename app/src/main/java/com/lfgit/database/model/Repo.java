@@ -1,8 +1,8 @@
 package com.lfgit.database.model;
 
 import androidx.room.ColumnInfo;
-        import androidx.room.Entity;
-        import androidx.room.PrimaryKey;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 // TODO https://medium.com/mindorks/using-room-database-android-jetpack-675a89a0e942
 // DAO
