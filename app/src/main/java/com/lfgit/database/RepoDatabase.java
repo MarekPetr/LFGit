@@ -8,8 +8,6 @@ import androidx.room.RoomDatabase;
 
 import com.lfgit.database.model.Repo;
 
-import java.util.List;
-
 @Database(entities = {Repo.class}, version = 1, exportSchema = false)
 public abstract class RepoDatabase extends RoomDatabase {
     public abstract RepoDao repoDao();

@@ -9,12 +9,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.lfgit.R;
 import com.lfgit.activities.RepoDetailActivity;
-import com.lfgit.database.RepoDatabase;
-import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
+import com.lfgit.view_models.LocalRepoViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +42,7 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         return false;
     }
 
+    @NotNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
@@ -68,7 +72,7 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
 
     // TODO database
     public void addAllRepos() {
-        RepoRepository repo = new RepoRepository(mContext);
+        //RepoRepository repo = new RepoRepository(mContext);
 
         Repo repo1 = new Repo("prvni");
         Repo repo2 = new Repo("druhy");
@@ -77,12 +81,18 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         repos.add(repo1);
         repos.add(repo2);
 
-        repo.insertList(repos);
+        //repo.insertList(repos);
 
         clear();
         addAll(repos);
         notifyDataSetChanged();
     }
+
+    public void initRepo(String localPath) {
+        LocalRepoViewModel model;
+        LocalRepoViewModel localRepoViewModel = ViewModelProviders.of((FragmentActivity) mContext).get(LocalRepoViewModel.class);
+    }
+
 
 
     private class RepoListItemHolder {

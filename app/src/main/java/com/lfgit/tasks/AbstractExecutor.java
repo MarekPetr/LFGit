@@ -31,7 +31,7 @@ abstract class AbstractExecutor {
         return mResult;
     }
 
-    Integer envExeForRes(String binary, String destDir, String... strings) {
+    Integer executeBinary(String binary, String destDir, String... strings) {
         String exeBin = mExeDir + binary;
         Integer errCode = 0;
 

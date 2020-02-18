@@ -27,13 +27,13 @@ public class RepoDetailActivity extends BasicAbstractActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_tasks, menu);
+        getMenuInflater().inflate(R.menu.menu_repo_detail, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.toggle_drawer) {
+        if (item.getItemId() == R.id.toggleDrawer) {
             if (mDrawerLayout.isDrawerOpen(mRightDrawer)) {
                 mDrawerLayout.closeDrawer(mRightDrawer);
             } else {
@@ -45,8 +45,8 @@ public class RepoDetailActivity extends BasicAbstractActivity {
     }
 
     private void setupDrawer() {
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        mRightDrawer = findViewById(R.id.right_drawer);
+        mDrawerLayout = findViewById(R.id.drawerLayout);
+        mRightDrawer = findViewById(R.id.rightDrawer);
         mRepoOperationList = findViewById(R.id.repoOperationList);
 
         mDrawerAdapter = new RepoOperationsAdapter(this);
