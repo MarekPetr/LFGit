@@ -15,10 +15,10 @@ public class RepoRepository {
     }
 
     public void insertRepo(final Repo repo) {
-        new Thread(() -> mRepoDao.insertRepo(repo)).start();
+        RepoDatabase.databaseWriteExecutor.execute(() -> mRepoDao.insertRepo(repo));
     }
 
     public void insertList(final List<Repo> repos) {
-        new Thread(() -> mRepoDao.insertList(repos)).start();
+        RepoDatabase.databaseWriteExecutor.execute(() -> mRepoDao.insertList(repos));
     }
 }

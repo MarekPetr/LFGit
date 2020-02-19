@@ -8,13 +8,19 @@ import androidx.room.RoomDatabase;
 
 import com.lfgit.database.model.Repo;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @Database(entities = {Repo.class}, version = 1, exportSchema = false)
 public abstract class RepoDatabase extends RoomDatabase {
     public abstract RepoDao repoDao();
 
     private static volatile RepoDatabase INSTANCE;
+    private static final int NUMBER_OF_THREADS = 4;
+    static final ExecutorService databaseWriteExecutor =
+            Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-    public static synchronized RepoDatabase getInstance(Context context) {
+    static synchronized RepoDatabase getInstance(Context context) {
         // singleton database
         if (INSTANCE == null) {
             synchronized (RepoDatabase.class) {

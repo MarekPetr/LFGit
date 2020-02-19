@@ -21,6 +21,7 @@ import static com.lfgit.utilites.Constants.LIB_DIR;
 abstract class AbstractExecutor {
 
     private String mResult;
+    private int mErrCode;
     String mExeDir;
 
     AbstractExecutor() {
@@ -31,9 +32,8 @@ abstract class AbstractExecutor {
         return mResult;
     }
 
-    Integer executeBinary(String binary, String destDir, String... strings) {
+    boolean executeBinary(String binary, String destDir, String... strings) {
         String exeBin = mExeDir + binary;
-        Integer errCode = 0;
 
         String dirPath = "";
         dirPath = Environment.getExternalStorageDirectory().toString() + "/" + destDir;
@@ -63,19 +63,19 @@ abstract class AbstractExecutor {
         try {
             javap = pb.start();
             buffer = new Buffer(javap.getInputStream());
-            errCode = javap.waitFor();
+            mErrCode = javap.waitFor();
             mResult = buffer.getOutput();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        if (errCode == 0) {
+        if (mErrCode == 0) {
             mResult += "\nOperation successful";
         } else {
             mResult += "\nOperation failed";
         }
 
-        return errCode;
+        return mErrCode == 0;
     }
     // source https://github.com/jjNford/android-shell/blob/master/src/com/jjnford/android/util/Shell.java
     private static class Buffer extends Thread {

@@ -2,6 +2,7 @@ package com.lfgit.activities;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
@@ -60,7 +61,8 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.initRepo:
-                showToastMsg("initializing repo");
+                Intent intent = new Intent(this, InitRepoActivity.class);
+                this.startActivity(intent);
 
             default:
                 return super.onOptionsItemSelected(item);

@@ -17,10 +17,9 @@ public class GitExec extends AbstractExecutor {
         return getResult();
     }
 
-    public String init(String dest) {
+    public boolean init(String dest) {
         String gitOperation = "init";
-        executeBinary("git", dest, gitOperation);
-        return getResult();
+        return executeBinary("git", dest, gitOperation);
     }
 
     public String commit() {

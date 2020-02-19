@@ -25,6 +25,9 @@
         <activity android:name=".activities.RepoDetailActivity"
             android:parentActivityName=".activities.RepoListActivity">
         </activity>
+        <activity android:name=".activities.InitRepoActivity"
+            android:parentActivityName=".activities.RepoListActivity">
+        </activity>
     </application>
 
 </manifest>

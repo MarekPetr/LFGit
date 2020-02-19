@@ -32,8 +32,8 @@ public class Repo {
 
     public Repo(String localPath) {
         this.localPath = localPath;
-        this.remoteURL = remoteURL;
-        this.repoStatus = repoStatus;
+        /*this.remoteURL = remoteURL;
+        this.repoStatus = repoStatus;*/
     }
     public String getDisplayName() {
         return localPath;
