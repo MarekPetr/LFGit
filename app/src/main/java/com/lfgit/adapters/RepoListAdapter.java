@@ -9,13 +9,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.lfgit.R;
 import com.lfgit.activities.RepoDetailActivity;
 import com.lfgit.database.model.Repo;
-import com.lfgit.view_models.LocalRepoViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -87,13 +84,6 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         addAll(repos);
         notifyDataSetChanged();
     }
-
-    public void initRepo(String localPath) {
-        LocalRepoViewModel model;
-        LocalRepoViewModel localRepoViewModel = ViewModelProviders.of((FragmentActivity) mContext).get(LocalRepoViewModel.class);
-    }
-
-
 
     private class RepoListItemHolder {
         TextView repoTitle;
