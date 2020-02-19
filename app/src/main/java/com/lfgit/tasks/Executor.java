@@ -9,6 +9,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -125,20 +128,27 @@ abstract class Executor {
         @Override
         public void run() {
             try {
-                String line;
+                String line = "";
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mInputStream));
-                if((line = reader.readLine()) != null) {
+                /*if((line = reader.readLine()) != null) {
                     mBuffer.append(line);
                     while((line = reader.readLine()) != null) {
                         mBuffer.append(EOL).append(line);
                     }
-                }
+                }*/
                 /*final int bufferSize = 4096;
                 final char[] buffer = new char[bufferSize];
                 int charsRead;
-                while((charsRead = reader.read(buffer, 0, buffer.length)) > 0) {
+                Reader in = new InputStreamReader(mInputStream, StandardCharsets.UTF_8);
+                while((charsRead = in.read(buffer, 0, buffer.length)) > 0) {
                     mBuffer.append(buffer, 0, charsRead);
+                    LogMsg(String.valueOf(buffer, 0, charsRead));
                 }*/
+                File targetFile = new File("/data/data/com.lfgit/files/annex.txt");
+                java.nio.file.Files.copy(
+                        mInputStream,
+                        targetFile.toPath(),
+                        StandardCopyOption.REPLACE_EXISTING);
             } catch(IOException e) {
                 e.printStackTrace();
             }
