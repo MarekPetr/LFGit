@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
         final Button button = findViewById(R.id.action_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                annex();
+               strace();
             }
         });
     }
@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
         lfsExec = new GitLfsExec(MainActivity.this);
     }
 
-    private void jtrace() {
-        tv1.setText(gitExec.jtrace());
+    private void strace() {
+        tv1.setText(gitExec.strace());
     }
 
 

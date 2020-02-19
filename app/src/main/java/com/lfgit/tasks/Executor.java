@@ -82,8 +82,8 @@ abstract class Executor {
         try {
             javap = pb.start();
             buffer = new Buffer(javap.getInputStream());
-            result = buffer.getOutput();
             errCode = javap.waitFor();
+            result = buffer.getOutput();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -133,6 +133,12 @@ abstract class Executor {
                         mBuffer.append(EOL).append(line);
                     }
                 }
+                /*final int bufferSize = 4096;
+                final char[] buffer = new char[bufferSize];
+                int charsRead;
+                while((charsRead = reader.read(buffer, 0, buffer.length)) > 0) {
+                    mBuffer.append(buffer, 0, charsRead);
+                }*/
             } catch(IOException e) {
                 e.printStackTrace();
             }
