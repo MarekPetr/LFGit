@@ -88,5 +88,4 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
     private class RepoListItemHolder {
         TextView repoTitle;
     }
-
 }

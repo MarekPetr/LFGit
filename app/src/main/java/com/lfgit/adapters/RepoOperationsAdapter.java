@@ -76,5 +76,4 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
                             long id) {
         Toast.makeText(getContext(), "operation", Toast.LENGTH_SHORT).show();
     }
-
 }

@@ -2,13 +2,10 @@
     xmlns:bind="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="RepoListViewModel"
+            name="repoListViewModel"
             type="com.lfgit.view_models.RepoListViewModel"/>
         <variable
             name="localRepoViewModel"
-            type="com.lfgit.view_models.LocalRepoViewModel"/>
-        <variable
-            name="clickHandler"
             type="com.lfgit.view_models.LocalRepoViewModel"/>
     </data>
     <LinearLayout
@@ -16,8 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".activities.RepoListActivity"
-        bind:viewModel="@localRepoViewModel">
+        tools:context=".activities.RepoListActivity">
 
         <ListView
             android:layout_width="match_parent"
