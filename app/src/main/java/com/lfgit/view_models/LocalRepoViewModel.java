@@ -3,6 +3,7 @@ package com.lfgit.view_models;
 import android.app.Application;
 import android.view.View;
 
+import androidx.databinding.Bindable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
@@ -10,8 +11,10 @@ import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
 import com.lfgit.tasks.GitExec;
 
+import static com.lfgit.utilites.Logger.LogMsg;
+
 public class LocalRepoViewModel extends AndroidViewModel {
-    private MutableLiveData<String> repoPath;
+    private MutableLiveData<String> repoPath = new MutableLiveData<>();
     private RepoRepository repoRepository;
     private GitExec gitExec;
 
@@ -30,5 +33,15 @@ public class LocalRepoViewModel extends AndroidViewModel {
         return repoRepository;
     }
 
+    public void setRepoPath(String repoPath) {
+        this.repoPath.setValue(repoPath);
+    }
 
+    public String getRepoPath() {
+        String value = repoPath.getValue();
+        if (value != null) {
+            LogMsg(value);
+        }
+        return value;
+    }
 }

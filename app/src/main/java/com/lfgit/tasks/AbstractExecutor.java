@@ -38,7 +38,7 @@ abstract class AbstractExecutor {
         String dirPath = "";
         dirPath = Environment.getExternalStorageDirectory().toString() + "/" + destDir;
         File f = new File(Environment.getExternalStorageDirectory(), destDir);
-        if (strings[0].equals("init")) {
+        if (binary.equals("git") && strings[0].equals("init")) {
             if (!f.exists()) {
                 f.mkdirs();
             }

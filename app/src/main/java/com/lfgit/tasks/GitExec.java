@@ -1,15 +1,15 @@
 package com.lfgit.tasks;
 
 import static com.lfgit.utilites.Constants.REPOS_DIR;
-import static com.lfgit.utilites.Logger.LogAny;
+import static com.lfgit.utilites.Logger.LogMsg;
 
 public class GitExec extends AbstractExecutor {
 
     public void config() {
         executeBinary("git", "","config", "--global", "user.email", "petr.marek18@gmail.com");
-        LogAny(getResult());
+        LogMsg(getResult());
         executeBinary("git", "", "config", "--global", "user.name", "MarekPetr");
-        LogAny(getResult());
+        LogMsg(getResult());
     }
 
     public String busybox_echo() {

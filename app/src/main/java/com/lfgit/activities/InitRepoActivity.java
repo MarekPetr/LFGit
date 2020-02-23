@@ -15,6 +15,8 @@ import com.lfgit.databinding.ActivityInitRepoBinding;
 import com.lfgit.tasks.GitExec;
 import com.lfgit.view_models.LocalRepoViewModel;
 
+import static com.lfgit.utilites.Logger.LogMsg;
+
 public class InitRepoActivity extends BasicAbstractActivity {
     Button initButton;
     EditText initPathEditText;
@@ -35,14 +37,15 @@ public class InitRepoActivity extends BasicAbstractActivity {
         setupGit();
     }
 
-    /*public void initButtonHandler(View view) {
-        //String initPath = initPathEditText.getText().toString();
-        if (gitExec.init()) {
-            Repo repo = new Repo(initPath);
+    public void initButtonHandler(View view) {
+        String initPath = mBinding.getLocalRepoViewModel().getRepoPath();
+        if (gitExec.init(initPath)) {
+            LogMsg("repo "+initPath+" initialized");
+            /*Repo repo = new Repo(initPath);
             RepoRepository repos = new RepoRepository(this);
-            repos.insertRepo(repo);
+            repos.insertRepo(repo);*/
         }
-    }*/
+    }
 
     private void setupView() {
         initButton = findViewById(R.id.initButton);
@@ -51,8 +54,5 @@ public class InitRepoActivity extends BasicAbstractActivity {
 
     private void setupGit() {
         gitExec = new GitExec();
-    }
-
-    public void initButtonHandler(View view) {
     }
 }
