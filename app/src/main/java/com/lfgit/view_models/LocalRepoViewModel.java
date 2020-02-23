@@ -39,9 +39,7 @@ public class LocalRepoViewModel extends AndroidViewModel {
 
     public String getRepoPath() {
         String value = repoPath.getValue();
-        if (value != null) {
-            LogMsg(value);
-        }
+        LogMsg(value);
         return value;
     }
 }

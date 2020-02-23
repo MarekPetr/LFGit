@@ -17,6 +17,7 @@ import java.util.Map;
 import static com.lfgit.utilites.Constants.BIN_DIR;
 import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Constants.LIB_DIR;
+import static com.lfgit.utilites.Logger.LogMsg;
 
 abstract class AbstractExecutor {
 
@@ -47,13 +48,13 @@ abstract class AbstractExecutor {
         args.add(exeBin);
         args.addAll(Arrays.asList(strings));
 
-        Log.d("petr", "exe: " + Arrays.toString(args.toArray()));
+        LogMsg("exe: " + Arrays.toString(args.toArray()));
 
         ProcessBuilder pb = new ProcessBuilder(args);
         pb.redirectErrorStream(true); // redirect error stream to input stream
         pb.directory(new File(dirPath));
         Map<String, String> env = pb.environment();
-        Log.d("petr", "LIB_DIR: " + LIB_DIR);
+        LogMsg("LIB_DIR: " + LIB_DIR);
         env.put("LD_LIBRARY_PATH", LIB_DIR);
         env.put("PATH", BIN_DIR);
         env.put("HOME", FILES_DIR);

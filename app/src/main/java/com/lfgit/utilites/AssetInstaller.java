@@ -17,6 +17,7 @@ import java.util.Objects;
 
 import static com.lfgit.utilites.Constants.APP_DIR;
 import static com.lfgit.utilites.Constants.FILES_DIR;
+import static com.lfgit.utilites.Logger.LogMsg;
 
 public class AssetInstaller extends AsyncTask<Boolean, Void, Boolean> {
     private enum Arch {
@@ -43,7 +44,7 @@ public class AssetInstaller extends AsyncTask<Boolean, Void, Boolean> {
 
         if(copyAssets) {
             if (assetsEmpty(assetDir)) {
-                Log.d("petr", "empty");
+                LogMsg("empty");
                 return false;
             }
             copyFileOrDir(assetDir);
@@ -60,7 +61,7 @@ public class AssetInstaller extends AsyncTask<Boolean, Void, Boolean> {
         try {
             assets = assetManager.list(path);
             assert assets != null;
-            Log.d("petr", Arrays.toString(assets));
+            LogMsg(Arrays.toString(assets));
             if (assets.length == 0)
                 return true;
         } catch (IOException e) {
