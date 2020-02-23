@@ -128,9 +128,9 @@ abstract class Executor {
         @Override
         public void run() {
             try {
-                String line = "";
+                /*String line = "";
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mInputStream));
-                /*if((line = reader.readLine()) != null) {
+                if((line = reader.readLine()) != null) {
                     mBuffer.append(line);
                     while((line = reader.readLine()) != null) {
                         mBuffer.append(EOL).append(line);
@@ -144,7 +144,12 @@ abstract class Executor {
                     mBuffer.append(buffer, 0, charsRead);
                     LogMsg(String.valueOf(buffer, 0, charsRead));
                 }*/
-                File targetFile = new File("/data/data/com.lfgit/files/annex.txt");
+                String dirPath = Environment.getExternalStorageDirectory().toString() + "/strace_log.txt";
+
+                File targetFile = new File(dirPath);
+                if (!targetFile.exists()) {
+                    targetFile.mkdirs();
+                }
                 java.nio.file.Files.copy(
                         mInputStream,
                         targetFile.toPath(),
