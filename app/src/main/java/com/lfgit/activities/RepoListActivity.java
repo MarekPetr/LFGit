@@ -16,9 +16,8 @@ import com.lfgit.R;
 import com.lfgit.adapters.RepoListAdapter;
 import com.lfgit.databinding.ActivityRepoListBinding;
 import com.lfgit.interfaces.TaskListener;
-import com.lfgit.installer.AssetInstaller;
+import com.lfgit.utilites.AssetInstaller;
 import com.lfgit.view_models.RepoListViewModel;
-import com.lfgit.view_models.LocalRepoViewModel;
 
 public class RepoListActivity extends BasicAbstractActivity implements TaskListener {
 
@@ -38,12 +37,11 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
             installer.execute(true);
         }
         RepoListViewModel repoListViewModel = ViewModelProviders.of(this).get(RepoListViewModel.class);
-        LocalRepoViewModel localRepoViewModel = ViewModelProviders.of(this).get(LocalRepoViewModel.class);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_list);
         mBinding.setLifecycleOwner(this);
         mBinding.setRepoListViewModel(repoListViewModel);
-        mBinding.setLocalRepoViewModel(localRepoViewModel);
+
         mRepoListAdapter = new RepoListAdapter(this);
         mRepoListAdapter.addAllRepos();
         mBinding.repoList.setAdapter(mRepoListAdapter);
