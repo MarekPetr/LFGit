@@ -1,14 +1,10 @@
 package com.lfgit.view_models;
 
 import android.app.Application;
-import android.view.View;
-
-import androidx.databinding.Bindable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.RepoRepository;
-import com.lfgit.database.model.Repo;
 import com.lfgit.tasks.GitExec;
 
 import static com.lfgit.utilites.Logger.LogMsg;
@@ -24,12 +20,18 @@ public class LocalRepoViewModel extends AndroidViewModel {
         gitExec = new GitExec();
     }
 
-    public void initLocalRepo(String localName) {
-        repoPath.setValue(localName);
-        gitExec.init(localName);
+    // TODO check if repository already exists
+    public void initLocalRepo() {
+        String initPath = getRepoPath();
+        if (gitExec.init(initPath)) {
+            repoPath.setValue(initPath);
+            /*Repo repo = new Repo(initPath);
+            repoRepository.insertRepo(repo);
+            gitExec.init(initPath);*/
+        }
     }
 
-    public RepoRepository getRepoRepo(){
+    public RepoRepository getRepoRepository(){
         return repoRepository;
     }
 
@@ -38,8 +40,6 @@ public class LocalRepoViewModel extends AndroidViewModel {
     }
 
     public String getRepoPath() {
-        String value = repoPath.getValue();
-        LogMsg(value);
-        return value;
+        return repoPath.getValue();
     }
 }
