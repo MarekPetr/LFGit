@@ -1,6 +1,6 @@
 package com.lfgit.database;
 
-import android.content.Context;
+import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
@@ -12,21 +12,21 @@ public class RepoRepository {
     private RepoDao mRepoDao;
     private LiveData<List<Repo>> mAllRepos;
 
-    public RepoRepository(Context context) {
-        RepoDatabase db = RepoDatabase.getInstance(context);
+    public RepoRepository(Application application) {
+        RepoDatabase db = RepoDatabase.getInstance(application);
         mRepoDao = db.repoDao();
         mAllRepos = mRepoDao.getAllRepos();
     }
 
-    public void insertRepo(final Repo repo) {
+    public void insertRepo(Repo repo) {
         RepoDatabase.databaseWriteExecutor.execute(() -> mRepoDao.insertRepo(repo));
     }
 
-    public void insertList(final List<Repo> repos) {
+    public void insertList(List<Repo> repos) {
         RepoDatabase.databaseWriteExecutor.execute(() -> mRepoDao.insertList(repos));
     }
 
-    LiveData<List<Repo>> getAllRepos() {
+    public LiveData<List<Repo>> getAllRepos() {
         return mAllRepos;
     }
 

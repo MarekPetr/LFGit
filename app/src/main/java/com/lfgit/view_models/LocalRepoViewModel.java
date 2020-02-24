@@ -5,19 +5,18 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.RepoRepository;
+import com.lfgit.database.model.Repo;
 import com.lfgit.tasks.GitExec;
-
-import static com.lfgit.utilites.Logger.LogMsg;
 
 public class LocalRepoViewModel extends AndroidViewModel {
     private MutableLiveData<String> repoPath = new MutableLiveData<>();
-    private RepoRepository repoRepository;
     private GitExec gitExec;
+    private RepoRepository mRepository;
 
     public LocalRepoViewModel(Application application) {
         super(application);
-        repoRepository = new RepoRepository(application);
         gitExec = new GitExec();
+        mRepository = new RepoRepository(application);
     }
 
     // TODO check if repository already exists
@@ -27,15 +26,9 @@ public class LocalRepoViewModel extends AndroidViewModel {
             return false;
         }
         repoPath.setValue(initPath);
-        /*Repo repo = new Repo(initPath);
-        repoRepository.insertRepo(repo);
-        gitExec.init(initPath);*/
-
+        Repo repo = new Repo(initPath);
+        mRepository.insertRepo(repo);
         return true;
-    }
-
-    public RepoRepository getRepoRepository(){
-        return repoRepository;
     }
 
     public void setRepoPath(String repoPath) {

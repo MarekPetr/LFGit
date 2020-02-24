@@ -23,7 +23,6 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         AdapterView.OnItemLongClickListener {
 
     private Context mContext;
-    private List<Repo> mRepos; // Cached copy of repos
 
     public RepoListAdapter(@NonNull Context context) {
         super(context, 0);
@@ -55,7 +54,7 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.repo_list_item, parent, false);
         RepoListItemHolder holder = new RepoListItemHolder();
-        holder.repoTitle = (TextView) view.findViewById(R.id.repoTitle);
+        holder.repoTitle = view.findViewById(R.id.repoTitle);
         view.setTag(holder);
         return view;
     }
@@ -69,8 +68,9 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         // TODO delete repo from DB if it doesn't exist
     }
 
-    void setWords(List<Repo> repos) {
-        mRepos = repos;
+    public void setRepos(List<Repo> repos) {
+        clear();
+        addAll(repos);
         notifyDataSetChanged();
     }
 

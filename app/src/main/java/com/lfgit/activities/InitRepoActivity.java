@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.databinding.DataBindingUtil;
 import com.lfgit.databinding.ActivityInitRepoBinding;
 
@@ -18,7 +18,7 @@ public class InitRepoActivity extends BasicAbstractActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_init_repo);
-        LocalRepoViewModel localRepoViewModel = ViewModelProviders.of(this).get(LocalRepoViewModel.class);
+        LocalRepoViewModel localRepoViewModel = new ViewModelProvider(this).get(LocalRepoViewModel.class);
         mBinding.setLocalRepoViewModel(localRepoViewModel);
         mBinding.setLifecycleOwner(this);
     }
