@@ -20,4 +20,9 @@
         <item>Raw config</item>
         <item>Config</item>
     </string-array>
+
+    <string-array name="repo_options">
+        <item>Delete</item>
+    </string-array>
+
 </resources>

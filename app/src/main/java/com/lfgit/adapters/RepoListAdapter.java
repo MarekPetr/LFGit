@@ -11,12 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.lfgit.R;
+import com.lfgit.activities.BasicAbstractActivity;
 import com.lfgit.activities.RepoDetailActivity;
 import com.lfgit.database.model.Repo;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.OnItemClickListener,
@@ -37,7 +36,19 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        return false;
+        BasicAbstractActivity context = (BasicAbstractActivity)mContext;
+
+        BasicAbstractActivity.onOptionClicked[] dialog = new BasicAbstractActivity.onOptionClicked[]{
+                () -> context.showToastMsg("will be removed"),
+        };
+
+        context.showOptionsDialog(
+                R.string.dialog_choose_option,
+                R.array.repo_options,
+                dialog
+        );
+
+        return true;
     }
 
     @NotNull
@@ -69,24 +80,6 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
     }
 
     public void setRepos(List<Repo> repos) {
-        clear();
-        addAll(repos);
-        notifyDataSetChanged();
-    }
-
-    // TODO database
-    public void addAllRepos() {
-        //RepoRepository repo = new RepoRepository(mContext);
-
-        Repo repo1 = new Repo("prvni");
-        Repo repo2 = new Repo("druhy");
-
-        List<Repo> repos = new ArrayList<>();
-        repos.add(repo1);
-        repos.add(repo2);
-
-        //repo.insertList(repos);
-
         clear();
         addAll(repos);
         notifyDataSetChanged();

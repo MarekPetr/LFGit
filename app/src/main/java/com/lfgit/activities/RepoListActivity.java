@@ -44,7 +44,6 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
         }
         RepoListViewModel repoListViewModel = new ViewModelProvider(this).get(RepoListViewModel.class);
 
-
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_list);
         mBinding.setLifecycleOwner(this);
         mBinding.setRepoListViewModel(repoListViewModel);
