@@ -14,7 +14,7 @@ import java.util.List;
 @Dao
 public interface RepoDao {
     @Query("SELECT * from repo")
-    LiveData<List<Repo>> getAll();
+    LiveData<List<Repo>> getAllRepos();
 
     // Insert one repository
     @Insert (onConflict = OnConflictStrategy.ABORT)

@@ -2,6 +2,7 @@ package com.lfgit.activities;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProviders;
 import androidx.databinding.DataBindingUtil;
@@ -23,6 +24,9 @@ public class InitRepoActivity extends BasicAbstractActivity {
     }
 
     public void initButtonHandler(View view) {
-        mBinding.getLocalRepoViewModel().initLocalRepo();
+        if (mBinding.getLocalRepoViewModel().initLocalRepo()) {
+            String repoPath = mBinding.getLocalRepoViewModel().getRepoPath();
+            showToastMsg("New git repository \"" + repoPath + "\" initialized");
+        }
     }
 }

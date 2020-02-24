@@ -21,14 +21,17 @@ public class LocalRepoViewModel extends AndroidViewModel {
     }
 
     // TODO check if repository already exists
-    public void initLocalRepo() {
+    public boolean initLocalRepo() {
         String initPath = getRepoPath();
-        if (gitExec.init(initPath)) {
-            repoPath.setValue(initPath);
-            /*Repo repo = new Repo(initPath);
-            repoRepository.insertRepo(repo);
-            gitExec.init(initPath);*/
+        if (!gitExec.init(initPath)) {
+            return false;
         }
+        repoPath.setValue(initPath);
+        /*Repo repo = new Repo(initPath);
+        repoRepository.insertRepo(repo);
+        gitExec.init(initPath);*/
+
+        return true;
     }
 
     public RepoRepository getRepoRepository(){
