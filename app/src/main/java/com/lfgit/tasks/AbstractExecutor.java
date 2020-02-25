@@ -37,8 +37,8 @@ abstract class AbstractExecutor {
         String exeBin = mExeDir + binary;
 
         String dirPath = "";
-        dirPath = Environment.getExternalStorageDirectory().toString() + "/LfGit" + destDir;
-        File f = new File(Environment.getExternalStorageDirectory(), destDir);
+        dirPath = Environment.getExternalStorageDirectory().toString() + "/LfGit/" + destDir;
+        File f = new File(dirPath);
         if (binary.equals("git") && strings[0].equals("init")) {
             if (!f.exists()) {
                 f.mkdirs();

@@ -48,7 +48,7 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
         mBinding.setLifecycleOwner(this);
         mBinding.setRepoListViewModel(repoListViewModel);
 
-        mRepoListAdapter = new RepoListAdapter(this);
+        mRepoListAdapter = new RepoListAdapter(this, repoListViewModel);
         mBinding.repoList.setAdapter(mRepoListAdapter);
         mBinding.repoList.setOnItemClickListener(mRepoListAdapter);
         mBinding.repoList.setOnItemLongClickListener(mRepoListAdapter);
@@ -79,7 +79,7 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
 
     private Boolean isFirstRun() {
 
-        final String PREFS_NAME = "MyPrefsFile";
+        final String PREFS_NAME = "FirstRunPref";
         final String PREF_VERSION_CODE_KEY = "version_code";
         final int DOESNT_EXIST = -1;
 

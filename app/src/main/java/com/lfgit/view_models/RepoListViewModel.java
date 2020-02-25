@@ -24,4 +24,8 @@ public class RepoListViewModel extends AndroidViewModel {
     public LiveData<List<Repo>> getAllRepos() {
         return mRepository.getAllRepos();
     }
+
+    public void deleteRepoById(int id) {
+        mRepository.deleteByID(id);
+    }
 }

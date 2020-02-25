@@ -14,6 +14,7 @@ import com.lfgit.R;
 import com.lfgit.activities.BasicAbstractActivity;
 import com.lfgit.activities.RepoDetailActivity;
 import com.lfgit.database.model.Repo;
+import com.lfgit.view_models.RepoListViewModel;
 
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
@@ -21,28 +22,30 @@ import java.util.List;
 public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
 
-    private Context mContext;
+    private BasicAbstractActivity mContext;
+    private RepoListViewModel mViewModel;
 
-    public RepoListAdapter(@NonNull Context context) {
+    public RepoListAdapter(@NonNull BasicAbstractActivity context, RepoListViewModel viewModel) {
         super(context, 0);
         mContext = context;
+        mViewModel = viewModel;
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Intent intent = new Intent(mContext, RepoDetailActivity.class);
         mContext.startActivity(intent);
     }
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        BasicAbstractActivity context = (BasicAbstractActivity)mContext;
-
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
         BasicAbstractActivity.onOptionClicked[] dialog = new BasicAbstractActivity.onOptionClicked[]{
-                () -> context.showToastMsg("will be removed"),
+                () -> {
+                    deleteRepo(position);
+                },
         };
 
-        context.showOptionsDialog(
+        mContext.showOptionsDialog(
                 R.string.dialog_choose_option,
                 R.array.repo_options,
                 dialog
@@ -53,7 +56,7 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
 
     @NotNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NotNull ViewGroup parent) {
         if (convertView == null) {
             convertView = newView(getContext(), parent);
         }
@@ -83,6 +86,14 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         clear();
         addAll(repos);
         notifyDataSetChanged();
+    }
+
+    private void deleteRepo(int position) {
+        final Repo repo = getItem(position);
+        assert repo != null;
+        remove(repo);
+        notifyDataSetChanged();
+        mViewModel.deleteRepoById(repo.getId());
     }
 
     private class RepoListItemHolder {
