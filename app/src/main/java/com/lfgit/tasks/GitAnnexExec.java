@@ -1,10 +1,11 @@
 package com.lfgit.tasks;
 
-import android.app.Activity;
 
-public class GitAnnexExec extends Executor {
+import static com.lfgit.utilites.Constants.USR_DIR;
 
-    public GitAnnexExec( Activity activity) {
-        super(activity);
+public class GitAnnexExec extends AbstractExecutor {
+
+    public GitAnnexExec() {
+        super.mExeDir = USR_DIR;
     }
 }

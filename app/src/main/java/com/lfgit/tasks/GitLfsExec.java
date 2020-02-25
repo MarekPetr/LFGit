@@ -1,17 +1,9 @@
 package com.lfgit.tasks;
 
-import android.app.Activity;
-
-import static com.lfgit.Constants.*;
-import static com.lfgit.Constants.reposDir;
-
-public class GitLfsExec extends Executor {
-    public GitLfsExec(Activity activity) {
-        super(activity);
-    }
+public class GitLfsExec extends AbstractExecutor {
 
     public String install(String dest) {
-        envExeForRes("git-lfs",dest, "install");
+        executeBinary("git-lfs",dest, "install");
         return getResult();
     }
 }

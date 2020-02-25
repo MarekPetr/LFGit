@@ -9,98 +9,76 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.lfgit.Constants.*;
-import static com.lfgit.Constants.binDir;
-import static com.lfgit.Constants.filesDir;
-import static com.lfgit.Constants.libDir;
-import static com.lfgit.permissions.PermissionRequester.isWriteStoragePermissionGranted;
+import static com.lfgit.utilites.Constants.BIN_DIR;
+import static com.lfgit.utilites.Constants.FILES_DIR;
+import static com.lfgit.utilites.Constants.LIB_DIR;
+import static com.lfgit.utilites.Logger.LogMsg;
 
-abstract class Executor {
+abstract class AbstractExecutor {
 
-    private String result;
-    String exe;
-    private Activity mActivity;
+    private String mResult;
+    private int mErrCode;
+    String mExeDir;
 
-    Executor(Activity activity) {
-        this.mActivity = activity;
-        this.exe = binDir;
+    AbstractExecutor() {
+        mExeDir = BIN_DIR;
     }
 
     String getResult() {
-        return this.result;
+        return mResult;
     }
 
-    Integer envExeForRes(String binary, String destDir, String... strings) {
-        String exeDir = exe + binary;
-        Integer errCode = 0;
+    boolean executeBinary(String binary, String destDir, String... strings) {
+        String exeBin = mExeDir + binary;
 
         String dirPath = "";
-        String state = Environment.getExternalStorageState();
-        if (state.equals(Environment.MEDIA_MOUNTED)) {
-            if (isWriteStoragePermissionGranted(mActivity)) {
-                dirPath = Environment.getExternalStorageDirectory().toString() + "/" + destDir;
-                File f = new File(Environment.getExternalStorageDirectory(), destDir);
-                if (strings[0].equals("init")) {
-                    if (!f.exists()) {
-                        f.mkdirs();
-                    }
-                }
-            } else {
-                result =  "Permission denied";
-                return -1;
+        dirPath = Environment.getExternalStorageDirectory().toString() + "/LfGit" + destDir;
+        File f = new File(Environment.getExternalStorageDirectory(), destDir);
+        if (binary.equals("git") && strings[0].equals("init")) {
+            if (!f.exists()) {
+                f.mkdirs();
             }
-        } else {
-            result =  "Media not mounted";
-            return -1;
         }
-
-
-        String res = "EMPTY";
-        InputStream response;
-        InputStream error;
-        OutputStream input;
-
         List<String> args = new ArrayList<>();
-        args.add(exeDir);
+        args.add(exeBin);
         args.addAll(Arrays.asList(strings));
 
-        Log.d("petr", "exe: " + Arrays.toString(args.toArray()));
+        LogMsg("exe: " + Arrays.toString(args.toArray()));
 
         ProcessBuilder pb = new ProcessBuilder(args);
         pb.redirectErrorStream(true); // redirect error stream to input stream
         pb.directory(new File(dirPath));
         Map<String, String> env = pb.environment();
-        Log.d("petr", "LibDir: " + libDir);
-        env.put("LD_LIBRARY_PATH", libDir);
-        env.put("PATH", binDir);
-        env.put("HOME", filesDir);
+        LogMsg("LIB_DIR: " + LIB_DIR);
+        env.put("LD_LIBRARY_PATH", LIB_DIR);
+        env.put("PATH", BIN_DIR);
+        env.put("HOME", FILES_DIR);
 
-        Process javap = null;
-        Buffer buffer = null;
+        Process javap;
+        Buffer buffer;
         try {
             javap = pb.start();
             buffer = new Buffer(javap.getInputStream());
-            errCode = javap.waitFor();
-            result = buffer.getOutput();
+            mErrCode = javap.waitFor();
+            mResult = buffer.getOutput();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        if (errCode == 0) {
-            result += "\nOperation successful";
+        if (mErrCode == 0) {
+            mResult += "\nOperation successful";
         } else {
-            result += "\nOperation failed";
+            mResult += "\nOperation failed";
         }
 
-        return errCode;
+        return mErrCode == 0;
     }
-
+    // source https://github.com/jjNford/android-shell/blob/master/src/com/jjnford/android/util/Shell.java
     private static class Buffer extends Thread {
         private InputStream mInputStream;
         private StringBuffer mBuffer;

@@ -1,11 +1,11 @@
-package com.lfgit.importer;
+package com.lfgit.utilites;
 
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.system.Os;
 import android.util.Log;
 
-import com.lfgit.TaskListener;
+import com.lfgit.interfaces.TaskListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,31 +15,41 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static com.lfgit.Constants.appDir;
-import static com.lfgit.Constants.filesDir;
+import static com.lfgit.utilites.Constants.APP_DIR;
+import static com.lfgit.utilites.Constants.FILES_DIR;
+import static com.lfgit.utilites.Logger.LogMsg;
 
+public class AssetInstaller extends AsyncTask<Boolean, Void, Boolean> {
+    private enum Arch {
+        x86(0),
+        arm64_v8a(1);
+        int value;
 
-public class AssetImporter extends AsyncTask<Boolean, Void, Boolean> {
+        Arch(int value) {
+            this.value = value;
+        }
+    }
+
     private AssetManager assetManager;
     private TaskListener listener;
 
-    public AssetImporter(AssetManager assets, TaskListener listener)  {
+    public AssetInstaller(AssetManager assets, TaskListener listener)  {
         this.assetManager = assets;
         this.listener = listener;
     }
 
-    private Boolean importAssets(final Boolean copyAssets) {
+    private Boolean installAssets(final Boolean copyAssets) {
         Arch targetDev = Arch.arm64_v8a;//
         String assetDir = "git-lfs";
 
         if(copyAssets) {
             if (assetsEmpty(assetDir)) {
-                Log.d("petr", "empty");
+                LogMsg("empty");
                 return false;
             }
             copyFileOrDir(assetDir);
         }
-        File dir = new File(appDir + "repos");
+        File dir = new File(APP_DIR + "repos");
         if (!dir.exists()) {
             dir.mkdir();
         }
@@ -51,7 +61,7 @@ public class AssetImporter extends AsyncTask<Boolean, Void, Boolean> {
         try {
             assets = assetManager.list(path);
             assert assets != null;
-            Log.d("petr", Arrays.toString(assets));
+            LogMsg(Arrays.toString(assets));
             if (assets.length == 0)
                 return true;
         } catch (IOException e) {
@@ -74,7 +84,7 @@ public class AssetImporter extends AsyncTask<Boolean, Void, Boolean> {
             if (assets.length == 0) {
                 copyFile(path, noArchDir);
             } else {
-                String fullPath = filesDir + noArchDir;
+                String fullPath = FILES_DIR + noArchDir;
                 File dir = new File(fullPath);
                 if (!dir.exists())
                     dir.mkdir();
@@ -95,7 +105,7 @@ public class AssetImporter extends AsyncTask<Boolean, Void, Boolean> {
         OutputStream out = null;
         try {
             in = assetManager.open(filename);
-            String newFileName = filesDir + "/" + noArchDir;
+            String newFileName = FILES_DIR + "/" + noArchDir;
             File file = new File(newFileName);
             out = new FileOutputStream(newFileName);
 
@@ -113,12 +123,11 @@ public class AssetImporter extends AsyncTask<Boolean, Void, Boolean> {
         } catch (Exception e) {
             Log.e("tag", Objects.requireNonNull(e.getMessage()));
         }
-
     }
 
     @Override
     protected Boolean doInBackground(Boolean... params) {
-        return importAssets(params[0]);
+        return installAssets(params[0]);
     }
 
     @Override

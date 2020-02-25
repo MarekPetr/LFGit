@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LfGit</string>
+    <string name="dialog_choose_option">Choose option</string>
 </resources>

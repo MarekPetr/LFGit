@@ -1,4 +1,4 @@
-package com.lfgit;
+package com.lfgit.interfaces;
 
 public interface TaskListener {
     void onTaskStarted();
