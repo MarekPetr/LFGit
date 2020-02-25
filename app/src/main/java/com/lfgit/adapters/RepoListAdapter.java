@@ -9,12 +9,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.lfgit.R;
 import com.lfgit.activities.BasicAbstractActivity;
 import com.lfgit.activities.RepoDetailActivity;
-import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
 import com.lfgit.view_models.RepoListViewModel;
 
@@ -43,7 +41,6 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
         BasicAbstractActivity.onOptionClicked[] dialog = new BasicAbstractActivity.onOptionClicked[]{
                 () -> {
-                    mContext.showToastMsg("Repo is deleted");
                     deleteRepo(position);
                 },
         };
@@ -94,7 +91,6 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
     private void deleteRepo(int position) {
         final Repo repo = getItem(position);
         assert repo != null;
-        mContext.showToastMsg("Repo " + repo.getDisplayName() +" is deleted");
         remove(repo);
         notifyDataSetChanged();
         mViewModel.deleteRepoById(repo.getId());

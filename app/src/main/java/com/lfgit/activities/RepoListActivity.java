@@ -79,7 +79,7 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
 
     private Boolean isFirstRun() {
 
-        final String PREFS_NAME = "MyPrefsFile";
+        final String PREFS_NAME = "FirstRunPref";
         final String PREF_VERSION_CODE_KEY = "version_code";
         final int DOESNT_EXIST = -1;
 
