@@ -30,6 +30,9 @@ public class RepoRepository {
         return mAllRepos;
     }
 
+    public void deleteByID(int repoId) {
+        RepoDatabase.databaseWriteExecutor.execute(() -> mRepoDao.deleteByRepoId(repoId));
+    }
     /*public void getAllRepos() {
         RepoDatabase.databaseWriteExecutor.execute(() -> mRepoDao.getAllRepos());
     }*/

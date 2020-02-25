@@ -48,7 +48,7 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
         mBinding.setLifecycleOwner(this);
         mBinding.setRepoListViewModel(repoListViewModel);
 
-        mRepoListAdapter = new RepoListAdapter(this);
+        mRepoListAdapter = new RepoListAdapter(this, repoListViewModel);
         mBinding.repoList.setAdapter(mRepoListAdapter);
         mBinding.repoList.setOnItemClickListener(mRepoListAdapter);
         mBinding.repoList.setOnItemLongClickListener(mRepoListAdapter);
