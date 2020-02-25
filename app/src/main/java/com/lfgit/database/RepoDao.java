@@ -2,6 +2,7 @@ package com.lfgit.database;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -27,7 +28,6 @@ public interface RepoDao {
     @Update
     void updateRepos(List<Repo> repos);
 
-
     // delete the whole repository
     @Query("DELETE FROM repo")
     void deleteAll();
@@ -35,5 +35,9 @@ public interface RepoDao {
     // Show repositories ordered by name
     @Query("SELECT * FROM repo ORDER BY localPath ASC")
     LiveData<List<Repo>> getAlphabetizedWords();
+
+    @Query("DELETE FROM repo WHERE id = :repoId")
+    void deleteByRepoId(int repoId);
+
 
 }
