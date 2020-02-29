@@ -1,6 +1,12 @@
 package com.lfgit.view_models;
 
-import androidx.lifecycle.ViewModel;
+import android.app.Application;
 
-public class RepoDetailViewModel extends ViewModel {
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+
+public class RepoDetailViewModel extends AndroidViewModel {
+    public RepoDetailViewModel(@NonNull Application application) {
+        super(application);
+    }
 }
