@@ -1,6 +1,6 @@
 package com.lfgit.interfaces;
 
-public interface TaskListener {
+public interface AsyncTaskListener {
     void onTaskStarted();
 
     void onTaskFinished();

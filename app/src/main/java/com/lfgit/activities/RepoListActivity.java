@@ -15,11 +15,11 @@ import com.lfgit.BuildConfig;
 import com.lfgit.R;
 import com.lfgit.adapters.RepoListAdapter;
 import com.lfgit.databinding.ActivityRepoListBinding;
-import com.lfgit.interfaces.TaskListener;
+import com.lfgit.interfaces.AsyncTaskListener;
 import com.lfgit.utilites.AssetInstaller;
 import com.lfgit.view_models.RepoListViewModel;
 
-public class RepoListActivity extends BasicAbstractActivity implements TaskListener {
+public class RepoListActivity extends BasicAbstractActivity implements AsyncTaskListener {
 
     String TAG = "petr";
     ProgressDialog mProgressDialog;
