@@ -9,21 +9,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.lfgit.BuildConfig;
 import com.lfgit.R;
 import com.lfgit.adapters.RepoListAdapter;
-import com.lfgit.database.model.Repo;
 import com.lfgit.databinding.ActivityRepoListBinding;
 import com.lfgit.interfaces.TaskListener;
 import com.lfgit.utilites.AssetInstaller;
-import com.lfgit.view_models.LocalRepoViewModel;
 import com.lfgit.view_models.RepoListViewModel;
-
-import java.util.List;
 
 public class RepoListActivity extends BasicAbstractActivity implements TaskListener {
 

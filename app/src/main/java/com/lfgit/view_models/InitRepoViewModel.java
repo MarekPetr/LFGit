@@ -9,12 +9,12 @@ import com.lfgit.database.model.Repo;
 import com.lfgit.tasks.GitExec;
 import com.lfgit.utilites.BasicFunctions;
 
-public class LocalRepoViewModel extends AndroidViewModel {
+public class InitRepoViewModel extends AndroidViewModel {
     private MutableLiveData<String> repoName = new MutableLiveData<>();
     private GitExec gitExec;
     private RepoRepository mRepository;
 
-    public LocalRepoViewModel(Application application) {
+    public InitRepoViewModel(Application application) {
         super(application);
         gitExec = new GitExec();
         mRepository = new RepoRepository(application);
