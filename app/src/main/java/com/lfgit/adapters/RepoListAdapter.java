@@ -14,21 +14,26 @@ import com.lfgit.R;
 import com.lfgit.activities.BasicAbstractActivity;
 import com.lfgit.activities.RepoDetailActivity;
 import com.lfgit.database.model.Repo;
+import com.lfgit.utilites.BasicFunctions;
 import com.lfgit.view_models.RepoListViewModel;
 
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
 
     private BasicAbstractActivity mContext;
-    private RepoListViewModel mViewModel;
+    private RepoListViewModel mRepoListViewModel;
 
     public RepoListAdapter(@NonNull BasicAbstractActivity context, RepoListViewModel viewModel) {
         super(context, 0);
         mContext = context;
-        mViewModel = viewModel;
+        mRepoListViewModel = viewModel;
     }
 
     @Override
@@ -93,7 +98,14 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         assert repo != null;
         remove(repo);
         notifyDataSetChanged();
-        mViewModel.deleteRepoById(repo.getId());
+        String repoPath = repo.getLocalPath();
+        mContext.showToastMsg("Deleting: " + repoPath);
+        try {
+            FileUtils.deleteDirectory(new File(repoPath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mRepoListViewModel.deleteRepoById(repo.getId());
     }
 
     private class RepoListItemHolder {

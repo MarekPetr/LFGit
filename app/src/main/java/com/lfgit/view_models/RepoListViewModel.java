@@ -12,6 +12,8 @@ import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
 import com.lfgit.tasks.GitExec;
 
+import org.apache.commons.io.FileUtils;
+
 import java.util.List;
 
 public class RepoListViewModel extends AndroidViewModel {

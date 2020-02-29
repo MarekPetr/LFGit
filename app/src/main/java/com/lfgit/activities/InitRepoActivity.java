@@ -25,8 +25,9 @@ public class InitRepoActivity extends BasicAbstractActivity {
 
     public void initButtonHandler(View view) {
         if (mBinding.getLocalRepoViewModel().initLocalRepo()) {
-            String repoPath = mBinding.getLocalRepoViewModel().getRepoPath();
+            String repoPath = mBinding.getLocalRepoViewModel().getRepoName();
             showToastMsg("New git repository \"" + repoPath + "\" initialized");
+            finish();
         }
     }
 }
