@@ -1,6 +1,8 @@
 package com.lfgit.utilites;
 
 
+import android.os.Environment;
+
 import com.lfgit.activities.BasicAbstractActivity;
 
 public class BasicFunctions {
@@ -14,4 +16,10 @@ public class BasicFunctions {
     public static void setActiveActivity(BasicAbstractActivity activity) {
         mActiveActivity = activity;
     }
+
+    // TODO preferences
+    public static String getReposPath() {
+        return Environment.getExternalStorageDirectory().toString() + "/LfGit/";
+    }
+
 }

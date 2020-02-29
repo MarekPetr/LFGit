@@ -7,9 +7,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
 import com.lfgit.tasks.GitExec;
+import com.lfgit.utilites.BasicFunctions;
 
 public class LocalRepoViewModel extends AndroidViewModel {
-    private MutableLiveData<String> repoPath = new MutableLiveData<>();
+    private MutableLiveData<String> repoName = new MutableLiveData<>();
     private GitExec gitExec;
     private RepoRepository mRepository;
 
@@ -21,21 +22,22 @@ public class LocalRepoViewModel extends AndroidViewModel {
 
     // TODO check if repository already exists
     public boolean initLocalRepo() {
-        String initPath = getRepoPath();
+        // TODO get getReposPath from preferences
+        String initPath = getRepoName();
         if (!gitExec.init(initPath)) {
             return false;
         }
-        repoPath.setValue(initPath);
-        Repo repo = new Repo(initPath);
-        mRepository.insertRepo(repo);
+        mRepository.insertRepo(new Repo(initPath));
         return true;
     }
 
-    public void setRepoPath(String repoPath) {
-        this.repoPath.setValue(repoPath);
+    public void setRepoName(String repoName) {
+        // TODO filePicker instead of repoPath
+        String repoPath = BasicFunctions.getReposPath();
+        this.repoName.setValue(repoPath + repoName);
     }
 
-    public String getRepoPath() {
-        return repoPath.getValue();
+    public String getRepoName() {
+        return repoName.getValue();
     }
 }

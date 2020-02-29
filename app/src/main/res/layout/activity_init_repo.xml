@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:inputType="text"
             android:hint="Cesta"
-            android:text="@={localRepoViewModel.repoPath}"/>
+            android:text="@={localRepoViewModel.repoName}"/>
         <Button
             android:id="@+id/initButton"
             android:layout_height="wrap_content"

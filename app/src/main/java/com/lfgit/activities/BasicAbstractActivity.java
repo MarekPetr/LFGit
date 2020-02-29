@@ -78,8 +78,6 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
         }
     }
 
-
-
     protected void unlockScreenOrientation() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     }
