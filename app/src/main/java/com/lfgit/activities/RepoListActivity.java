@@ -56,7 +56,6 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
         repoListViewModel.getAllRepos().observe(this, repoList ->
                 mRepoListAdapter.setRepos(repoList)
         );
-
     }
 
     @Override
@@ -67,14 +66,18 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        Class intent_class;
         switch(item.getItemId()) {
-            case R.id.initRepo:
-                Intent intent = new Intent(this, InitRepoActivity.class);
-                this.startActivity(intent);
-
+            case R.id.menu_init_repo:
+                intent_class = InitRepoActivity.class;
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+        intent = new Intent(this, intent_class);
+        this.startActivity(intent);
+        return true;
     }
 
     private Boolean isFirstRun() {

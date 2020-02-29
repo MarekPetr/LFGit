@@ -14,8 +14,6 @@ import com.lfgit.adapters.RepoOperationsAdapter;
 public class RepoDetailActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;
-    private RepoOperationsAdapter mDrawerAdapter;
-    private ListView mRepoOperationList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,9 +45,9 @@ public class RepoDetailActivity extends BasicAbstractActivity {
     private void setupDrawer() {
         mDrawerLayout = findViewById(R.id.drawerLayout);
         mRightDrawer = findViewById(R.id.rightDrawer);
-        mRepoOperationList = findViewById(R.id.repoOperationList);
+        ListView mRepoOperationList = findViewById(R.id.repoOperationList);
 
-        mDrawerAdapter = new RepoOperationsAdapter(this);
+        RepoOperationsAdapter mDrawerAdapter = new RepoOperationsAdapter(this);
         mRepoOperationList.setAdapter(mDrawerAdapter);
         mRepoOperationList.setOnItemClickListener(mDrawerAdapter);
     }

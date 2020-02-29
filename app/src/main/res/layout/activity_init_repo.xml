@@ -14,13 +14,13 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:inputType="text"
-            android:hint="Cesta"
+            android:hint="@string/init_directory"
             android:text="@={localRepoViewModel.repoName}"/>
         <Button
             android:id="@+id/initButton"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="INIT"
+            android:text="@string/init_button"
             android:onClick="initButtonHandler"/>
     </LinearLayout>
 </layout>

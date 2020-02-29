@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/initRepo"
-        android:title="Init Repository" />
+    <item android:id="@+id/menu_init_repo"
+        android:title="@string/menu_init_repo" />
+    <item android:id="@+id/menu_settings"
+        android:title="@string/menu_settings" />
 </menu>
