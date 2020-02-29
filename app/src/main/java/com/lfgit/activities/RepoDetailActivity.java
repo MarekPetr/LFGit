@@ -6,19 +6,28 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter;
+import com.lfgit.databinding.ActivityRepoDetailBinding;
+import com.lfgit.view_models.RepoDetailViewModel;
 
 public class RepoDetailActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;
+    private ActivityRepoDetailBinding mBinding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repo_detail);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_detail);
+        RepoDetailViewModel repoDetailViewModel = new ViewModelProvider(this).get(RepoDetailViewModel.class);
+        mBinding.setRepoDetailViewModel(repoDetailViewModel);
+        mBinding.setLifecycleOwner(this);
 
         setupDrawer();
     }
