@@ -4,7 +4,7 @@ import static com.lfgit.utilites.Constants.REPOS_DIR;
 import static com.lfgit.utilites.Logger.LogMsg;
 
 public class GitExec extends AbstractExecutor {
-    
+
     private String gitPath = "git";
 
     public void config() {
@@ -19,7 +19,7 @@ public class GitExec extends AbstractExecutor {
         return getResult();
     }
 
-    public boolean init(String dest) {
+    public String init(String dest) {
         String gitOperation = "init";
         return executeBinary(gitPath, dest, gitOperation);
     }
@@ -44,10 +44,9 @@ public class GitExec extends AbstractExecutor {
         return getResult();
     }
 
-    public String add(String dest) {
+    public String addAllToStage(String dest) {
         String gitOperation = "add";
-        executeBinary(gitPath, dest, gitOperation, ".");
-        return getResult();
+        return executeBinary(gitPath, dest, gitOperation, ".");
     }
 
     public String push(String dest) {

@@ -24,7 +24,8 @@ public class InitRepoViewModel extends AndroidViewModel {
     public boolean initLocalRepo() {
         // TODO get getReposPath from preferences
         String initPath = getRepoName();
-        if (!gitExec.init(initPath)) {
+        gitExec.init(initPath);
+        if (gitExec.getErrCode() != 0) {
             return false;
         }
         mRepository.insertRepo(new Repo(initPath));

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="repo_operation_names">
-        <item>New Branch</item>
-        <item>Pull</item>
-        <item>Push</item>
         <item>Add all to stage</item>
         <item>Commit</item>
+        <item>Push</item>
+        <item>Pull</item>
+        <item>New Branch</item>
         <item>Add Remote</item>
         <item>Remove Remote</item>
         <item>Merge</item>
