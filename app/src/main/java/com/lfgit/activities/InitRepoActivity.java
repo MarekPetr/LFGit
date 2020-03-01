@@ -30,6 +30,5 @@ public class InitRepoActivity extends BasicAbstractActivity {
         } else {
             showToastMsg("Please enter the repo directory");
         }
-
     }
 }
