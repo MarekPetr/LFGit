@@ -10,7 +10,7 @@ import com.lfgit.tasks.GitExec;
 import com.lfgit.utilites.BasicFunctions;
 
 public class InitRepoViewModel extends AndroidViewModel {
-    private MutableLiveData<String> repoName = new MutableLiveData<>();
+    private String repoName;
     private GitExec gitExec;
     private RepoRepository mRepository;
 
@@ -24,20 +24,22 @@ public class InitRepoViewModel extends AndroidViewModel {
     public boolean initLocalRepo() {
         // TODO get getReposPath from preferences
         String initPath = getRepoName();
-        if (!gitExec.init(initPath)) {
-            return false;
+        if (initPath != null) {
+            if (gitExec.init(initPath)) {
+                mRepository.insertRepo(new Repo(initPath));
+                return true;
+            }
         }
-        mRepository.insertRepo(new Repo(initPath));
-        return true;
+        return false;
     }
 
-    public void setRepoName(String repoName) {
+    public void setRepoName(String name) {
         // TODO filePicker instead of repoPath
         String repoPath = BasicFunctions.getReposPath();
-        this.repoName.setValue(repoPath + repoName);
+        repoName = repoPath + name;
     }
 
     public String getRepoName() {
-        return repoName.getValue();
+        return repoName;
     }
 }

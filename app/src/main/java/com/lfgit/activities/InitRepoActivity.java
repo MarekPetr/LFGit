@@ -27,6 +27,9 @@ public class InitRepoActivity extends BasicAbstractActivity {
             String repoPath = mBinding.getInitRepoViewModel().getRepoName();
             showToastMsg("New git repository \"" + repoPath + "\" initialized");
             finish();
+        } else {
+            showToastMsg("Please enter the repo directory");
         }
+
     }
 }
