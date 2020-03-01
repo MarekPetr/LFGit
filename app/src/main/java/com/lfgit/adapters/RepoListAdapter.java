@@ -14,7 +14,6 @@ import com.lfgit.R;
 import com.lfgit.activities.BasicAbstractActivity;
 import com.lfgit.activities.RepoDetailActivity;
 import com.lfgit.database.model.Repo;
-import com.lfgit.utilites.BasicFunctions;
 import com.lfgit.view_models.RepoListViewModel;
 
 import org.apache.commons.io.FileUtils;
@@ -39,6 +38,8 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Intent intent = new Intent(mContext, RepoDetailActivity.class);
+        Repo repo = getItem(position);
+        intent.putExtra(Repo.TAG, repo);
         mContext.startActivity(intent);
     }
 
