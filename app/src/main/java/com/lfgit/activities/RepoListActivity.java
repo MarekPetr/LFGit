@@ -9,23 +9,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.lfgit.BuildConfig;
 import com.lfgit.R;
 import com.lfgit.adapters.RepoListAdapter;
-import com.lfgit.database.model.Repo;
 import com.lfgit.databinding.ActivityRepoListBinding;
-import com.lfgit.interfaces.TaskListener;
+import com.lfgit.interfaces.AsyncTaskListener;
 import com.lfgit.utilites.AssetInstaller;
-import com.lfgit.view_models.LocalRepoViewModel;
 import com.lfgit.view_models.RepoListViewModel;
 
-import java.util.List;
-
-public class RepoListActivity extends BasicAbstractActivity implements TaskListener {
+public class RepoListActivity extends BasicAbstractActivity implements AsyncTaskListener {
 
     String TAG = "petr";
     ProgressDialog mProgressDialog;
@@ -56,7 +50,6 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
         repoListViewModel.getAllRepos().observe(this, repoList ->
                 mRepoListAdapter.setRepos(repoList)
         );
-
     }
 
     @Override
@@ -67,14 +60,18 @@ public class RepoListActivity extends BasicAbstractActivity implements TaskListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        Class intent_class;
         switch(item.getItemId()) {
-            case R.id.initRepo:
-                Intent intent = new Intent(this, InitRepoActivity.class);
-                this.startActivity(intent);
-
+            case R.id.menu_init_repo:
+                intent_class = InitRepoActivity.class;
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+        intent = new Intent(this, intent_class);
+        this.startActivity(intent);
+        return true;
     }
 
     private Boolean isFirstRun() {

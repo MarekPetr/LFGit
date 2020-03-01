@@ -24,11 +24,10 @@ public class GitExec extends AbstractExecutor {
         return executeBinary(gitPath, dest, gitOperation);
     }
 
-    public String commit() {
+    public String commit(String dest) {
         String gitOperation = "commit";
         String message = "-m\"newFileToCommit\"";
-        String destDir = REPOS_DIR + "clone/test";
-        executeBinary(gitPath, destDir, gitOperation, message);
+        executeBinary(gitPath, dest, gitOperation, message);
         return getResult();
     }
 
@@ -39,24 +38,25 @@ public class GitExec extends AbstractExecutor {
         return getResult();
     }
 
-    public String status() {
+    public String status(String dest) {
         String gitOperation = "status";
-        String destDir = REPOS_DIR + "repo/";
-        executeBinary(gitPath, destDir, gitOperation);
+        executeBinary(gitPath, dest, gitOperation);
         return getResult();
     }
 
-    public String add() {
+    public String add(String dest) {
         String gitOperation = "add";
-        String destDir = REPOS_DIR + "clone/test";
-        executeBinary(gitPath, destDir, gitOperation, ".");
+        executeBinary(gitPath, dest, gitOperation, ".");
         return getResult();
     }
 
-    public String push() {
+    public String push(String dest) {
         String gitOperation = "push";
-        String destDir = REPOS_DIR + "clone/test";
-         executeBinary(gitPath, destDir, gitOperation);
+         executeBinary(gitPath, dest, gitOperation);
         return getResult();
     }
+
+
+
+
 }

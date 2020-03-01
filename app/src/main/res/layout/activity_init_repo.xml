@@ -2,8 +2,8 @@
     xmlns:bind="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="localRepoViewModel"
-            type="com.lfgit.view_models.LocalRepoViewModel"/>
+            name="initRepoViewModel"
+            type="com.lfgit.view_models.InitRepoViewModel"/>
     </data>
     <LinearLayout
         android:orientation="vertical" android:layout_width="match_parent"
@@ -14,13 +14,13 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:inputType="text"
-            android:hint="Cesta"
-            android:text="@={localRepoViewModel.repoPath}"/>
+            android:hint="@string/init_directory"
+            android:text="@={initRepoViewModel.repoName}"/>
         <Button
             android:id="@+id/initButton"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="INIT"
+            android:text="@string/init_button"
             android:onClick="initButtonHandler"/>
     </LinearLayout>
 </layout>

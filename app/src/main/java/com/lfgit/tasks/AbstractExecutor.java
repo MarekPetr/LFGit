@@ -1,9 +1,5 @@
 package com.lfgit.tasks;
 
-import android.app.Activity;
-import android.os.Environment;
-import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -35,10 +31,7 @@ abstract class AbstractExecutor {
 
     boolean executeBinary(String binary, String destDir, String... strings) {
         String exeBin = mExeDir + binary;
-
-        String dirPath = "";
-        dirPath = Environment.getExternalStorageDirectory().toString() + "/LfGit/" + destDir;
-        File f = new File(dirPath);
+        File f = new File(destDir);
         if (binary.equals("git") && strings[0].equals("init")) {
             if (!f.exists()) {
                 f.mkdirs();
@@ -52,7 +45,7 @@ abstract class AbstractExecutor {
 
         ProcessBuilder pb = new ProcessBuilder(args);
         pb.redirectErrorStream(true); // redirect error stream to input stream
-        pb.directory(new File(dirPath));
+        pb.directory(new File(destDir));
         Map<String, String> env = pb.environment();
         LogMsg("LIB_DIR: " + LIB_DIR);
         env.put("LD_LIBRARY_PATH", LIB_DIR);

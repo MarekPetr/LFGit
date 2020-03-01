@@ -39,5 +39,6 @@ public interface RepoDao {
     @Query("DELETE FROM repo WHERE id = :repoId")
     void deleteByRepoId(int repoId);
 
-
+    @Query("DELETE FROM repo WHERE localPath = :localPath")
+    void deleteByLocalPath(String localPath);
 }

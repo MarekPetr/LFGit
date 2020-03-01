@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.system.Os;
 import android.util.Log;
 
-import com.lfgit.interfaces.TaskListener;
+import com.lfgit.interfaces.AsyncTaskListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,9 +31,9 @@ public class AssetInstaller extends AsyncTask<Boolean, Void, Boolean> {
     }
 
     private AssetManager assetManager;
-    private TaskListener listener;
+    private AsyncTaskListener listener;
 
-    public AssetInstaller(AssetManager assets, TaskListener listener)  {
+    public AssetInstaller(AssetManager assets, AsyncTaskListener listener)  {
         this.assetManager = assets;
         this.listener = listener;
     }
