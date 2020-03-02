@@ -1,9 +1,14 @@
 package com.lfgit.utilites;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
 
+import com.lfgit.BuildConfig;
 import com.lfgit.activities.BasicAbstractActivity;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class BasicFunctions {
 
@@ -21,5 +26,4 @@ public class BasicFunctions {
     public static String getReposPath() {
         return Environment.getExternalStorageDirectory().toString() + "/LfGit/";
     }
-
 }

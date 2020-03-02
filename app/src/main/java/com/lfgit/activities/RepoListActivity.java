@@ -9,17 +9,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.lfgit.BuildConfig;
 import com.lfgit.R;
 import com.lfgit.adapters.RepoListAdapter;
 import com.lfgit.databinding.ActivityRepoListBinding;
-import com.lfgit.interfaces.AsyncTaskListener;
-import com.lfgit.utilites.AssetInstaller;
+import com.lfgit.fragments.InstallFragment;
 import com.lfgit.view_models.RepoListViewModel;
 
-public class RepoListActivity extends BasicAbstractActivity implements AsyncTaskListener {
+import static com.lfgit.utilites.Logger.LogMsg;
+
+public class RepoListActivity extends BasicAbstractActivity {
 
     String TAG = "petr";
     ProgressDialog mProgressDialog;
@@ -33,9 +37,14 @@ public class RepoListActivity extends BasicAbstractActivity implements AsyncTask
         checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (isFirstRun()) {
-            AssetInstaller installer = new AssetInstaller(getAssets(), this);
-            installer.execute(true);
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            Fragment fragment = new InstallFragment();
+            transaction.replace(R.id.repoListLayout,fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
+
         RepoListViewModel repoListViewModel = new ViewModelProvider(this).get(RepoListViewModel.class);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_list);
@@ -52,29 +61,7 @@ public class RepoListActivity extends BasicAbstractActivity implements AsyncTask
         );
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_repo_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-        Class intent_class;
-        switch(item.getItemId()) {
-            case R.id.menu_init_repo:
-                intent_class = InitRepoActivity.class;
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-        intent = new Intent(this, intent_class);
-        this.startActivity(intent);
-        return true;
-    }
-
-    private Boolean isFirstRun() {
+    public Boolean isFirstRun() {
 
         final String PREFS_NAME = "FirstRunPref";
         final String PREF_VERSION_CODE_KEY = "version_code";
@@ -103,17 +90,25 @@ public class RepoListActivity extends BasicAbstractActivity implements AsyncTask
     }
 
     @Override
-    public void onTaskStarted() {
-        lockScreenOrientation();
-        mProgressDialog = ProgressDialog.show(this, "Installing...", "Getting things ready..");
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_repo_list, menu);
+        return true;
     }
 
     @Override
-    public void onTaskFinished() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-            unlockScreenOrientation();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        Class intent_class;
+        switch(item.getItemId()) {
+            case R.id.menu_init_repo:
+                intent_class = InitRepoActivity.class;
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
+        intent = new Intent(this, intent_class);
+        this.startActivity(intent);
+        return true;
     }
 }
 
