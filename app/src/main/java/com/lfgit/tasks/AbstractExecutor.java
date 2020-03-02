@@ -19,17 +19,29 @@ abstract class AbstractExecutor {
 
     private String mResult;
     private int mErrCode;
+    private boolean mFinished = false;
     String mExeDir;
 
     AbstractExecutor() {
         mExeDir = BIN_DIR;
     }
 
-    String getResult() {
+    public String getResult() {
+        LogMsg(mResult);
         return mResult;
     }
 
-    boolean executeBinary(String binary, String destDir, String... strings) {
+    public int getErrCode() {
+        return mErrCode;
+    }
+
+
+    public boolean isFinished() {
+        return mFinished;
+    }
+
+    String executeBinary(String binary, String destDir, String... strings) {
+        mFinished = false;
         String exeBin = mExeDir + binary;
         File f = new File(destDir);
         if (binary.equals("git") && strings[0].equals("init")) {
@@ -63,13 +75,14 @@ abstract class AbstractExecutor {
             e.printStackTrace();
         }
 
-        if (mErrCode == 0) {
-            mResult += "\nOperation successful";
+        if (mErrCode == 0 && mResult.isEmpty()) {
+            mResult = "Operation successful";
         } else {
-            mResult += "\nOperation failed";
+            mResult = "Operation failed";
         }
+        mFinished = true;
 
-        return mErrCode == 0;
+        return mResult;
     }
     // source https://github.com/jjNford/android-shell/blob/master/src/com/jjnford/android/util/Shell.java
     private static class Buffer extends Thread {

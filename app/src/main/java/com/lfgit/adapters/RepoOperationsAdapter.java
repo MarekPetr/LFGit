@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter.DrawerItem;
+import com.lfgit.view_models.RepoDetailViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -20,9 +21,12 @@ import org.jetbrains.annotations.NotNull;
 public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
         implements OnItemClickListener {
 
-    public RepoOperationsAdapter(Context context) {
+    private RepoDetailViewModel mViewModel;
+
+    public RepoOperationsAdapter(Context context, RepoDetailViewModel viewModel) {
         super(context, 0);
         setupDrawerItem();
+        mViewModel = viewModel;
     }
 
     @NotNull
@@ -57,7 +61,6 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
 
     public static class DrawerItem {
         public String name;
-
         DrawerItem(String name) {
             this.name = name;
         }
@@ -75,5 +78,8 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
         Toast.makeText(getContext(), "operation", Toast.LENGTH_SHORT).show();
+        if (position == 0) {
+            mViewModel.addAllToStage();
+        }
     }
 }
