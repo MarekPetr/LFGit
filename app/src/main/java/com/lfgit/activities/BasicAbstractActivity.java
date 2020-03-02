@@ -1,9 +1,5 @@
 package com.lfgit.activities;
-
-import android.content.DialogInterface;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -11,8 +7,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import com.lfgit.R;
 import com.lfgit.utilites.BasicFunctions;
 
 public abstract class BasicAbstractActivity extends AppCompatActivity {
@@ -67,18 +61,5 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
 
     public interface onOptionClicked {
         void onClicked();
-    }
-
-    protected void lockScreenOrientation() {
-        int currentOrientation = getResources().getConfiguration().orientation;
-        if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
-    }
-
-    protected void unlockScreenOrientation() {
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     }
 }

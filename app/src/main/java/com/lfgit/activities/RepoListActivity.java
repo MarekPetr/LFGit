@@ -24,9 +24,6 @@ import com.lfgit.view_models.RepoListViewModel;
 import static com.lfgit.utilites.Logger.LogMsg;
 
 public class RepoListActivity extends BasicAbstractActivity {
-
-    String TAG = "petr";
-    ProgressDialog mProgressDialog;
     private ActivityRepoListBinding mBinding;
     private RepoListAdapter mRepoListAdapter;
 

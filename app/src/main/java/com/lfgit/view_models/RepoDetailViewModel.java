@@ -9,8 +9,6 @@ import androidx.lifecycle.MutableLiveData;
 import com.lfgit.database.model.Repo;
 import com.lfgit.tasks.GitExec;
 
-import static com.lfgit.utilites.Logger.LogMsg;
-
 public class RepoDetailViewModel extends AndroidViewModel {
     private Repo mRepo;
     private MutableLiveData<String> taskResult = new MutableLiveData<>();

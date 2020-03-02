@@ -1,7 +1,5 @@
 package com.lfgit.utilites;
 
-import android.content.Context;
-
 public class Constants {
     public static final String PKG = "com.lfgit/";
     public static final String APP_DIR = "/data/data/" + PKG;
