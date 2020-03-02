@@ -6,21 +6,34 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter;
+import com.lfgit.database.model.Repo;
+import com.lfgit.databinding.ActivityRepoDetailBinding;
+import com.lfgit.view_models.RepoDetailViewModel;
 
 public class RepoDetailActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;
+    private ActivityRepoDetailBinding mBinding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repo_detail);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_detail);
+        RepoDetailViewModel viewModel = new ViewModelProvider(this).get(RepoDetailViewModel.class);
+        mBinding.setRepoDetailViewModel(viewModel);
+        mBinding.setLifecycleOwner(this);
 
-        setupDrawer();
+        setupDrawer(viewModel);
+
+        Repo repo = (Repo) getIntent().getSerializableExtra(Repo.TAG);
+        mBinding.getRepoDetailViewModel().setRepo(repo);
     }
 
     @Override
@@ -42,12 +55,12 @@ public class RepoDetailActivity extends BasicAbstractActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupDrawer() {
+    private void setupDrawer(RepoDetailViewModel viewModel) {
         mDrawerLayout = findViewById(R.id.drawerLayout);
         mRightDrawer = findViewById(R.id.rightDrawer);
         ListView mRepoOperationList = findViewById(R.id.repoOperationList);
 
-        RepoOperationsAdapter mDrawerAdapter = new RepoOperationsAdapter(this);
+        RepoOperationsAdapter mDrawerAdapter = new RepoOperationsAdapter(this, viewModel);
         mRepoOperationList.setAdapter(mDrawerAdapter);
         mRepoOperationList.setOnItemClickListener(mDrawerAdapter);
     }

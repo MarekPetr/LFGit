@@ -4,11 +4,16 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 // TODO https://medium.com/mindorks/using-room-database-android-jetpack-675a89a0e942
 // DAO
 
 @Entity(tableName = "repo")
-public class Repo {
+public class Repo implements Serializable {
+    public static final String TAG = Repo.class.getSimpleName();
+    private static final long serialVersionUID = -556977004352408504L;
+
     @PrimaryKey(autoGenerate = true)
     private int id;
     @ColumnInfo(name = "localPath")
@@ -32,9 +37,8 @@ public class Repo {
 
     public Repo(String localPath) {
         this.localPath = localPath;
-        /*this.remoteURL = remoteURL;
-        this.repoStatus = repoStatus;*/
     }
+
     public String getDisplayName() {
         return localPath;
     }

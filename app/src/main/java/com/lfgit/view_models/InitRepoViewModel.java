@@ -2,12 +2,12 @@ package com.lfgit.view_models;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
 import com.lfgit.tasks.GitExec;
 import com.lfgit.utilites.BasicFunctions;
+import org.apache.commons.lang3.StringUtils;
 
 public class InitRepoViewModel extends AndroidViewModel {
     private String repoName;
@@ -23,9 +23,10 @@ public class InitRepoViewModel extends AndroidViewModel {
     // TODO check if repository already exists
     public boolean initLocalRepo() {
         // TODO get getReposPath from preferences
-        String initPath = getRepoName();
-        if (initPath != null) {
-            if (gitExec.init(initPath)) {
+        if (!StringUtils.isBlank(repoName)) {
+            String initPath = BasicFunctions.getReposPath() + repoName;
+            gitExec.init(initPath);
+            if (gitExec.getErrCode() == 0) {
                 mRepository.insertRepo(new Repo(initPath));
                 return true;
             }
@@ -35,8 +36,7 @@ public class InitRepoViewModel extends AndroidViewModel {
 
     public void setRepoName(String name) {
         // TODO filePicker instead of repoPath
-        String repoPath = BasicFunctions.getReposPath();
-        repoName = repoPath + name;
+        repoName = name;
     }
 
     public String getRepoName() {

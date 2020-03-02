@@ -9,9 +9,9 @@ public class Logger {
         if (BuildConfig.DEBUG) {
             if (msg == null) msg = "null";
             else if (msg.length() == 0) {
-                msg = "NO ANSWER";
+                msg = "EMPTY MSG";
             }
-            Log.d("petr", msg);
+            Log.d("LOGGER", msg);
         }
     }
 }
