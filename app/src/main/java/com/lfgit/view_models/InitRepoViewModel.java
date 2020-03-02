@@ -10,9 +10,9 @@ import com.lfgit.utilites.BasicFunctions;
 import org.apache.commons.lang3.StringUtils;
 
 public class InitRepoViewModel extends AndroidViewModel {
-    private String repoName;
     private GitExec gitExec;
     private RepoRepository mRepository;
+    private String repoName;
 
     public InitRepoViewModel(Application application) {
         super(application);
