@@ -21,8 +21,6 @@ import com.lfgit.databinding.ActivityRepoListBinding;
 import com.lfgit.fragments.InstallFragment;
 import com.lfgit.view_models.RepoListViewModel;
 
-import static com.lfgit.utilites.Logger.LogMsg;
-
 public class RepoListActivity extends BasicAbstractActivity {
     private ActivityRepoListBinding mBinding;
     private RepoListAdapter mRepoListAdapter;

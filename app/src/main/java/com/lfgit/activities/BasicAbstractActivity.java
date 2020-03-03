@@ -26,12 +26,12 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST) {// If request is cancelled, the result arrays are empty.
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
             } else {
                 // permission denied - TODO handle not granted better"
-                showToastMsg("Permission not granted");
+                showToastMsg("Write permission not granted");
+                finishAffinity();
             }
         }
     }
