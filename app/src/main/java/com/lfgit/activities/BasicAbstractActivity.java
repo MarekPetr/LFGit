@@ -12,6 +12,8 @@ import androidx.core.content.ContextCompat;
 import com.lfgit.BuildConfig;
 import com.lfgit.utilites.BasicFunctions;
 
+import org.jetbrains.annotations.NotNull;
+
 public abstract class BasicAbstractActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST = 1;
     @Override
@@ -27,17 +29,15 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST) {// If request is cancelled, the result arrays are empty.
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            } else {
-                // permission denied - TODO handle not granted better"
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 showToastMsg("Write permission not granted");
                 finishAffinity();
             }
         }
     }
+    
     protected void checkAndRequestPermissions(String permission) {
         if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted, so request it from user
