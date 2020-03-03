@@ -26,6 +26,9 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
     private ActivityRepoListBinding mBinding;
     private RepoListAdapter mRepoListAdapter;
     private InstallPreference installPref = new InstallPreference();
+    FragmentManager mManager = getSupportFragmentManager();
+    private String installTag = "install";
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,12 +57,11 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
     }
 
     private void runInstallFragment() {
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
+        FragmentTransaction transaction = mManager.beginTransaction();
         InstallFragment fragment = new InstallFragment();
         fragment.setCallback(this);
-        transaction.replace(R.id.repoListLayout,fragment);
-        transaction.addToBackStack(null);
+        transaction.add(R.id.repoListLayout,fragment);
+        transaction.addToBackStack(installTag);
         transaction.commit();
     }
 
@@ -86,7 +88,11 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
     }
 
     @Override
-    public void fragmentDetached() {
+    public void removeFragment() {
+        Fragment fragment = mManager.findFragmentByTag(installTag);
+        if(fragment != null) {
+            mManager.popBackStack();
+        }
         installPref.updateInstallPreference();
         checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }

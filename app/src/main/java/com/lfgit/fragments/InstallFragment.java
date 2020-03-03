@@ -17,6 +17,8 @@ import com.lfgit.utilites.AssetInstaller;
 import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
+import static com.lfgit.utilites.Logger.LogMsg;
+
 // source:
 // https://androidresearch.wordpress.com/2013/05/10/dealing-with-asynctask-and-screen-orientation/
 public class InstallFragment extends Fragment implements AsyncTaskListener {
@@ -65,7 +67,7 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
             mProgressDialog.dismiss();
         }
         isTaskRunning = false;
-        Objects.requireNonNull(getActivity()).onBackPressed();
+        mCallback.removeFragment();
     }
 
     @Override
@@ -81,7 +83,6 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
-        mCallback.fragmentDetached();
         super.onDetach();
     }
     private void showProgressDialog() {
