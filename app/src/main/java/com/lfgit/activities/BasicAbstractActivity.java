@@ -37,7 +37,7 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
             }
         }
     }
-    
+
     protected void checkAndRequestPermissions(String permission) {
         if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted, so request it from user
@@ -71,7 +71,7 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
         private final String PREF_VERSION_CODE_KEY = "version_code";
         private int currentVersionCode = BuildConfig.VERSION_CODE;
 
-        Boolean installAssets() {
+        Boolean assetsInstalled() {
             final int DOESNT_EXIST = -1;
 
             // Get saved version code
@@ -81,13 +81,13 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
             // Check for first run or upgrade
             if (currentVersionCode == savedVersionCode) {
                 // This is just a normal run
-                return false;
+                return true;
             } else if (savedVersionCode == DOESNT_EXIST) {
                 // This is a new install (or the user cleared the shared preferences)
             } else if (currentVersionCode > savedVersionCode) {
                 // This is an upgrade
             }
-            return true;
+            return false;
         }
 
         void updateInstallPreference() {

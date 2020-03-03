@@ -31,10 +31,10 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (installPref.installAssets()) {
-            runInstallFragment();
-        } else {
+        if (installPref.assetsInstalled()) {
             checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        } else {
+            runInstallFragment();
         }
 
         RepoListViewModel repoListViewModel = new ViewModelProvider(this).get(RepoListViewModel.class);
