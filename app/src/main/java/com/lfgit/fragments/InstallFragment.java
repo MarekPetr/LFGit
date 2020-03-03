@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.lfgit.R;
 import com.lfgit.interfaces.AsyncTaskListener;
+import com.lfgit.interfaces.FragmentCallback;
 import com.lfgit.utilites.AssetInstaller;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,7 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
     private boolean isTaskRunning = false;
     private boolean isFirstRun = true;
     private Context mContext;
+    private FragmentCallback mCallback;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,9 +81,14 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
+        mCallback.fragmentDetached();
         super.onDetach();
     }
     private void showProgressDialog() {
         mProgressDialog = ProgressDialog.show(getActivity(), "Installing", "Please wait a moment!");
+    }
+
+    public void setCallback(FragmentCallback callback) {
+        this.mCallback = callback;
     }
 }

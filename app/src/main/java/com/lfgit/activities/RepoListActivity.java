@@ -19,25 +19,22 @@ import com.lfgit.R;
 import com.lfgit.adapters.RepoListAdapter;
 import com.lfgit.databinding.ActivityRepoListBinding;
 import com.lfgit.fragments.InstallFragment;
+import com.lfgit.interfaces.FragmentCallback;
 import com.lfgit.view_models.RepoListViewModel;
 
-public class RepoListActivity extends BasicAbstractActivity {
+public class RepoListActivity extends BasicAbstractActivity implements FragmentCallback {
     private ActivityRepoListBinding mBinding;
     private RepoListAdapter mRepoListAdapter;
+    private InstallPreference installPref = new InstallPreference();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        if (isFirstRun()) {
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            Fragment fragment = new InstallFragment();
-            transaction.replace(R.id.repoListLayout,fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+        if (installPref.installAssets()) {
+            runInstallFragment();
+        } else {
+            checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
 
         RepoListViewModel repoListViewModel = new ViewModelProvider(this).get(RepoListViewModel.class);
@@ -56,32 +53,14 @@ public class RepoListActivity extends BasicAbstractActivity {
         );
     }
 
-    public Boolean isFirstRun() {
-
-        final String PREFS_NAME = "FirstRunPref";
-        final String PREF_VERSION_CODE_KEY = "version_code";
-        final int DOESNT_EXIST = -1;
-
-        // Get current version code
-        int currentVersionCode = BuildConfig.VERSION_CODE;
-
-        // Get saved version code
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
-
-        // Check for first run or upgrade
-        if (currentVersionCode == savedVersionCode) {
-            // This is just a normal run
-            return false;
-        } else if (savedVersionCode == DOESNT_EXIST) {
-            // This is a new install (or the user cleared the shared preferences)
-        } else if (currentVersionCode > savedVersionCode) {
-            // This is an upgrade
-        }
-
-        // Update the shared preferences with the current version code
-        prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).apply();
-        return true;
+    private void runInstallFragment() {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        InstallFragment fragment = new InstallFragment();
+        fragment.setCallback(this);
+        transaction.replace(R.id.repoListLayout,fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override
@@ -104,6 +83,12 @@ public class RepoListActivity extends BasicAbstractActivity {
         intent = new Intent(this, intent_class);
         this.startActivity(intent);
         return true;
+    }
+
+    @Override
+    public void fragmentDetached() {
+        installPref.updateInstallPreference();
+        checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 }
 
