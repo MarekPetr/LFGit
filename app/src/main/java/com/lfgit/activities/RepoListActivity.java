@@ -79,6 +79,9 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
             case R.id.menu_init_repo:
                 intent_class = InitRepoActivity.class;
                 break;
+            case R.id.menu_settings:
+                intent_class = SettingsActivity.class;
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
