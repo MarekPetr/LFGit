@@ -66,12 +66,12 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
         void onClicked();
     }
 
-    public class InstallPreference {
+    class InstallPreference {
         private final String PREFS_NAME = "installPref";
         private final String PREF_VERSION_CODE_KEY = "version_code";
         private int currentVersionCode = BuildConfig.VERSION_CODE;
 
-        public Boolean assetsInstalled() {
+        Boolean assetsInstalled() {
             final int DOESNT_EXIST = -1;
 
             // Get saved version code
@@ -90,7 +90,7 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
             return false;
         }
 
-        public void updateInstallPreference() {
+        void updateInstallPreference() {
             // Update the shared preferences with the current version code
             SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).apply();
