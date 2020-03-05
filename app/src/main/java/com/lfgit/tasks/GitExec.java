@@ -1,22 +1,24 @@
 package com.lfgit.tasks;
 
-import static com.lfgit.utilites.Constants.REPOS_DIR;
-import static com.lfgit.utilites.Logger.LogMsg;
-
 public class GitExec extends AbstractExecutor {
 
     private String gitPath = "git";
 
-    public void config() {
-        executeBinary(gitPath, "","config", "--global", "user.email", "petr.marek18@gmail.com");
-        LogMsg(getResult());
-        executeBinary(gitPath, "", "config", "--global", "user.name", "MarekPetr");
-        LogMsg(getResult());
+    public void config(String email, String username) {
+        executeBinary(gitPath, ".","config", "--global", "user.name", username);
+        executeBinary(gitPath, ".","config", "--global", "user.email", email);
+    }
+
+    public void setEmail(String email) {
+        executeBinary(gitPath, ".","config", "--global", "user.email", email);
+    }
+
+    public void setUsername(String username) {
+        executeBinary(gitPath, ".","config", "--global", "user.name", username);
     }
 
     public String busybox_echo() {
-        executeBinary("busybox", "", "echo", "ahoj");
-        return getResult();
+        return executeBinary("busybox", "", "echo", "ahoj");
     }
 
     public String init(String dest) {
@@ -26,22 +28,19 @@ public class GitExec extends AbstractExecutor {
 
     public String commit(String dest) {
         String gitOperation = "commit";
-        String message = "-m\"newFileToCommit\"";
-        executeBinary(gitPath, dest, gitOperation, message);
-        return getResult();
+        String message = "-m \"newFileToCommit\"";
+        return executeBinary(gitPath, dest, gitOperation, message);
     }
 
     public String clone(String dest, String userName, String password) {
         String gitOperation = "clone";
         String url = "https://" + userName + ":" + password + "@github.com/MarekPetr/test";
-        executeBinary(gitPath, dest, gitOperation, url);
-        return getResult();
+        return executeBinary(gitPath, dest, gitOperation, url);
     }
 
     public String status(String dest) {
         String gitOperation = "status";
-        executeBinary(gitPath, dest, gitOperation);
-        return getResult();
+        return executeBinary(gitPath, dest, gitOperation);
     }
 
     public String addAllToStage(String dest) {
@@ -51,11 +50,12 @@ public class GitExec extends AbstractExecutor {
 
     public String push(String dest) {
         String gitOperation = "push";
-         executeBinary(gitPath, dest, gitOperation);
-        return getResult();
+        return executeBinary(gitPath, dest, gitOperation);
     }
 
-
-
+    public String pull(String dest) {
+        String gitOperation = "pull";
+        return executeBinary(gitPath, dest, gitOperation);
+    }
 
 }

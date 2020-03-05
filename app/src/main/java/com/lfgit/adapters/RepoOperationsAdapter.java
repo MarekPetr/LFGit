@@ -77,9 +77,18 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
-        Toast.makeText(getContext(), "operation", Toast.LENGTH_SHORT).show();
         if (position == 0) {
-            mViewModel.addAllToStage();
+            mViewModel.gitAddAllToStage();
+        }
+        switch(position) {
+            case(0): mViewModel.gitAddAllToStage(); break;
+            case(1): mViewModel.gitCommit();        break;
+            case(2): mViewModel.gitPush();          break;
+            case(3): mViewModel.gitPull();          break;
+            case(4): mViewModel.gitNewBranch();     break;
+            case(5): mViewModel.gitAddRemote();     break;
+            case(6): mViewModel.gitRemoveRemote();  break;
+            case(7): mViewModel.gitMerge();         break;
         }
     }
 }

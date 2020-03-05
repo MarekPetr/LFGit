@@ -1,20 +1,13 @@
 package com.lfgit.view_models;
 
-import android.app.Application;
+import java.util.List;
 
-import androidx.annotation.NonNull;
+import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
-import com.lfgit.tasks.GitExec;
-
-import org.apache.commons.io.FileUtils;
-
-import java.util.List;
 
 public class RepoListViewModel extends AndroidViewModel {
     private RepoRepository mRepository;

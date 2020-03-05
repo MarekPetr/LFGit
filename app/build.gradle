@@ -37,7 +37,9 @@ repositories {
 dependencies {
     def room_version = "2.2.4"
     implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
+    implementation 'androidx.preference:preference:1.1.0-rc01'
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    // For Kotlin use kapt instead of annotationProcessor
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$room_version"
     // optional - RxJava support for Room
@@ -51,7 +53,7 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.6'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

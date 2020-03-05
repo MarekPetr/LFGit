@@ -6,6 +6,7 @@
             type="com.lfgit.view_models.RepoListViewModel"/>
     </data>
     <LinearLayout
+        android:id="@+id/repoListLayout"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,9 +14,9 @@
         tools:context=".activities.RepoListActivity">
 
         <ListView
+            android:id="@+id/repoList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/repoList"/>
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 </layout>
 

@@ -1,10 +1,12 @@
 package com.lfgit.activities;
 
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -31,6 +33,9 @@ public class RepoDetailActivity extends BasicAbstractActivity {
         mBinding.setLifecycleOwner(this);
 
         setupDrawer(viewModel);
+
+        TextView resultTV = findViewById(R.id.taskResult);
+        resultTV.setMovementMethod(new ScrollingMovementMethod());
 
         Repo repo = (Repo) getIntent().getSerializableExtra(Repo.TAG);
         mBinding.getRepoDetailViewModel().setRepo(repo);

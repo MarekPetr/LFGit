@@ -4,8 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.termux.permission.TERMUX_SERVICE_EXE" />
 
     <application
@@ -22,12 +22,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.RepoDetailActivity"
+        <activity
+            android:name=".activities.RepoDetailActivity"
             android:parentActivityName=".activities.RepoListActivity">
         </activity>
-        <activity android:name=".activities.InitRepoActivity"
+        <activity
+            android:name=".activities.InitRepoActivity"
             android:parentActivityName=".activities.RepoListActivity">
         </activity>
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:parentActivityName=".activities.RepoListActivity"
+            android:label="@string/title_activity_settings">
+        </activity>
+
     </application>
 
 </manifest>

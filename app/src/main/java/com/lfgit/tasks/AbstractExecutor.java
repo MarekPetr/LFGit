@@ -27,7 +27,6 @@ abstract class AbstractExecutor {
     }
 
     public String getResult() {
-        LogMsg(mResult);
         return mResult;
     }
 
@@ -35,13 +34,7 @@ abstract class AbstractExecutor {
         return mErrCode;
     }
 
-
-    public boolean isFinished() {
-        return mFinished;
-    }
-
     String executeBinary(String binary, String destDir, String... strings) {
-        mFinished = false;
         String exeBin = mExeDir + binary;
         File f = new File(destDir);
         if (binary.equals("git") && strings[0].equals("init")) {
@@ -74,14 +67,13 @@ abstract class AbstractExecutor {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-
-        if (mErrCode == 0 && mResult.isEmpty()) {
-            mResult = "Operation successful";
-        } else {
-            mResult = "Operation failed";
+        if (mResult.isEmpty()) {
+            if (mErrCode == 0) {
+                mResult = "Operation successful";
+            } else {
+                mResult = "Operation failed";
+            }
         }
-        mFinished = true;
-
         return mResult;
     }
     // source https://github.com/jjNford/android-shell/blob/master/src/com/jjnford/android/util/Shell.java
@@ -113,11 +105,8 @@ abstract class AbstractExecutor {
             try {
                 String line;
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mInputStream));
-                if((line = reader.readLine()) != null) {
-                    mBuffer.append(line);
-                    while((line = reader.readLine()) != null) {
-                        mBuffer.append(EOL).append(line);
-                    }
+                while((line = reader.readLine()) != null) {
+                    mBuffer.append(line).append(EOL);
                 }
             } catch(IOException e) {
                 e.printStackTrace();
