@@ -7,9 +7,17 @@ public class GitExec extends AbstractExecutor {
 
     private String gitPath = "git";
 
-    public void config(String email, String userName) {
-        executeBinary(gitPath, "","config", "--global", "user.email", email);
-        executeBinary(gitPath, "","config", "--global", "user.name", userName);
+    public void config(String email, String username) {
+        executeBinary(gitPath, ".","config", "--global", "user.name", username);
+        executeBinary(gitPath, ".","config", "--global", "user.email", email);
+    }
+
+    public void setEmail(String email) {
+        executeBinary(gitPath, ".","config", "--global", "user.email", email);
+    }
+
+    public void setUsername(String username) {
+        executeBinary(gitPath, ".","config", "--global", "user.name", username);
     }
 
     public String busybox_echo() {

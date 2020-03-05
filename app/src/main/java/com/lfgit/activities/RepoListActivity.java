@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -20,6 +21,7 @@ import com.lfgit.adapters.RepoListAdapter;
 import com.lfgit.databinding.ActivityRepoListBinding;
 import com.lfgit.fragments.InstallFragment;
 import com.lfgit.interfaces.FragmentCallback;
+import com.lfgit.tasks.GitExec;
 import com.lfgit.view_models.RepoListViewModel;
 
 public class RepoListActivity extends BasicAbstractActivity implements FragmentCallback {
@@ -28,7 +30,6 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
     private InstallPreference installPref = new InstallPreference();
     FragmentManager mManager = getSupportFragmentManager();
     private String installTag = "install";
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
