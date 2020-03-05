@@ -6,9 +6,24 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_init_repo">Init repository</string>
 
+    <!-- git actions -->
     <string name="path_text_edit">Directory in internal storage</string>
     <string name="init_button">Initialize</string>
     <string name="set_path_button">Set path</string>
     <string name="init_directory">Directory</string>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="git_profile">Git Profile</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="git_username">Your username</string>
+    <string name="git_email">Your email</string>
+    <string name="reply_title">Default reply action</string>
+
+    <string name="git_username_key">git_username</string>
+    <string name="git_email_key">git_email</string>
 
 </resources>

@@ -11,7 +11,7 @@ public class Logger {
             else if (msg.length() == 0) {
                 msg = "EMPTY MSG";
             }
-            Log.d("LOGGER", msg);
+            Log.d("mylogger", msg);
         }
     }
 }
