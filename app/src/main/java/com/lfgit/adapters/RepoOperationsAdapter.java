@@ -77,11 +77,9 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
-        Toast.makeText(getContext(), "operation", Toast.LENGTH_SHORT).show();
         if (position == 0) {
             mViewModel.gitAddAllToStage();
         }
-
         switch(position) {
             case(0): mViewModel.gitAddAllToStage(); break;
             case(1): mViewModel.gitCommit();        break;
