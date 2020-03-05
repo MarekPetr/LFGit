@@ -1,14 +1,13 @@
 package com.lfgit.view_models;
 
+import java.util.List;
+
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
-import com.lfgit.tasks.GitExec;
-
-import java.util.List;
 
 public class RepoListViewModel extends AndroidViewModel {
     private RepoRepository mRepository;
@@ -24,6 +23,4 @@ public class RepoListViewModel extends AndroidViewModel {
     public void deleteRepoById(int id) {
         mRepository.deleteByID(id);
     }
-
-
 }

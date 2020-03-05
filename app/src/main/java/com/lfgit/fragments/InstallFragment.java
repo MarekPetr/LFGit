@@ -15,9 +15,6 @@ import com.lfgit.interfaces.FragmentCallback;
 import com.lfgit.utilites.AssetInstaller;
 
 import org.jetbrains.annotations.NotNull;
-import java.util.Objects;
-
-import static com.lfgit.utilites.Logger.LogMsg;
 
 // source:
 // https://androidresearch.wordpress.com/2013/05/10/dealing-with-asynctask-and-screen-orientation/

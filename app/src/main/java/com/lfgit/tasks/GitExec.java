@@ -1,8 +1,5 @@
 package com.lfgit.tasks;
 
-import static com.lfgit.utilites.Constants.REPOS_DIR;
-import static com.lfgit.utilites.Logger.LogMsg;
-
 public class GitExec extends AbstractExecutor {
 
     private String gitPath = "git";
