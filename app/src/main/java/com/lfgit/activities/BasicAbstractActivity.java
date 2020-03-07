@@ -19,13 +19,11 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BasicFunctions.setActiveActivity(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        BasicFunctions.setActiveActivity(this);
     }
 
     @Override
