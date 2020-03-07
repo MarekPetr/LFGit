@@ -128,14 +128,14 @@ abstract class Executor {
         @Override
         public void run() {
             try {
-                /*String line = "";
+                String line = "";
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mInputStream));
                 if((line = reader.readLine()) != null) {
                     mBuffer.append(line);
                     while((line = reader.readLine()) != null) {
                         mBuffer.append(EOL).append(line);
                     }
-                }*/
+                }
                 /*final int bufferSize = 4096;
                 final char[] buffer = new char[bufferSize];
                 int charsRead;
