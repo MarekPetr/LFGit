@@ -1,4 +1,4 @@
-package com.lfgit.utilites;
+package com.lfgit.installer;
 
 import android.content.res.AssetManager;
 import android.os.AsyncTask;

@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import com.lfgit.R;
 import com.lfgit.interfaces.AsyncTaskListener;
 import com.lfgit.interfaces.FragmentCallback;
-import com.lfgit.utilites.AssetInstaller;
+import com.lfgit.installer.AssetInstaller;
 
 import org.jetbrains.annotations.NotNull;
 
