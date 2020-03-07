@@ -16,7 +16,7 @@ import com.lfgit.R;
 import com.lfgit.adapters.RepoListAdapter;
 import com.lfgit.databinding.ActivityRepoListBinding;
 import com.lfgit.fragments.InstallFragment;
-import com.lfgit.interfaces.FragmentCallback;
+import com.lfgit.fragments.FragmentCallback;
 import com.lfgit.view_models.RepoListViewModel;
 
 public class RepoListActivity extends BasicAbstractActivity implements FragmentCallback {

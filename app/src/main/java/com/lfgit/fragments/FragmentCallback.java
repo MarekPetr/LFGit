@@ -1,4 +1,4 @@
-package com.lfgit.interfaces;
+package com.lfgit.fragments;
 
 public interface FragmentCallback {
     void removeFragment();

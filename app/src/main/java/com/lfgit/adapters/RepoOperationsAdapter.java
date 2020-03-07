@@ -8,7 +8,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter.DrawerItem;
