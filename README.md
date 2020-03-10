@@ -1,4 +1,4 @@
 LfGit
 
 
-CI/CD pipeline on:  https://gitlab.com/MarekPetr/LfGit
+CI/CD pipelines on:  https://gitlab.com/MarekPetr/LfGit/pipelines
