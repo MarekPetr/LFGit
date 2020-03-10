@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 29
     buildToolsVersion '29.0.3'
@@ -37,7 +39,7 @@ repositories {
 dependencies {
     def room_version = "2.2.4"
     implementation "androidx.room:room-runtime:$room_version"
-    implementation 'androidx.preference:preference:1.1.0-rc01'
+    implementation 'androidx.preference:preference:1.1.0'
     annotationProcessor "androidx.room:room-compiler:$room_version"
     // For Kotlin use kapt instead of annotationProcessor
     // optional - Kotlin Extensions and Coroutines support for Room
