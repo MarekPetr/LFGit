@@ -21,9 +21,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".importer.AssetImporter">
-        </activity>
-        <activity android:name=".permissions.PermissionRequester" />
     </application>
 
 </manifest>
