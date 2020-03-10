@@ -1,4 +1,4 @@
-package com.lfgit.interfaces;
+package com.lfgit.installer;
 
 public interface AsyncTaskListener {
     void onTaskStarted();

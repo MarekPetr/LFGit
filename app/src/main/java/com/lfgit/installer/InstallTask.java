@@ -1,11 +1,9 @@
-package com.lfgit.utilites;
+package com.lfgit.installer;
 
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.system.Os;
 import android.util.Log;
-
-import com.lfgit.interfaces.AsyncTaskListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,7 +17,7 @@ import static com.lfgit.utilites.Constants.APP_DIR;
 import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Logger.LogMsg;
 
-public class AssetInstaller extends AsyncTask<Boolean, Void, Boolean> {
+public class InstallTask extends AsyncTask<Boolean, Void, Boolean> {
     private enum Arch {
         x86(0),
         arm64_v8a(1);
@@ -33,7 +31,7 @@ public class AssetInstaller extends AsyncTask<Boolean, Void, Boolean> {
     private AssetManager assetManager;
     private AsyncTaskListener listener;
 
-    public AssetInstaller(AssetManager assets, AsyncTaskListener listener)  {
+    public InstallTask(AssetManager assets, AsyncTaskListener listener)  {
         this.assetManager = assets;
         this.listener = listener;
     }

@@ -10,9 +10,8 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.lfgit.R;
-import com.lfgit.interfaces.AsyncTaskListener;
-import com.lfgit.interfaces.FragmentCallback;
-import com.lfgit.utilites.AssetInstaller;
+import com.lfgit.installer.AsyncTaskListener;
+import com.lfgit.installer.InstallTask;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +40,7 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
             showProgressDialog();
         }
         if (isFirstRun) {
-            AssetInstaller installer  = new AssetInstaller(mContext.getAssets(),this);
+            InstallTask installer  = new InstallTask(mContext.getAssets(),this);
             installer.execute(true);
             isFirstRun = false;
         }
