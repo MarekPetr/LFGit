@@ -2,7 +2,9 @@ package com.lfgit.activities;
 
 import android.Manifest;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -17,14 +19,22 @@ import com.lfgit.adapters.RepoListAdapter;
 import com.lfgit.databinding.ActivityRepoListBinding;
 import com.lfgit.fragments.InstallFragment;
 import com.lfgit.fragments.FragmentCallback;
+import com.lfgit.utilites.UriHelper;
+import com.lfgit.view_models.LocalRepoViewModel;
 import com.lfgit.view_models.RepoListViewModel;
+
+import static com.lfgit.utilites.Logger.LogMsg;
 
 public class RepoListActivity extends BasicAbstractActivity implements FragmentCallback {
     private ActivityRepoListBinding mBinding;
+    private LocalRepoViewModel localRepoViewModel;
     private RepoListAdapter mRepoListAdapter;
     private InstallPreference installPref = new InstallPreference();
     FragmentManager mManager = getSupportFragmentManager();
     private String installTag = "install";
+
+    private static final int OPEN_REPO_REQUEST_CODE = 1;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +47,7 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
         }
 
         RepoListViewModel repoListViewModel = new ViewModelProvider(this).get(RepoListViewModel.class);
+        localRepoViewModel = new ViewModelProvider(this).get(LocalRepoViewModel.class);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_list);
         mBinding.setLifecycleOwner(this);
@@ -70,19 +81,23 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
-        Class intent_class;
         switch(item.getItemId()) {
-            case R.id.menu_init_repo:
-                intent_class = InitRepoActivity.class;
-                break;
             case R.id.menu_settings:
-                intent_class = SettingsActivity.class;
+                intent = new Intent(this, SettingsActivity.class);
+                this.startActivity(intent);
+                break;
+            case R.id.menu_init_repo:
+                intent = new Intent(this, InitRepoActivity.class);
+                this.startActivity(intent);
+                break;
+            case R.id.menu_open_repo:
+                intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                startActivityForResult(intent, OPEN_REPO_REQUEST_CODE);
                 break;
             default:
                 return super.onOptionsItemSelected(item);
         }
-        intent = new Intent(this, intent_class);
-        this.startActivity(intent);
+
         return true;
     }
 
@@ -94,6 +109,19 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
         }
         installPref.updateInstallPreference();
         checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if (requestCode == OPEN_REPO_REQUEST_CODE) {
+            Uri uri = intent.getData();
+            Uri docUri = DocumentsContract.buildDocumentUriUsingTree(uri,
+                    DocumentsContract.getTreeDocumentId(uri));
+            String path = UriHelper.getPath(this, docUri);
+            localRepoViewModel.openLocalRepo(path);
+        }
     }
 }
 

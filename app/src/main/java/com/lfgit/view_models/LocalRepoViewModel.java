@@ -9,12 +9,13 @@ import com.lfgit.tasks.GitExec;
 import com.lfgit.utilites.BasicFunctions;
 import org.apache.commons.lang3.StringUtils;
 
-public class InitRepoViewModel extends AndroidViewModel {
+public class LocalRepoViewModel extends AndroidViewModel {
     private GitExec gitExec;
     private RepoRepository mRepository;
     private String repoName;
 
-    public InitRepoViewModel(Application application) {
+
+    public LocalRepoViewModel(Application application) {
         super(application);
         gitExec = new GitExec();
         mRepository = new RepoRepository(application);
@@ -32,6 +33,10 @@ public class InitRepoViewModel extends AndroidViewModel {
             }
         }
         return false;
+    }
+
+    public void openLocalRepo(String path) {
+        mRepository.insertRepo(new Repo(path));
     }
 
     public void setRepoName(String name) {

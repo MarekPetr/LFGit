@@ -9,4 +9,6 @@ public class Constants {
     public static final String BIN_DIR = USR_DIR + "bin/";
     public static final String REPOS_DIR = APP_DIR + "repos/";
     public static final String GIT_CORE_DIR = FILES_DIR + "libexec/git-core/";
+
+
 }
