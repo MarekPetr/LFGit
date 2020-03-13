@@ -1,5 +1,5 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
             name="RepoDetailViewModel"
@@ -26,7 +26,7 @@
 
         <RelativeLayout
             android:id="@+id/rightDrawer"
-            android:layout_width="240dp"
+            android:layout_width="240sp"
             android:layout_height="match_parent"
             android:layout_gravity="end"
             android:background="@color/white">
@@ -35,7 +35,7 @@
                 android:id="@+id/repoOperationList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:dividerHeight="0dp" >
+                android:dividerHeight="0sp" >
             </ListView>
         </RelativeLayout>
     </androidx.drawerlayout.widget.DrawerLayout>

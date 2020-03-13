@@ -1,26 +1,101 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:bind="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="localRepoViewModel"
             type="com.lfgit.view_models.LocalRepoViewModel"/>
     </data>
-    <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/initTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80sp"
+            android:text="@string/init_text"
+            android:textSize="15sp"
+            bind:layout_constraintBottom_toTopOf="@+id/initPathEditText"
+            bind:layout_constraintStart_toStartOf="@+id/initPathEditText"
+            bind:layout_constraintTop_toTopOf="parent">
+        </TextView>
 
         <EditText
             android:id="@+id/initPathEditText"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:inputType="text"
+            android:layout_marginHorizontal="10sp"
+            android:autofillHints="Directory"
             android:hint="@string/init_directory"
-            android:text="@={localRepoViewModel.repoName}"/>
+            android:inputType="text"
+            android:text="@={localRepoViewModel.repoName}"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toBottomOf="@+id/initTextView" />
+
         <Button
             android:id="@+id/initButton"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/initPathEditText"
+            android:layout_marginStart="24sp"
+            android:onClick="initButtonHandler"
             android:text="@string/init_button"
-            android:onClick="initButtonHandler"/>
-    </LinearLayout>
+            bind:layout_constraintStart_toStartOf="@+id/initPathEditText"
+            bind:layout_constraintTop_toBottomOf="@+id/initPathEditText" />
+
+        <!-- CLONE -->
+        <TextView
+            android:id="@+id/cloneTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:text="@string/clone_text"
+            android:textSize="15sp"
+            bind:layout_constraintStart_toStartOf="@+id/remotePathEditText"
+            bind:layout_constraintTop_toBottomOf="@+id/initButton">
+        </TextView>
+
+        <EditText
+            android:id="@+id/remotePathEditText"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10sp"
+            android:autofillHints="remote URL"
+            android:hint="@string/remote_url"
+            android:inputType="text"
+            android:text=""
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintHorizontal_bias="0.473"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toBottomOf="@+id/cloneTextView" />
+
+        <EditText
+            android:id="@+id/cloneLocalPathEditText"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10sp"
+            android:autofillHints="Directory"
+            android:hint="@string/init_directory"
+            android:inputType="text"
+            android:text="@={localRepoViewModel.repoName}"
+            android:layout_marginTop="10sp"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toBottomOf="@+id/remotePathEditText" />
+
+        <Button
+            android:id="@+id/cloneButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/remotePathEditText"
+            android:layout_marginStart="24dp"
+            android:onClick="initButtonHandler"
+            android:text="@string/clone_button"
+            bind:layout_constraintStart_toStartOf="@+id/cloneLocalPathEditText"
+            bind:layout_constraintTop_toBottomOf="@+id/cloneLocalPathEditText" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
