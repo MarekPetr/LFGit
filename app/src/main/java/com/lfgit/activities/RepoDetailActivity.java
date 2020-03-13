@@ -38,7 +38,7 @@ public class RepoDetailActivity extends BasicAbstractActivity {
         resultTV.setMovementMethod(new ScrollingMovementMethod());
 
         Repo repo = (Repo) getIntent().getSerializableExtra(Repo.TAG);
-        mBinding.getRepoDetailViewModel().setRepo(repo);
+        viewModel.setRepo(repo);
     }
 
     @Override

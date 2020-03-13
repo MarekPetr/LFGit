@@ -42,7 +42,7 @@ public class LocalRepoViewModel extends AndroidViewModel {
         return false;
     }
 
-    public Constants.AddRepo openLocalRepo(String path) {
+    public Constants.AddRepo addLocalRepo(String path) {
         for (Repo repo : mAllRepos) {
             if (path.equals(repo.getLocalPath())) {
                 return ADDED;

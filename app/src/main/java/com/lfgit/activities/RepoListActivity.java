@@ -53,7 +53,6 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_list);
         mBinding.setLifecycleOwner(this);
         mBinding.setRepoListViewModel(repoListViewModel);
-        mBinding.setLocalRepoViewModel(localRepoViewModel);
 
         mRepoListAdapter = new RepoListAdapter(this, repoListViewModel);
         mBinding.repoList.setAdapter(mRepoListAdapter);
@@ -62,7 +61,7 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
 
         repoListViewModel.getAllRepos().observe(this, repoList -> {
             mRepoListAdapter.setRepos(repoList);
-            mBinding.getLocalRepoViewModel().setAllRepos(repoList);
+            localRepoViewModel.setAllRepos(repoList);
         });
     }
 
@@ -120,10 +119,10 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
 
         if (requestCode == ADD_REPO_REQUEST_CODE) {
             Uri uri = intent.getData();
-            Uri docUri = DocumentsContract.buildDocumentUriUsingTree(uri,
+            Uri DocUri = DocumentsContract.buildDocumentUriUsingTree(uri,
                     DocumentsContract.getTreeDocumentId(uri));
-            String path = UriHelper.getPath(this, docUri);
-            if (localRepoViewModel.openLocalRepo(path) == Constants.AddRepo.ADDED) {
+            if (localRepoViewModel.addLocalRepo(UriHelper.getPath(this, DocUri))
+                    == Constants.AddRepo.ADDED) {
                 showToastMsg("Repository already added");
             }
         }

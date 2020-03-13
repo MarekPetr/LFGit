@@ -4,9 +4,6 @@
         <variable
             name="repoListViewModel"
             type="com.lfgit.view_models.RepoListViewModel"/>
-        <variable
-            name="localRepoViewModel"
-            type="com.lfgit.view_models.LocalRepoViewModel"/>
     </data>
     <LinearLayout
         android:id="@+id/repoListLayout"
