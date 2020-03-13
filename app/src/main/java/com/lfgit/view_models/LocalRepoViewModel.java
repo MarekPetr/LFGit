@@ -14,7 +14,6 @@ public class LocalRepoViewModel extends AndroidViewModel {
     private RepoRepository mRepository;
     private String repoName;
 
-
     public LocalRepoViewModel(Application application) {
         super(application);
         gitExec = new GitExec();

@@ -10,8 +10,6 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
-import static com.lfgit.utilites.Logger.LogMsg;
-
 public class UriHelper {
     // source:https://gist.github.com/asifmujteba/d89ba9074bc941de1eaa#file-asfurihelper
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -24,7 +22,6 @@ public class UriHelper {
             // ExternalStorageProvider
             if (isExternalStorageDocument(uri)) {
                 final String docId = DocumentsContract.getDocumentId(uri);
-                LogMsg(docId);
                 final String[] split = docId.split(":");
                 final String type = split[0];
 
@@ -42,7 +39,7 @@ public class UriHelper {
 
                 final String id = DocumentsContract.getDocumentId(uri);
                 final Uri contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                        Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
 
                 return getDataColumn(context, contentUri, null, null);
             }
