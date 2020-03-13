@@ -19,7 +19,6 @@ abstract class AbstractExecutor {
 
     private String mResult;
     private int mErrCode;
-    private boolean mFinished = false;
     String mExeDir;
 
     AbstractExecutor() {

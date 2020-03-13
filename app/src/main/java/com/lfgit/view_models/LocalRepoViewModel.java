@@ -28,9 +28,7 @@ public class LocalRepoViewModel extends AndroidViewModel {
         mRepository = new RepoRepository(application);
     }
 
-    // TODO check if repository already exists
     public boolean initLocalRepo() {
-        // TODO get getReposPath from preferences
         if (!StringUtils.isBlank(repoName)) {
             String initPath = BasicFunctions.getReposPath() + repoName;
             gitExec.init(initPath);
@@ -53,7 +51,6 @@ public class LocalRepoViewModel extends AndroidViewModel {
     }
 
     public void setRepoName(String name) {
-        // TODO filePicker instead of repoPath
         repoName = name;
     }
 
