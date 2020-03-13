@@ -19,6 +19,7 @@ import com.lfgit.adapters.RepoListAdapter;
 import com.lfgit.databinding.ActivityRepoListBinding;
 import com.lfgit.fragments.InstallFragment;
 import com.lfgit.fragments.FragmentCallback;
+import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.UriHelper;
 import com.lfgit.view_models.LocalRepoViewModel;
 import com.lfgit.view_models.RepoListViewModel;
@@ -33,7 +34,7 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
     FragmentManager mManager = getSupportFragmentManager();
     private String installTag = "install";
 
-    private static final int OPEN_REPO_REQUEST_CODE = 1;
+    private static final int ADD_REPO_REQUEST_CODE = 1;
 
 
     @Override
@@ -52,15 +53,17 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_list);
         mBinding.setLifecycleOwner(this);
         mBinding.setRepoListViewModel(repoListViewModel);
+        mBinding.setLocalRepoViewModel(localRepoViewModel);
 
         mRepoListAdapter = new RepoListAdapter(this, repoListViewModel);
         mBinding.repoList.setAdapter(mRepoListAdapter);
         mBinding.repoList.setOnItemClickListener(mRepoListAdapter);
         mBinding.repoList.setOnItemLongClickListener(mRepoListAdapter);
 
-        repoListViewModel.getAllRepos().observe(this, repoList ->
-                mRepoListAdapter.setRepos(repoList)
-        );
+        repoListViewModel.getAllRepos().observe(this, repoList -> {
+            mRepoListAdapter.setRepos(repoList);
+            mBinding.getLocalRepoViewModel().setAllRepos(repoList);
+        });
     }
 
     private void runInstallFragment() {
@@ -90,9 +93,9 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
                 intent = new Intent(this, InitRepoActivity.class);
                 this.startActivity(intent);
                 break;
-            case R.id.menu_open_repo:
+            case R.id.menu_add_repo:
                 intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                startActivityForResult(intent, OPEN_REPO_REQUEST_CODE);
+                startActivityForResult(intent, ADD_REPO_REQUEST_CODE);
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -115,12 +118,14 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
-        if (requestCode == OPEN_REPO_REQUEST_CODE) {
+        if (requestCode == ADD_REPO_REQUEST_CODE) {
             Uri uri = intent.getData();
             Uri docUri = DocumentsContract.buildDocumentUriUsingTree(uri,
                     DocumentsContract.getTreeDocumentId(uri));
             String path = UriHelper.getPath(this, docUri);
-            localRepoViewModel.openLocalRepo(path);
+            if (localRepoViewModel.openLocalRepo(path) == Constants.AddRepo.ADDED) {
+                showToastMsg("Repository already added");
+            }
         }
     }
 }
