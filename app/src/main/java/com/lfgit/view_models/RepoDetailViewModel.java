@@ -29,9 +29,9 @@ public class RepoDetailViewModel extends AndroidViewModel {
         taskResult.setValue(result);
     }
 
-    public void execGitTask(int position) {
+    public void execGitTask(int drawerPosition) {
         String result = "";
-        switch(position) {
+        switch(drawerPosition) {
             case(0): result = gitAddAllToStage(); break;
             case(1): result = gitCommit();        break;
             case(2): result = gitPush();          break;
@@ -70,6 +70,4 @@ public class RepoDetailViewModel extends AndroidViewModel {
     private String gitRemoveRemote() {return null;}
 
     private String gitMerge() {return null;}
-
-
 }
