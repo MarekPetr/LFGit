@@ -12,7 +12,7 @@
     </string-array>
 
     <string-array name="repo_options">
-        <item>Delete</item>
+        <item>Close</item>
     </string-array>
     <!-- Reply Preference -->
     <string-array name="reply_entries">

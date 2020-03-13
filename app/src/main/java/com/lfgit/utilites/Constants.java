@@ -9,4 +9,14 @@ public class Constants {
     public static final String BIN_DIR = USR_DIR + "bin/";
     public static final String REPOS_DIR = APP_DIR + "repos/";
     public static final String GIT_CORE_DIR = FILES_DIR + "libexec/git-core/";
+
+    public enum AddRepo {
+        OK(0),
+        ADDED(1);
+
+        int value;
+        AddRepo(int value) {
+            this.value = value;
+        }
+    }
 }

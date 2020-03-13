@@ -5,6 +5,7 @@
     <!-- menu items -->
     <string name="menu_settings">Settings</string>
     <string name="menu_init_repo">Init repository</string>
+    <string name="menu_add_repo">Add repository</string>
 
     <!-- git actions -->
     <string name="path_text_edit">Directory in internal storage</string>

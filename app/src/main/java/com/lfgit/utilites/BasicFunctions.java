@@ -1,6 +1,5 @@
 package com.lfgit.utilites;
 import android.os.Environment;
-import com.lfgit.activities.BasicAbstractActivity;
 
 public class BasicFunctions {
 
@@ -8,4 +7,6 @@ public class BasicFunctions {
     public static String getReposPath() {
         return Environment.getExternalStorageDirectory().toString() + "/LfGit/";
     }
+
+
 }

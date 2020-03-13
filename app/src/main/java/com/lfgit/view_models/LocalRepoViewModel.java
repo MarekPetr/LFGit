@@ -7,14 +7,22 @@ import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
 import com.lfgit.tasks.GitExec;
 import com.lfgit.utilites.BasicFunctions;
+import com.lfgit.utilites.Constants;
+
 import org.apache.commons.lang3.StringUtils;
 
-public class InitRepoViewModel extends AndroidViewModel {
+import java.util.List;
+
+import static com.lfgit.utilites.Constants.AddRepo.ADDED;
+import static com.lfgit.utilites.Constants.AddRepo.OK;
+
+public class LocalRepoViewModel extends AndroidViewModel {
     private GitExec gitExec;
     private RepoRepository mRepository;
     private String repoName;
+    private List<Repo> mAllRepos;
 
-    public InitRepoViewModel(Application application) {
+    public LocalRepoViewModel(Application application) {
         super(application);
         gitExec = new GitExec();
         mRepository = new RepoRepository(application);
@@ -34,6 +42,16 @@ public class InitRepoViewModel extends AndroidViewModel {
         return false;
     }
 
+    public Constants.AddRepo openLocalRepo(String path) {
+        for (Repo repo : mAllRepos) {
+            if (path.equals(repo.getLocalPath())) {
+                return ADDED;
+            }
+        }
+        mRepository.insertRepo(new Repo(path));
+        return OK;
+    }
+
     public void setRepoName(String name) {
         // TODO filePicker instead of repoPath
         repoName = name;
@@ -41,5 +59,9 @@ public class InitRepoViewModel extends AndroidViewModel {
 
     public String getRepoName() {
         return repoName;
+    }
+
+    public void setAllRepos(List<Repo> repoList) {
+        mAllRepos = repoList;
     }
 }
