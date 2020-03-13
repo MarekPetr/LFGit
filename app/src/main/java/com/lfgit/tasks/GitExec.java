@@ -17,10 +17,6 @@ public class GitExec extends AbstractExecutor {
         executeBinary(gitPath, ".","config", "--global", "user.name", username);
     }
 
-    public String busybox_echo() {
-        return executeBinary("busybox", "", "echo", "ahoj");
-    }
-
     public String init(String dest) {
         String gitOperation = "init";
         return executeBinary(gitPath, dest, gitOperation);

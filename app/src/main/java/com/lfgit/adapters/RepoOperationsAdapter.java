@@ -9,7 +9,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.lfgit.R;
+import com.lfgit.activities.RepoDetailActivity;
 import com.lfgit.adapters.RepoOperationsAdapter.DrawerItem;
 import com.lfgit.view_models.RepoDetailViewModel;
 
@@ -21,11 +24,13 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
         implements OnItemClickListener {
 
     private RepoDetailViewModel mViewModel;
+    private RepoDetailActivity mRepoDetailActivity;
 
     public RepoOperationsAdapter(Context context, RepoDetailViewModel viewModel) {
         super(context, 0);
         setupDrawerItem();
         mViewModel = viewModel;
+        mRepoDetailActivity = (RepoDetailActivity) context;
     }
 
     @NotNull
@@ -75,19 +80,9 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
-                            long id) {
-        if (position == 0) {
-            mViewModel.gitAddAllToStage();
-        }
-        switch(position) {
-            case(0): mViewModel.gitAddAllToStage(); break;
-            case(1): mViewModel.gitCommit();        break;
-            case(2): mViewModel.gitPush();          break;
-            case(3): mViewModel.gitPull();          break;
-            case(4): mViewModel.gitNewBranch();     break;
-            case(5): mViewModel.gitAddRemote();     break;
-            case(6): mViewModel.gitRemoveRemote();  break;
-            case(7): mViewModel.gitMerge();         break;
-        }
+                            long id)
+    {
+        mViewModel.execGitTask(position);
+        mRepoDetailActivity.closeDrawer();
     }
 }

@@ -51,9 +51,9 @@ public class RepoDetailActivity extends BasicAbstractActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.toggleDrawer) {
             if (mDrawerLayout.isDrawerOpen(mRightDrawer)) {
-                mDrawerLayout.closeDrawer(mRightDrawer);
+                closeDrawer();
             } else {
-                mDrawerLayout.openDrawer(mRightDrawer);
+                openDrawer();
             }
             return true;
         }
@@ -69,4 +69,13 @@ public class RepoDetailActivity extends BasicAbstractActivity {
         mRepoOperationList.setAdapter(mDrawerAdapter);
         mRepoOperationList.setOnItemClickListener(mDrawerAdapter);
     }
+
+    public void closeDrawer() {
+        mDrawerLayout.closeDrawer(mRightDrawer);
+    };
+
+    public void openDrawer() {
+        mDrawerLayout.openDrawer(mRightDrawer);
+    }
+
 }

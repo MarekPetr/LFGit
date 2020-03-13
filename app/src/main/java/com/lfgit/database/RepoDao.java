@@ -33,7 +33,7 @@ public interface RepoDao {
 
     // Show repositories ordered by name
     @Query("SELECT * FROM repo ORDER BY localPath ASC")
-    LiveData<List<Repo>> getAlphabetizedWords();
+    LiveData<List<Repo>> getAlphabetizedRepos();
 
     @Query("DELETE FROM repo WHERE id = :repoId")
     void deleteByRepoId(int repoId);
