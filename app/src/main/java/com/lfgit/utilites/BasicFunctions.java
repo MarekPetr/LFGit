@@ -7,6 +7,4 @@ public class BasicFunctions {
     public static String getReposPath() {
         return Environment.getExternalStorageDirectory().toString() + "/LfGit/";
     }
-
-
 }

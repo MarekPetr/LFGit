@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.lfgit.R;
-import com.lfgit.tasks.GitExec;
+import com.lfgit.executors.GitExec;
 
 import static com.lfgit.utilites.Logger.LogMsg;
 

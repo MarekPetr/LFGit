@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
-import com.lfgit.tasks.GitExec;
+import com.lfgit.executors.GitExec;
 import com.lfgit.utilites.BasicFunctions;
 import com.lfgit.utilites.Constants;
 
