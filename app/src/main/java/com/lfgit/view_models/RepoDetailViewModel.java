@@ -45,23 +45,17 @@ public class RepoDetailViewModel extends AndroidViewModel {
         setTaskResult(result);
     }
 
-    private String gitAddAllToStage() {
-        return (gitExec.addAllToStage(mRepo.getLocalPath()));
-    }
+    private String getRepoPath() { return mRepo.getLocalPath(); }
 
-    private String gitCommit() {
-        return gitExec.commit(mRepo.getLocalPath());
-    }
+    private String gitAddAllToStage() { return gitExec.addAllToStage(getRepoPath()); }
 
-    private String gitPush() {
-        return gitExec.push(mRepo.getLocalPath());
-    }
+    private String gitCommit() { return gitExec.commit(getRepoPath()); }
 
-    private String gitPull() {
-        return gitExec.pull(mRepo.getLocalPath());
-    }
+    private String gitPush() { return gitExec.push(getRepoPath()); }
 
-    private String gitStatus() {return gitExec.status(mRepo.getLocalPath());}
+    private String gitPull() { return gitExec.pull(getRepoPath()); }
+
+    private String gitStatus() {return gitExec.status(getRepoPath());}
 
     private String gitNewBranch() {return null;}
 
