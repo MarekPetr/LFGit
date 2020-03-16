@@ -26,8 +26,8 @@ public class Repo implements Serializable {
     private String username;
     @ColumnInfo(name = "password")
     private String password;
-    @ColumnInfo(name = "latestCommitterUname")
-    private String latestCommitterUname;
+    @ColumnInfo(name = "latestCommitterName")
+    private String latestCommitterName;
     @ColumnInfo(name = "latestCommitterEmail")
     private String latestCommitterEmail;
     @ColumnInfo(name = "latestCommitDate")
@@ -91,12 +91,12 @@ public class Repo implements Serializable {
         this.password = password;
     }
 
-    public String getLatestCommitterUname() {
-        return latestCommitterUname;
+    public String getLatestCommitterName() {
+        return latestCommitterName;
     }
 
-    public void setLatestCommitterUname(String latestCommitterUname) {
-        this.latestCommitterUname = latestCommitterUname;
+    public void setLatestCommitterName(String latestCommitterName) {
+        this.latestCommitterName = latestCommitterName;
     }
 
     public String getLatestCommitterEmail() {
