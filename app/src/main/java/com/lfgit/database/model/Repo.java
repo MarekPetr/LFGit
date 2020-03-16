@@ -6,9 +6,6 @@ import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
-// TODO https://medium.com/mindorks/using-room-database-android-jetpack-675a89a0e942
-// DAO
-
 @Entity(tableName = "repo")
 public class Repo implements Serializable {
     public static final String TAG = Repo.class.getSimpleName();
