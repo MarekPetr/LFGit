@@ -19,7 +19,7 @@ import static com.lfgit.utilites.Constants.AddRepo.OK;
 public class LocalRepoViewModel extends AndroidViewModel {
     private GitExec gitExec;
     private RepoRepository mRepository;
-    private String repoName;
+    private String repoPath;
     private List<Repo> mAllRepos;
 
     public LocalRepoViewModel(Application application) {
@@ -29,11 +29,11 @@ public class LocalRepoViewModel extends AndroidViewModel {
     }
 
     public boolean initLocalRepo() {
-        if (!StringUtils.isBlank(repoName)) {
-            String initPath = BasicFunctions.getReposPath() + repoName;
-            gitExec.init(initPath);
+        if (!StringUtils.isBlank(repoPath)) {
+            //String initPath = BasicFunctions.getReposPath() + repoPath;
+            gitExec.init(repoPath);
             if (gitExec.getErrCode() == 0) {
-                mRepository.insertRepo(new Repo(initPath));
+                mRepository.insertRepo(new Repo(repoPath));
                 return true;
             }
         }
@@ -50,12 +50,12 @@ public class LocalRepoViewModel extends AndroidViewModel {
         return OK;
     }
 
-    public void setRepoName(String name) {
-        repoName = name;
+    public void setRepoPath(String name) {
+        repoPath = name;
     }
 
-    public String getRepoName() {
-        return repoName;
+    public String getRepoPath() {
+        return repoPath;
     }
 
     public void setAllRepos(List<Repo> repoList) {
@@ -63,8 +63,8 @@ public class LocalRepoViewModel extends AndroidViewModel {
     }
     
     public boolean cloneRepo() {
-        if (!StringUtils.isBlank(repoName)) {
-            String initPath = BasicFunctions.getReposPath() + repoName;
+        if (!StringUtils.isBlank(repoPath)) {
+            String initPath = BasicFunctions.getReposPath() + repoPath;
             gitExec.clone(initPath);
             return gitExec.getErrCode() == 0;
         }

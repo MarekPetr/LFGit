@@ -128,7 +128,7 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
                         showToastMsg("Repository already added");
                     }
                 } else {
-                    showToastMsg("Please choose directory from primary volume");
+                    showToastMsg(getString (R. string. browse_only_primary));
                 }
             }
         }
