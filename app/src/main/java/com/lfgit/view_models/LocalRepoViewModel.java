@@ -61,4 +61,13 @@ public class LocalRepoViewModel extends AndroidViewModel {
     public void setAllRepos(List<Repo> repoList) {
         mAllRepos = repoList;
     }
+    
+    public boolean cloneRepo() {
+        if (!StringUtils.isBlank(repoName)) {
+            String initPath = BasicFunctions.getReposPath() + repoName;
+            gitExec.clone(initPath);
+            return gitExec.getErrCode() == 0;
+        }
+        return false;
+    }
 }

@@ -1,6 +1,7 @@
 package com.lfgit.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -118,12 +119,17 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
         super.onActivityResult(requestCode, resultCode, intent);
 
         if (requestCode == ADD_REPO_REQUEST_CODE) {
-            Uri uri = intent.getData();
-            Uri DocUri = DocumentsContract.buildDocumentUriUsingTree(uri,
-                    DocumentsContract.getTreeDocumentId(uri));
-            if (localRepoViewModel.addLocalRepo(UriHelper.getPath(this, DocUri))
-                    == Constants.AddRepo.ADDED) {
-                showToastMsg("Repository already added");
+            if (resultCode == Activity.RESULT_OK) {
+                Uri uri = intent.getData();
+                String path = UriHelper.getDirPath(this, uri);
+                if (path != null) {
+                    if (localRepoViewModel.addLocalRepo(UriHelper.getDirPath(this, uri))
+                            == Constants.AddRepo.ADDED) {
+                        showToastMsg("Repository already added");
+                    }
+                } else {
+                    showToastMsg("Please choose directory from primary volume");
+                }
             }
         }
     }

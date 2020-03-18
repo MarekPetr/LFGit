@@ -89,7 +89,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:onClick="initButtonHandler"
+            android:onClick="cloneButtonHandler"
             android:text="@string/clone_button"
             bind:layout_constraintStart_toStartOf="@+id/cloneLocalPathEditText"
             bind:layout_constraintTop_toBottomOf="@+id/cloneLocalPathEditText" />

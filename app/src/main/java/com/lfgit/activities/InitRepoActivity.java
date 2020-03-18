@@ -31,4 +31,13 @@ public class InitRepoActivity extends BasicAbstractActivity {
             showToastMsg("Please enter the repo directory");
         }
     }
+
+    public void cloneButtonHandler(View view) {
+        if (mBinding.getLocalRepoViewModel().cloneRepo()) {
+            showToastMsg("Git repo cloned");
+            finish();
+        } else {
+            showToastMsg("Git clone failed");
+        }
+    }
 }

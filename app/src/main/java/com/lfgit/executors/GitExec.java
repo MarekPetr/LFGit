@@ -28,9 +28,15 @@ public class GitExec extends AbstractExecutor {
         return executeBinary(gitPath, dest, gitOperation, message);
     }
 
-    public String clone(String dest, String userName, String password) {
+    public String cloneUname(String dest, String userName, String password) {
         String gitOperation = "clone";
         String url = "https://" + userName + ":" + password + "@github.com/MarekPetr/test";
+        return executeBinary(gitPath, dest, gitOperation, url);
+    }
+
+    public String clone(String dest) {
+        String gitOperation = "clone";
+        String url = "https://github.com/MarekPetr/test";
         return executeBinary(gitPath, dest, gitOperation, url);
     }
 
