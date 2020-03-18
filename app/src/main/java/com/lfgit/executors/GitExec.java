@@ -17,9 +17,10 @@ public class GitExec extends AbstractExecutor {
         executeBinary(gitPath, ".","config", "--global", "user.name", username);
     }
 
-    public String init(String dest) {
+    public int init(String dest) {
         String gitOperation = "init";
-        return executeBinary(gitPath, dest, gitOperation);
+        executeBinary(gitPath, dest, gitOperation);
+        return getErrCode();
     }
 
     public String commit(String dest) {
@@ -34,10 +35,10 @@ public class GitExec extends AbstractExecutor {
         return executeBinary(gitPath, dest, gitOperation, url);
     }
 
-    public String clone(String dest) {
+    public int clone(String dest, String remoteURL) {
         String gitOperation = "clone";
-        String url = "https://github.com/MarekPetr/test";
-        return executeBinary(gitPath, dest, gitOperation, url);
+        executeBinary(gitPath, dest, gitOperation, remoteURL);
+        return getErrCode();
     }
 
     public String status(String dest) {
@@ -59,5 +60,4 @@ public class GitExec extends AbstractExecutor {
         String gitOperation = "pull";
         return executeBinary(gitPath, dest, gitOperation);
     }
-
 }

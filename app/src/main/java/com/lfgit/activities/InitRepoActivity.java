@@ -31,7 +31,7 @@ public class InitRepoActivity extends BasicAbstractActivity {
 
     public void initButtonHandler(View view) {
         if (mBinding.getLocalRepoViewModel().initLocalRepo()) {
-            String repoPath = mBinding.getLocalRepoViewModel().getRepoPath();
+            String repoPath = mBinding.getLocalRepoViewModel().getInitRepoPath();
             showToastMsg("New git repository \"" + repoPath + "\" initialized");
             finish();
         } else {
@@ -59,25 +59,35 @@ public class InitRepoActivity extends BasicAbstractActivity {
         startActivityForResult(intent, INIT_BROWSE_REQUEST_CODE);
     }
 
-    public String setRepoPath(Intent intent) {
+
+    public String setRepoPath(Intent intent, int requestCode) {
         Uri uri = intent.getData();
         String path = UriHelper.getDirPath(this, uri);
+        // path is null when primary directory URI was not returned from intent
         if (path != null) {
-            mBinding.getLocalRepoViewModel().setRepoPath(path);
+            if (requestCode == INIT_BROWSE_REQUEST_CODE) {
+                mBinding.getLocalRepoViewModel().setInitRepoPath(path);
+            } else if (requestCode == CLONE_BROWSE_REQUEST_CODE) {
+                mBinding.getLocalRepoViewModel().setCloneRepoPath(path);
+            }
         } else {
             showToastMsg(getString (R. string. browse_only_primary));
         }
         return path;
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == INIT_BROWSE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {            ;
-            mBinding.initPathEditText.setText(setRepoPath(intent));
-        }
-        else if (requestCode == CLONE_BROWSE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            mBinding.cloneLocalPathEditText.setText(setRepoPath(intent));
+        if (resultCode == Activity.RESULT_OK) {
+            String path = setRepoPath(intent, requestCode);
+            if (requestCode == INIT_BROWSE_REQUEST_CODE) {            ;
+                mBinding.initPathEditText.setText(path);
+            }
+            else if (requestCode == CLONE_BROWSE_REQUEST_CODE) {
+                mBinding.cloneLocalPathEditText.setText(path);
+            }
         }
     }
 }

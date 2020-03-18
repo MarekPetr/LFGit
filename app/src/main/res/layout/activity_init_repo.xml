@@ -31,7 +31,7 @@
             android:autofillHints="Directory"
             android:hint="@string/init_directory"
             android:inputType="text"
-            android:text="@={localRepoViewModel.repoPath}"
+            android:text="@={localRepoViewModel.initRepoPath}"
             bind:layout_constraintStart_toStartOf="parent"
             bind:layout_constraintEnd_toStartOf="@id/initBrowseButton"
             bind:layout_constraintTop_toBottomOf="@+id/initTextView" />
@@ -76,7 +76,7 @@
             android:autofillHints="remote URL"
             android:hint="@string/remote_url"
             android:inputType="text"
-            android:text=""
+            android:text="@={localRepoViewModel.CloneURLPath}"
             bind:layout_constraintEnd_toEndOf="parent"
             bind:layout_constraintStart_toStartOf="parent"
             bind:layout_constraintTop_toBottomOf="@+id/cloneTextView" />
@@ -89,7 +89,7 @@
             android:autofillHints="Directory"
             android:hint="@string/init_directory"
             android:inputType="text"
-            android:text="@={localRepoViewModel.repoPath}"
+            android:text="@={localRepoViewModel.cloneRepoPath}"
             bind:layout_constraintEnd_toStartOf="@+id/cloneBrowseButton"
             bind:layout_constraintStart_toStartOf="parent"
             bind:layout_constraintTop_toBottomOf="@+id/remotePathEditText" />
