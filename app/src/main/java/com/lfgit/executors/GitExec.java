@@ -1,5 +1,7 @@
 package com.lfgit.executors;
 
+import static com.lfgit.utilites.Constants.FILES_DIR;
+
 public class GitExec extends AbstractExecutor {
 
     private String gitPath = "git";
@@ -15,6 +17,10 @@ public class GitExec extends AbstractExecutor {
 
     public void setUsername(String username) {
         executeBinary(gitPath, ".","config", "--global", "user.name", username);
+    }
+
+    public void credentialHelperStore() {
+        executeBinary(gitPath, ".", "config", "--global", "credential.helper", "store");
     }
 
     public int init(String dest) {

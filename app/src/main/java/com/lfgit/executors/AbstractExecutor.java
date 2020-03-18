@@ -56,6 +56,7 @@ abstract class AbstractExecutor {
         env.put("LD_LIBRARY_PATH", LIB_DIR);
         env.put("PATH", BIN_DIR);
         env.put("HOME", FILES_DIR);
+        env.put("XDG_CONFIG_HOME",FILES_DIR);
 
         Process javap;
         Buffer buffer;
