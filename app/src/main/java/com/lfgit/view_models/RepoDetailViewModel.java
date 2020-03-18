@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.model.Repo;
-import com.lfgit.tasks.GitExec;
+import com.lfgit.executors.GitExec;
 
 public class RepoDetailViewModel extends AndroidViewModel {
     private Repo mRepo;

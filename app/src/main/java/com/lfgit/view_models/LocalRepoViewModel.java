@@ -1,12 +1,13 @@
 package com.lfgit.view_models;
 
 import android.app.Application;
+import android.net.Uri;
+
 import androidx.lifecycle.AndroidViewModel;
 
 import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
-import com.lfgit.tasks.GitExec;
-import com.lfgit.utilites.BasicFunctions;
+import com.lfgit.executors.GitExec;
 import com.lfgit.utilites.Constants;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,8 +20,11 @@ import static com.lfgit.utilites.Constants.AddRepo.OK;
 public class LocalRepoViewModel extends AndroidViewModel {
     private GitExec gitExec;
     private RepoRepository mRepository;
-    private String repoName;
     private List<Repo> mAllRepos;
+    private String initRepoPath;
+
+    private String cloneRepoPath;
+    private String cloneURLPath;
 
     public LocalRepoViewModel(Application application) {
         super(application);
@@ -28,12 +32,14 @@ public class LocalRepoViewModel extends AndroidViewModel {
         mRepository = new RepoRepository(application);
     }
 
+    public void setAllRepos(List<Repo> repoList) {
+        mAllRepos = repoList;
+    }
+
     public boolean initLocalRepo() {
-        if (!StringUtils.isBlank(repoName)) {
-            String initPath = BasicFunctions.getReposPath() + repoName;
-            gitExec.init(initPath);
-            if (gitExec.getErrCode() == 0) {
-                mRepository.insertRepo(new Repo(initPath));
+        if (!StringUtils.isBlank(initRepoPath)) {
+            if (gitExec.init(initRepoPath) == 0) {
+                mRepository.insertRepo(new Repo(initRepoPath));
                 return true;
             }
         }
@@ -50,15 +56,41 @@ public class LocalRepoViewModel extends AndroidViewModel {
         return OK;
     }
 
-    public void setRepoName(String name) {
-        repoName = name;
+    public boolean cloneRepo() {
+        if (!StringUtils.isBlank(cloneRepoPath)) {
+            Uri uri = Uri.parse(cloneURLPath);
+            // get directory from URL
+            String lastPathSegment = uri.getLastPathSegment();
+            if (gitExec.clone(cloneRepoPath, cloneURLPath) == 0) {
+                String fullRepoPath = cloneRepoPath + "/" + lastPathSegment;
+                mRepository.insertRepo(new Repo(fullRepoPath));
+                return true;
+            }
+        }
+        return false;
     }
 
-    public String getRepoName() {
-        return repoName;
+    public void setInitRepoPath(String name) {
+        initRepoPath = name;
     }
 
-    public void setAllRepos(List<Repo> repoList) {
-        mAllRepos = repoList;
+    public String getInitRepoPath() {
+        return initRepoPath;
+    }
+
+    public String getCloneRepoPath() {
+        return cloneRepoPath;
+    }
+
+    public void setCloneRepoPath(String cloneRepoPath) {
+        this.cloneRepoPath = cloneRepoPath;
+    }
+
+    public String getCloneURLPath() {
+        return cloneURLPath;
+    }
+
+    public void setCloneURLPath(String cloneURLPath) {
+        this.cloneURLPath = cloneURLPath;
     }
 }

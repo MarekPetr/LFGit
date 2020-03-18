@@ -11,6 +11,12 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
 public class UriHelper {
+
+    public static String getDirPath(final Context context, final Uri uri) {
+        Uri DocUri = DocumentsContract.buildDocumentUriUsingTree(uri,
+                DocumentsContract.getTreeDocumentId(uri));
+        return getPath(context, DocUri);
+    }
     // source:https://gist.github.com/asifmujteba/d89ba9074bc941de1eaa#file-asfurihelper
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static String getPath(final Context context, final Uri uri) {
@@ -30,8 +36,9 @@ public class UriHelper {
                     }
                     return Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
-
                 // TODO handle non-primary volumes
+                return null;
+
             }
             // DownloadsProvider
             else if (isDownloadsDocument(uri)) {
@@ -82,7 +89,7 @@ public class UriHelper {
         return null;
     }
 
-    public static String getDataColumn(Context context, Uri uri, String selection,
+    private static String getDataColumn(Context context, Uri uri, String selection,
                                        String[] selectionArgs) {
 
         Cursor cursor = null;

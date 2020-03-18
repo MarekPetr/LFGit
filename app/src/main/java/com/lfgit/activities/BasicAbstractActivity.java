@@ -10,7 +10,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.lfgit.BuildConfig;
-import com.lfgit.utilites.BasicFunctions;
 
 import org.jetbrains.annotations.NotNull;
 

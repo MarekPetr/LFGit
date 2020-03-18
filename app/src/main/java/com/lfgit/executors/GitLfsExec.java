@@ -1,4 +1,4 @@
-package com.lfgit.tasks;
+package com.lfgit.executors;
 
 public class GitLfsExec extends AbstractExecutor {
 

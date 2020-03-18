@@ -1,4 +1,4 @@
-package com.lfgit.tasks;
+package com.lfgit.executors;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,7 +17,7 @@ import static com.lfgit.utilites.Logger.LogMsg;
 
 abstract class AbstractExecutor {
 
-    private String mResult;
+    private String mResult = "";
     private int mErrCode;
     String mExeDir;
 
@@ -36,7 +36,8 @@ abstract class AbstractExecutor {
     String executeBinary(String binary, String destDir, String... strings) {
         String exeBin = mExeDir + binary;
         File f = new File(destDir);
-        if (binary.equals("git") && strings[0].equals("init")) {
+        if (binary.equals("git") &&
+                (strings[0].equals("init") || strings[0].equals("clone"))) {
             if (!f.exists()) {
                 f.mkdirs();
             }
