@@ -1,5 +1,6 @@
 package com.lfgit.executors;
 
+import android.os.AsyncTask;
 import android.os.Environment;
 
 import java.io.BufferedReader;
@@ -20,9 +21,12 @@ import static com.lfgit.utilites.Logger.LogMsg;
 
 abstract class AbstractExecutor {
 
+    private Process mProcess = null;
     private String mResult = "";
     private int mErrCode;
     String mExeDir;
+    final StringBuffer mOutBuffer = new StringBuffer();
+    private static final String EOL = System.getProperty("line.separator");
 
     AbstractExecutor() {
         mExeDir = BIN_DIR;
@@ -61,60 +65,54 @@ abstract class AbstractExecutor {
         env.put("HOME", FILES_DIR);
         env.put("XDG_CONFIG_HOME",FILES_DIR);
 
-        Process javap;
-        Buffer buffer;
+        Process javap = null;
         try {
             javap = pb.start();
-            buffer = new Buffer(javap.getInputStream());
-            mErrCode = javap.waitFor();
-            mResult = buffer.getOutput();
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
+            mProcess = null;
             e.printStackTrace();
         }
-        if (mResult.isEmpty()) {
-            if (mErrCode == 0) {
-                mResult = "Operation successful";
-            } else {
-                mResult = "Operation failed";
+
+        mProcess = javap;
+
+        new Thread() {
+            @Override
+            public void run() {
+                String line;
+                try {
+                    InputStream stdout = mProcess.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
+                    while((line = reader.readLine()) != null) {
+                        mOutBuffer.append(line).append(EOL);
+                    }
+                } catch(IOException e) {
+                    // ignore
+                }
+
+                try {
+                    mErrCode = mProcess.waitFor();
+                    mResult = mOutBuffer.toString();
+                    if (mResult.isEmpty()) {
+                        if (mErrCode == 0) {
+                            mResult = "Operation successful";
+                        } else {
+                            mResult = "Operation failed";
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    // ignore
+                }
             }
-        }
+        }.start();
+
         return mResult;
     }
-    // source https://github.com/jjNford/android-shell/blob/master/src/com/jjnford/android/util/Shell.java
-    private static class Buffer extends Thread {
-        private InputStream mInputStream;
-        private StringBuffer mBuffer;
-        private static final String EOL = System.getProperty("line.separator");
 
-        /**
-         * @param inputStream Data stream to get shell output from.
-         */
-        Buffer(InputStream inputStream) {
-            mInputStream = inputStream;
-            mBuffer = new StringBuffer();
-            this.start();
-        }
-
-        public String getOutput() {
-            try {
-                this.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return mBuffer.toString();
-        }
+    private class ExecTask extends AsyncTask<> {
 
         @Override
-        public void run() {
-            try {
-                String line;
-                BufferedReader reader = new BufferedReader(new InputStreamReader(mInputStream));
-                while((line = reader.readLine()) != null) {
-                    mBuffer.append(line).append(EOL);
-                }
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
+        protected Object doInBackground(Object[] objects) {
+            return null;
         }
     }
 }
