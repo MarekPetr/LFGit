@@ -107,21 +107,11 @@ abstract class AbstractExecutor {
         @Override
         public void run() {
             try {
-                /*String line;
+                String line;
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mInputStream));
                 while((line = reader.readLine()) != null) {
                     mBuffer.append(line).append(EOL);
-                }*/
-                String dirPath = Environment.getExternalStorageDirectory().toString() + "/strace_cred_log.txt";
-
-                File targetFile = new File(dirPath);
-                if (!targetFile.exists()) {
-                    targetFile.mkdirs();
                 }
-                java.nio.file.Files.copy(
-                        mInputStream,
-                        targetFile.toPath(),
-                        StandardCopyOption.REPLACE_EXISTING);
             } catch(IOException e) {
                 e.printStackTrace();
             }
