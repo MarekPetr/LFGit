@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements TaskListener {
         final Button button = findViewById(R.id.action_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                annex();
+                strace();
             }
         });
     }
