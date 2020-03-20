@@ -1,10 +1,13 @@
 package com.lfgit.executors;
 
+import android.os.Environment;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +37,7 @@ abstract class AbstractExecutor {
     }
 
     String executeBinary(String binary, String destDir, String... strings) {
-        String exeBin = mExeDir + binary;
+        String exeBin = mExeDir + "/" + binary;
         File f = new File(destDir);
         if (binary.equals("git") &&
                 (strings[0].equals("init") || strings[0].equals("clone"))) {
@@ -104,11 +107,21 @@ abstract class AbstractExecutor {
         @Override
         public void run() {
             try {
-                String line;
+                /*String line;
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mInputStream));
                 while((line = reader.readLine()) != null) {
                     mBuffer.append(line).append(EOL);
+                }*/
+                String dirPath = Environment.getExternalStorageDirectory().toString() + "/strace_cred_log.txt";
+
+                File targetFile = new File(dirPath);
+                if (!targetFile.exists()) {
+                    targetFile.mkdirs();
                 }
+                java.nio.file.Files.copy(
+                        mInputStream,
+                        targetFile.toPath(),
+                        StandardCopyOption.REPLACE_EXISTING);
             } catch(IOException e) {
                 e.printStackTrace();
             }

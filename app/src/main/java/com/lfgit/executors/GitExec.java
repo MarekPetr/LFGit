@@ -62,6 +62,11 @@ public class GitExec extends AbstractExecutor {
         return executeBinary(gitPath, dest, gitOperation);
     }
 
+    public String push_strace(String dest) {
+        String gitOperation = "push";
+        return executeBinary("strace", dest, "/data/data/com.lfgit/files/usr/bin/git", "push");
+    }
+
     public String pull(String dest) {
         String gitOperation = "pull";
         return executeBinary(gitPath, dest, gitOperation);
