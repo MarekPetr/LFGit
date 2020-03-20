@@ -51,7 +51,9 @@ public class RepoDetailViewModel extends AndroidViewModel {
 
     private String gitCommit() { return gitExec.commit(getRepoPath()); }
 
-    private String gitPush() { return gitExec.push(getRepoPath()); }
+    private String gitPush() {
+        gitExec.credentialHelperStore();
+        return gitExec.push_strace(getRepoPath()); }//TODO CHANGE
 
     private String gitPull() { return gitExec.pull(getRepoPath()); }
 

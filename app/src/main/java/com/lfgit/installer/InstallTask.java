@@ -47,7 +47,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> {
             }
             copyFileOrDir(assetDir);
         }
-        File dir = new File(APP_DIR + "repos");
+        File dir = new File(APP_DIR + "/repos");
         if (!dir.exists()) {
             dir.mkdir();
         }
@@ -79,11 +79,11 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> {
             if (noArchDir.equals(path)) noArchDir = "";
 
 
+            String pathNoArch = FILES_DIR + "/" + noArchDir;
             if (assets.length == 0) {
-                copyFile(path, noArchDir);
+                copyFile(path, pathNoArch);
             } else {
-                String fullPath = FILES_DIR + noArchDir;
-                File dir = new File(fullPath);
+                File dir = new File(pathNoArch);
                 if (!dir.exists())
                     dir.mkdir();
                 for (String asset : assets) {
@@ -97,15 +97,14 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> {
         }
     }
 
-    private void copyFile(String filename, String noArchDir) {
+    private void copyFile(String filename, String pathNoArch) {
 
         InputStream in = null;
         OutputStream out = null;
         try {
             in = assetManager.open(filename);
-            String newFileName = FILES_DIR + "/" + noArchDir;
-            File file = new File(newFileName);
-            out = new FileOutputStream(newFileName);
+            File file = new File(pathNoArch);
+            out = new FileOutputStream(pathNoArch);
 
             byte[] buffer = new byte[1024];
             int read;
