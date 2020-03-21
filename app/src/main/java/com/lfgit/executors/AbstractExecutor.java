@@ -98,8 +98,7 @@ abstract class AbstractExecutor {
                             mResult = "Operation failed";
                         }
                     }
-                    mCallback.passResult(mResult);
-                    mCallback.passErrCode(mErrCode, RepoTask.valueOf(strings[0]));
+                    mCallback.passResult(RepoTask.valueOf(strings[0]), mResult, mErrCode);
                 } catch (InterruptedException e) {
                     // ignore
                 }

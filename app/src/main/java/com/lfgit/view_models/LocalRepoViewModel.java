@@ -66,7 +66,7 @@ public class LocalRepoViewModel extends AndroidViewModel implements ExecCallback
     }
 
     @Override
-    public void passErrCode(int errCode, Constants.RepoTask task) {
+    public void passResult(Constants.RepoTask task, String result, int errCode) {
         if (task == CLONE) {
             if (errCode == 0) {
                 Uri uri = Uri.parse(cloneURLPath);
@@ -88,9 +88,6 @@ public class LocalRepoViewModel extends AndroidViewModel implements ExecCallback
         }
     }
 
-    @Override
-    public void passResult(String result) {
-    }
     public SingleLiveEvent<String> getCloneResult() {
         return mCloneResult;
     }
@@ -115,4 +112,6 @@ public class LocalRepoViewModel extends AndroidViewModel implements ExecCallback
     public void setCloneURLPath(String cloneURLPath) {
         this.cloneURLPath = cloneURLPath;
     }
+
+
 }

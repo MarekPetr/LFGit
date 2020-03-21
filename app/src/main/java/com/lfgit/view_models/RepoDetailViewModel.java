@@ -22,13 +22,8 @@ public class RepoDetailViewModel extends AndroidViewModel implements ExecCallbac
     }
 
     @Override
-    public void passResult(String result) {
+    public void passResult(Constants.RepoTask task, String result, int errCode) {
         setTaskResult(result);
-    }
-
-    @Override
-    public void passErrCode(int errCode, Constants.RepoTask task) {
-
     }
 
     public void setRepo(Repo repo) {
