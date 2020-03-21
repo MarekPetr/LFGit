@@ -124,7 +124,7 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
                 String path = UriHelper.getDirPath(this, uri);
                 if (path != null) {
                     if (localRepoViewModel.addLocalRepo(UriHelper.getDirPath(this, uri))
-                            == Constants.AddRepo.ADDED) {
+                            == Constants.AddRepo.ALREADY_ADDED) {
                         showToastMsg("Repository already added");
                     }
                 } else {

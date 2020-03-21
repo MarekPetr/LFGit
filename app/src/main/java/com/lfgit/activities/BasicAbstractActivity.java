@@ -1,4 +1,5 @@
 package com.lfgit.activities;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class BasicAbstractActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST = 1;
+    ProgressDialog mProgressDialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +66,15 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
         void onClicked();
     }
 
+    void showProgressDialog() {
+        mProgressDialog = ProgressDialog.show(this, "Executing", "Please wait a moment...");
+    }
+
+    void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
     class InstallPreference {
         private final String PREFS_NAME = "installPref";
         private final String PREF_VERSION_CODE_KEY = "version_code";

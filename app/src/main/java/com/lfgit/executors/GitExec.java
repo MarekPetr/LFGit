@@ -1,12 +1,10 @@
 package com.lfgit.executors;
 
-import static com.lfgit.utilites.Constants.FILES_DIR;
-
 public class GitExec extends AbstractExecutor {
 
     private String gitPath = "git";
 
-    public GitExec(ExecCallback callback) {
+    public GitExec(ExecListener callback) {
         super(callback);
     }
 

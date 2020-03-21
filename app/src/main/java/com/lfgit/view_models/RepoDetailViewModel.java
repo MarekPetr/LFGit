@@ -1,28 +1,22 @@
 package com.lfgit.view_models;
-
 import android.app.Application;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.model.Repo;
-import com.lfgit.executors.ExecCallback;
-import com.lfgit.executors.GitExec;
 import com.lfgit.utilites.Constants;
 
-public class RepoDetailViewModel extends AndroidViewModel implements ExecCallback {
+public class RepoDetailViewModel extends ExecViewModel {
     private Repo mRepo;
-    private MutableLiveData<String> taskResult = new MutableLiveData<>();
-    private GitExec mGitExec;
+    private MutableLiveData<String> mTaskResult = new MutableLiveData<>();
 
     public RepoDetailViewModel(@NonNull Application application) {
         super(application);
-        mGitExec = new GitExec(this);
     }
 
     @Override
-    public void passResult(Constants.RepoTask task, String result, int errCode) {
+    public void onExecFinished(Constants.RepoTask task, String result, int errCode) {
+        unsetPending();
         setTaskResult(result);
     }
 
@@ -31,11 +25,13 @@ public class RepoDetailViewModel extends AndroidViewModel implements ExecCallbac
     }
 
     public MutableLiveData<String> getTaskResult() {
-        return taskResult;
+        return mTaskResult;
     }
     private void setTaskResult(String result) {
-        taskResult.postValue(result);
+        mTaskResult.postValue(result);
     }
+
+    public MutableLiveData<Boolean> getExecPending() {return mExecPending;}
 
     public void execGitTask(int drawerPosition) {
         switch(drawerPosition) {

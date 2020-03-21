@@ -1,5 +1,6 @@
 package com.lfgit.activities;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
@@ -37,6 +38,14 @@ public class RepoDetailActivity extends BasicAbstractActivity {
 
         Repo repo = (Repo) getIntent().getSerializableExtra(Repo.TAG);
         viewModel.setRepo(repo);
+
+        viewModel.getExecPending().observe(this, isPending -> {
+            if (isPending) {
+                showProgressDialog();
+            } else {
+                hideProgressDialog();
+            }
+        });
     }
 
     @Override
@@ -75,5 +84,7 @@ public class RepoDetailActivity extends BasicAbstractActivity {
     public void openDrawer() {
         mDrawerLayout.openDrawer(mRightDrawer);
     }
+
+
 
 }

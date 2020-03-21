@@ -44,8 +44,13 @@ public class Constants {
             return task;
         }
 
-        public RepoTask toValue(String task) {
-            return RepoTask.valueOf(task);
+        public static RepoTask toValue(String task) {
+            for(RepoTask needle : values()) {
+                if (needle.task.equals(task)) {
+                    return needle;
+                }
+            }
+            return null;
         }
     }
 }

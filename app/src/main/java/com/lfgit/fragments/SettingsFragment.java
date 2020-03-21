@@ -5,13 +5,14 @@ import android.os.Bundle;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.lfgit.R;
-import com.lfgit.executors.ExecCallback;
+import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
+import com.lfgit.utilites.Constants;
 
 import static com.lfgit.utilites.Logger.LogMsg;
 
 public class SettingsFragment extends PreferenceFragmentCompat
-        implements SharedPreferences.OnSharedPreferenceChangeListener, ExecCallback {
+        implements SharedPreferences.OnSharedPreferenceChangeListener, ExecListener {
 
     private GitExec gitExec = new GitExec(this);
 
@@ -46,11 +47,12 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     @Override
-    public void passResult(String result) {
+    public void onExecStarted() {
+
     }
 
     @Override
-    public void passErrCode(int errCode, String task) {
+    public void onExecFinished(Constants.RepoTask task, String result, int errCode) {
 
     }
 }

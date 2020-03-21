@@ -1,13 +1,15 @@
 package com.lfgit.view_models;
 
+import android.app.Activity;
 import android.app.Application;
 import android.net.Uri;
 
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
-import com.lfgit.executors.ExecCallback;
+import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
 import com.lfgit.utilites.Constants;
 
@@ -20,8 +22,7 @@ import static com.lfgit.utilites.Constants.AddRepo.OK;
 import static com.lfgit.utilites.Constants.RepoTask.CLONE;
 import static com.lfgit.utilites.Constants.RepoTask.INIT;
 
-public class LocalRepoViewModel extends AndroidViewModel implements ExecCallback {
-    private GitExec mGitExec;
+public class LocalRepoViewModel extends ExecViewModel {
     private RepoRepository mRepository;
     private List<Repo> mAllRepos;
 
@@ -35,7 +36,6 @@ public class LocalRepoViewModel extends AndroidViewModel implements ExecCallback
 
     public LocalRepoViewModel(Application application) {
         super(application);
-        mGitExec = new GitExec(this);
         mRepository = new RepoRepository(application);
     }
 
@@ -66,7 +66,8 @@ public class LocalRepoViewModel extends AndroidViewModel implements ExecCallback
     }
 
     @Override
-    public void passResult(Constants.RepoTask task, String result, int errCode) {
+    public void onExecFinished(Constants.RepoTask task, String result, int errCode) {
+        mExecPending.postValue(false);
         if (task == CLONE) {
             if (errCode == 0) {
                 Uri uri = Uri.parse(cloneURLPath);
@@ -112,6 +113,4 @@ public class LocalRepoViewModel extends AndroidViewModel implements ExecCallback
     public void setCloneURLPath(String cloneURLPath) {
         this.cloneURLPath = cloneURLPath;
     }
-
-
 }

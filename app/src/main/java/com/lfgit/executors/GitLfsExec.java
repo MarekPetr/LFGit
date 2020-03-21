@@ -2,7 +2,7 @@ package com.lfgit.executors;
 
 public class GitLfsExec extends AbstractExecutor {
 
-    GitLfsExec(ExecCallback callback) {
+    GitLfsExec(ExecListener callback) {
         super(callback);
     }
 

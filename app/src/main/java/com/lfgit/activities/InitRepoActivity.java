@@ -37,6 +37,11 @@ public class InitRepoActivity extends BasicAbstractActivity {
             showToastMsg(initResult);
             finish();
         });
+
+        localRepoViewModel.getExecPending().observe(this, isPending -> {
+            if (isPending) showProgressDialog();
+            else hideProgressDialog();
+        });
     }
 
     public void cloneBrowseButtonHandler(View view) {
@@ -48,7 +53,6 @@ public class InitRepoActivity extends BasicAbstractActivity {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         startActivityForResult(intent, INIT_BROWSE_REQUEST_CODE);
     }
-
 
     public String setRepoPath(Intent intent, int requestCode) {
         Uri uri = intent.getData();
@@ -65,7 +69,6 @@ public class InitRepoActivity extends BasicAbstractActivity {
         }
         return path;
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {

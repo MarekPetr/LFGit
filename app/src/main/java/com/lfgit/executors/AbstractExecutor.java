@@ -24,9 +24,9 @@ abstract class AbstractExecutor {
     String mExeDir;
     private final StringBuffer mOutBuffer = new StringBuffer();
     private static final String EOL = System.getProperty("line.separator");
-    private ExecCallback mCallback;
+    private ExecListener mCallback;
 
-    AbstractExecutor(ExecCallback callback) {
+    AbstractExecutor(ExecListener callback) {
         mExeDir = BIN_DIR;
         mCallback = callback;
     }
@@ -71,12 +71,12 @@ abstract class AbstractExecutor {
             mProcess = null;
             e.printStackTrace();
         }
-
         mProcess = javap;
 
         new Thread() {
             @Override
             public void run() {
+                mCallback.onExecStarted();
                 String line;
                 try {
                     InputStream stdout = mProcess.getInputStream();
@@ -98,7 +98,7 @@ abstract class AbstractExecutor {
                             mResult = "Operation failed";
                         }
                     }
-                    mCallback.passResult(RepoTask.valueOf(strings[0]), mResult, mErrCode);
+                    mCallback.onExecFinished(RepoTask.toValue(strings[0]), mResult, mErrCode);
                 } catch (InterruptedException e) {
                     // ignore
                 }
