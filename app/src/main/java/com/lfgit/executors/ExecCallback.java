@@ -4,5 +4,5 @@ import com.lfgit.utilites.Constants;
 
 public interface ExecCallback {
     void passResult(String result);
-    void passErrCode(int errCode, String task);
+    void passErrCode(int errCode, Constants.RepoTask task);
 }

@@ -1,5 +1,4 @@
 package com.lfgit.executors;
-import com.lfgit.utilites.Constants;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,7 +22,7 @@ abstract class AbstractExecutor {
     private String mResult = "";
     private int mErrCode;
     String mExeDir;
-    final StringBuffer mOutBuffer = new StringBuffer();
+    private final StringBuffer mOutBuffer = new StringBuffer();
     private static final String EOL = System.getProperty("line.separator");
     private ExecCallback mCallback;
 
@@ -100,7 +99,7 @@ abstract class AbstractExecutor {
                         }
                     }
                     mCallback.passResult(mResult);
-                    mCallback.passErrCode(mErrCode, strings[0]);
+                    mCallback.passErrCode(mErrCode, RepoTask.valueOf(strings[0]));
                 } catch (InterruptedException e) {
                     // ignore
                 }

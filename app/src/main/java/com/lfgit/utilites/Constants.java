@@ -1,5 +1,9 @@
 package com.lfgit.utilites;
 
+import com.lfgit.database.model.Repo;
+
+import org.jetbrains.annotations.NotNull;
+
 public class Constants {
     public static final String PKG = "com.lfgit/";
     public static final String APP_DIR = "/data/data" + "/" + PKG;
@@ -12,7 +16,7 @@ public class Constants {
 
     public enum AddRepo {
         OK(0),
-        ADDED(1);
+        ALREADY_ADDED(1);
 
         int value;
         AddRepo(int value) {
@@ -21,12 +25,27 @@ public class Constants {
     }
 
     public enum RepoTask {
-        INIT(0),
-        CLONE(1);
+        INIT("init"),
+        CLONE("clone"),
+        ADD("add"),
+        COMMIT("commit"),
+        PUSH("push"),
+        PULL("pull"),
+        STATUS("status");
 
-        int value;
-        RepoTask(int value) {
-            this.value = value;
+        private String task;
+        RepoTask(String task) {
+            this.task = task;
+        }
+
+        @NotNull
+        @Override
+        public String toString(){
+            return task;
+        }
+
+        public RepoTask toValue(String task) {
+            return RepoTask.valueOf(task);
         }
     }
 }

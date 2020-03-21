@@ -9,15 +9,16 @@ import androidx.lifecycle.MutableLiveData;
 import com.lfgit.database.model.Repo;
 import com.lfgit.executors.ExecCallback;
 import com.lfgit.executors.GitExec;
+import com.lfgit.utilites.Constants;
 
 public class RepoDetailViewModel extends AndroidViewModel implements ExecCallback {
     private Repo mRepo;
     private MutableLiveData<String> taskResult = new MutableLiveData<>();
-    private GitExec gitExec;
+    private GitExec mGitExec;
 
     public RepoDetailViewModel(@NonNull Application application) {
         super(application);
-        gitExec = new GitExec(this);
+        mGitExec = new GitExec(this);
     }
 
     @Override
@@ -26,7 +27,7 @@ public class RepoDetailViewModel extends AndroidViewModel implements ExecCallbac
     }
 
     @Override
-    public void passErrCode(int errCode, String task) {
+    public void passErrCode(int errCode, Constants.RepoTask task) {
 
     }
 
@@ -57,15 +58,15 @@ public class RepoDetailViewModel extends AndroidViewModel implements ExecCallbac
 
     private String getRepoPath() { return mRepo.getLocalPath(); }
 
-    private void gitAddAllToStage() { gitExec.addAllToStage(getRepoPath()); }
+    private void gitAddAllToStage() { mGitExec.addAllToStage(getRepoPath()); }
 
-    private void gitCommit() { gitExec.commit(getRepoPath()); }
+    private void gitCommit() { mGitExec.commit(getRepoPath()); }
 
-    private void gitPush() { gitExec.push(getRepoPath()); }
+    private void gitPush() { mGitExec.push(getRepoPath()); }
 
-    private void gitPull() { gitExec.pull(getRepoPath()); }
+    private void gitPull() { mGitExec.pull(getRepoPath()); }
 
-    private void gitStatus() {gitExec.status(getRepoPath());}
+    private void gitStatus() {mGitExec.status(getRepoPath());}
 
     private void gitNewBranch() {}
 

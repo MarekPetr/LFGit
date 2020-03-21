@@ -15,14 +15,17 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
-import static com.lfgit.utilites.Constants.AddRepo.ADDED;
+import static com.lfgit.utilites.Constants.AddRepo.ALREADY_ADDED;
 import static com.lfgit.utilites.Constants.AddRepo.OK;
+import static com.lfgit.utilites.Constants.RepoTask.CLONE;
+import static com.lfgit.utilites.Constants.RepoTask.INIT;
 
 public class LocalRepoViewModel extends AndroidViewModel implements ExecCallback {
-    private GitExec gitExec;
+    private GitExec mGitExec;
     private RepoRepository mRepository;
     private List<Repo> mAllRepos;
 
+    // data binding
     private String initRepoPath;
     private String cloneRepoPath;
     private String cloneURLPath;
@@ -32,7 +35,7 @@ public class LocalRepoViewModel extends AndroidViewModel implements ExecCallback
 
     public LocalRepoViewModel(Application application) {
         super(application);
-        gitExec = new GitExec(this);
+        mGitExec = new GitExec(this);
         mRepository = new RepoRepository(application);
     }
 
@@ -43,7 +46,7 @@ public class LocalRepoViewModel extends AndroidViewModel implements ExecCallback
     public Constants.AddRepo addLocalRepo(String path) {
         for (Repo repo : mAllRepos) {
             if (path.equals(repo.getLocalPath())) {
-                return ADDED;
+                return ALREADY_ADDED;
             }
         }
         mRepository.insertRepo(new Repo(path));
@@ -52,48 +55,19 @@ public class LocalRepoViewModel extends AndroidViewModel implements ExecCallback
 
     public void cloneRepoHandler() {
         if (!StringUtils.isBlank(cloneRepoPath)) {
-            gitExec.clone(cloneRepoPath, cloneURLPath);
+            mGitExec.clone(cloneRepoPath, cloneURLPath);
         }
     }
 
     public void initRepoHandler() {
         if (!StringUtils.isBlank(initRepoPath)) {
-            gitExec.init(initRepoPath);
+            mGitExec.init(initRepoPath);
         }
     }
 
-    public void setInitRepoPath(String name) {
-        initRepoPath = name;
-    }
-
-    public String getInitRepoPath() {
-        return initRepoPath;
-    }
-
-    public String getCloneRepoPath() {
-        return cloneRepoPath;
-    }
-
-    public void setCloneRepoPath(String cloneRepoPath) {
-        this.cloneRepoPath = cloneRepoPath;
-    }
-
-    public String getCloneURLPath() {
-        return cloneURLPath;
-    }
-
-    public void setCloneURLPath(String cloneURLPath) {
-        this.cloneURLPath = cloneURLPath;
-    }
-
     @Override
-    public void passResult(String result) {
-
-    }
-
-    @Override
-    public void passErrCode(int errCode,String task) {
-        if (task.equals("clone")) {
+    public void passErrCode(int errCode, Constants.RepoTask task) {
+        if (task == CLONE) {
             if (errCode == 0) {
                 Uri uri = Uri.parse(cloneURLPath);
                 // get directory from URL
@@ -104,7 +78,7 @@ public class LocalRepoViewModel extends AndroidViewModel implements ExecCallback
             } else {
                 mCloneResult.postValue("Clone failed");
             }
-        } else if (task.equals("init")) {
+        } else if (task == INIT) {
             if (errCode == 0) {
                 mRepository.insertRepo(new Repo(initRepoPath));
                 mInitResult.postValue("New repo " + initRepoPath + " initialized");
@@ -114,11 +88,31 @@ public class LocalRepoViewModel extends AndroidViewModel implements ExecCallback
         }
     }
 
+    @Override
+    public void passResult(String result) {
+    }
     public SingleLiveEvent<String> getCloneResult() {
         return mCloneResult;
     }
-
     public SingleLiveEvent<String> getInitResult() {
         return mInitResult;
+    }
+    public void setInitRepoPath(String name) {
+        initRepoPath = name;
+    }
+    public String getInitRepoPath() {
+        return initRepoPath;
+    }
+    public String getCloneRepoPath() {
+        return cloneRepoPath;
+    }
+    public void setCloneRepoPath(String cloneRepoPath) {
+        this.cloneRepoPath = cloneRepoPath;
+    }
+    public String getCloneURLPath() {
+        return cloneURLPath;
+    }
+    public void setCloneURLPath(String cloneURLPath) {
+        this.cloneURLPath = cloneURLPath;
     }
 }
