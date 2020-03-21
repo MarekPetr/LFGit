@@ -1,14 +1,11 @@
 package com.lfgit.executors;
-
-import android.os.AsyncTask;
-import android.os.Environment;
+import com.lfgit.utilites.Constants;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +14,7 @@ import java.util.Map;
 import static com.lfgit.utilites.Constants.BIN_DIR;
 import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Constants.LIB_DIR;
+import static com.lfgit.utilites.Constants.RepoTask;
 import static com.lfgit.utilites.Logger.LogMsg;
 
 abstract class AbstractExecutor {
@@ -27,9 +25,11 @@ abstract class AbstractExecutor {
     String mExeDir;
     final StringBuffer mOutBuffer = new StringBuffer();
     private static final String EOL = System.getProperty("line.separator");
+    private ExecCallback mCallback;
 
-    AbstractExecutor() {
+    AbstractExecutor(ExecCallback callback) {
         mExeDir = BIN_DIR;
+        mCallback = callback;
     }
 
     public String getResult() {
@@ -40,7 +40,7 @@ abstract class AbstractExecutor {
         return mErrCode;
     }
 
-    String executeBinary(String binary, String destDir, String... strings) {
+    void executeBinary(String binary, String destDir, String... strings) {
         String exeBin = mExeDir + "/" + binary;
         File f = new File(destDir);
         if (binary.equals("git") &&
@@ -99,21 +99,13 @@ abstract class AbstractExecutor {
                             mResult = "Operation failed";
                         }
                     }
+                    mCallback.passResult(mResult);
+                    mCallback.passErrCode(mErrCode, strings[0]);
                 } catch (InterruptedException e) {
                     // ignore
                 }
             }
         }.start();
-
-        return mResult;
-    }
-
-    private class ExecTask extends AsyncTask<> {
-
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            return null;
-        }
     }
 }
 

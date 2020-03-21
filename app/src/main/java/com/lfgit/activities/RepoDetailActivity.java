@@ -33,9 +33,7 @@ public class RepoDetailActivity extends BasicAbstractActivity {
         mBinding.setLifecycleOwner(this);
 
         setupDrawer(viewModel);
-
-        TextView resultTV = findViewById(R.id.taskResult);
-        resultTV.setMovementMethod(new ScrollingMovementMethod());
+        mBinding.taskResult.setMovementMethod(new ScrollingMovementMethod());
 
         Repo repo = (Repo) getIntent().getSerializableExtra(Repo.TAG);
         viewModel.setRepo(repo);

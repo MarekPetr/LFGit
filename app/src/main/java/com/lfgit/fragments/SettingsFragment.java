@@ -5,12 +5,15 @@ import android.os.Bundle;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.lfgit.R;
+import com.lfgit.executors.ExecCallback;
 import com.lfgit.executors.GitExec;
 
 import static com.lfgit.utilites.Logger.LogMsg;
 
-public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener{
-    private GitExec gitExec = new GitExec();
+public class SettingsFragment extends PreferenceFragmentCompat
+        implements SharedPreferences.OnSharedPreferenceChangeListener, ExecCallback {
+
+    private GitExec gitExec = new GitExec(this);
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -40,5 +43,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onPause() {
         super.onPause();
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void passResult(String result) {
+    }
+
+    @Override
+    public void passErrCode(int errCode, String task) {
+
     }
 }

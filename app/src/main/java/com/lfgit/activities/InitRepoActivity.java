@@ -27,27 +27,17 @@ public class InitRepoActivity extends BasicAbstractActivity {
         LocalRepoViewModel localRepoViewModel = new ViewModelProvider(this).get(LocalRepoViewModel.class);
         mBinding.setLocalRepoViewModel(localRepoViewModel);
         mBinding.setLifecycleOwner(this);
-    }
 
-    public void initButtonHandler(View view) {
-        if (mBinding.getLocalRepoViewModel().initLocalRepo()) {
-            String repoPath = mBinding.getLocalRepoViewModel().getInitRepoPath();
-            showToastMsg("New git repository \"" + repoPath + "\" initialized");
+        localRepoViewModel.getCloneResult().observe(this, cloneResult -> {
+            showToastMsg(cloneResult);
             finish();
-        } else {
-            showToastMsg("Please enter the repo directory");
-        }
-    }
+        });
 
-    public void cloneButtonHandler(View view) {
-        if (mBinding.getLocalRepoViewModel().cloneRepo()) {
-            showToastMsg("Git repo cloned");
+        localRepoViewModel.getInitResult().observe(this, initResult -> {
+            showToastMsg(initResult);
             finish();
-        } else {
-            showToastMsg("Git clone failed");
-        }
+        });
     }
-
 
     public void cloneBrowseButtonHandler(View view) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);

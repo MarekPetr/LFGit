@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24sp"
-            android:onClick="initButtonHandler"
+            android:onClick="@{() -> localRepoViewModel.initRepoHandler()}"
             android:text="@string/init_button"
             bind:layout_constraintStart_toStartOf="@+id/initPathEditText"
             bind:layout_constraintTop_toBottomOf="@+id/initPathEditText" />
@@ -109,7 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:onClick="cloneButtonHandler"
+            android:onClick="@{() -> localRepoViewModel.cloneRepoHandler()}"
             android:text="@string/clone_button"
             bind:layout_constraintStart_toStartOf="@+id/cloneLocalPathEditText"
             bind:layout_constraintTop_toBottomOf="@+id/cloneLocalPathEditText" />

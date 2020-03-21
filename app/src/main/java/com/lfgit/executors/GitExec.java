@@ -6,6 +6,10 @@ public class GitExec extends AbstractExecutor {
 
     private String gitPath = "git";
 
+    public GitExec(ExecCallback callback) {
+        super(callback);
+    }
+
     public void config(String email, String username) {
         executeBinary(gitPath, ".","config", "--global", "user.name", username);
         executeBinary(gitPath, ".","config", "--global", "user.email", email);
@@ -29,46 +33,45 @@ public class GitExec extends AbstractExecutor {
         return getErrCode();
     }
 
-    public String commit(String dest) {
+    public void commit(String dest) {
         String gitOperation = "commit";
         String message = "-m \"newFileToCommit\"";
-        return executeBinary(gitPath, dest, gitOperation, message);
+        executeBinary(gitPath, dest, gitOperation, message);
     }
 
-    public String cloneUname(String dest, String userName, String password) {
+    public void cloneUname(String dest, String userName, String password) {
         String gitOperation = "clone";
         String url = "https://" + userName + ":" + password + "@github.com/MarekPetr/test";
-        return executeBinary(gitPath, dest, gitOperation, url);
+        executeBinary(gitPath, dest, gitOperation, url);
     }
 
-    public int clone(String dest, String remoteURL) {
+    public void clone(String dest, String remoteURL) {
         String gitOperation = "clone";
         executeBinary(gitPath, dest, gitOperation, remoteURL);
-        return getErrCode();
     }
 
-    public String status(String dest) {
+    public void status(String dest) {
         String gitOperation = "status";
-        return executeBinary(gitPath, dest, gitOperation);
+        executeBinary(gitPath, dest, gitOperation);
     }
 
-    public String addAllToStage(String dest) {
+    public void addAllToStage(String dest) {
         String gitOperation = "add";
-        return executeBinary(gitPath, dest, gitOperation, ".");
+        executeBinary(gitPath, dest, gitOperation, ".");
     }
 
-    public String push(String dest) {
+    public void push(String dest) {
         String gitOperation = "push";
-        return executeBinary(gitPath, dest, gitOperation);
+        executeBinary(gitPath, dest, gitOperation);
     }
 
-    public String push_strace(String dest) {
+    public void push_strace(String dest) {
         String gitOperation = "push";
-        return executeBinary("strace", dest, "/data/data/com.lfgit/files/usr/bin/git", "push");
+        executeBinary("strace", dest, "/data/data/com.lfgit/files/usr/bin/git", "push");
     }
 
-    public String pull(String dest) {
+    public void pull(String dest) {
         String gitOperation = "pull";
-        return executeBinary(gitPath, dest, gitOperation);
+        executeBinary(gitPath, dest, gitOperation);
     }
 }
