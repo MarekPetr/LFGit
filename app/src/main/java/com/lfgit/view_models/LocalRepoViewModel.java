@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
+import com.lfgit.executors.ExecCallback;
 import com.lfgit.executors.GitExec;
 import com.lfgit.utilites.Constants;
 
@@ -17,33 +18,26 @@ import java.util.List;
 import static com.lfgit.utilites.Constants.AddRepo.ADDED;
 import static com.lfgit.utilites.Constants.AddRepo.OK;
 
-public class LocalRepoViewModel extends AndroidViewModel {
+public class LocalRepoViewModel extends AndroidViewModel implements ExecCallback {
     private GitExec gitExec;
     private RepoRepository mRepository;
     private List<Repo> mAllRepos;
-    private String initRepoPath;
 
+    private String initRepoPath;
     private String cloneRepoPath;
     private String cloneURLPath;
 
+    private SingleLiveEvent<String> mCloneResult = new SingleLiveEvent<>();
+    private SingleLiveEvent<String> mInitResult = new SingleLiveEvent<>();
+
     public LocalRepoViewModel(Application application) {
         super(application);
-        gitExec = new GitExec();
+        gitExec = new GitExec(this);
         mRepository = new RepoRepository(application);
     }
 
     public void setAllRepos(List<Repo> repoList) {
         mAllRepos = repoList;
-    }
-
-    public boolean initLocalRepo() {
-        if (!StringUtils.isBlank(initRepoPath)) {
-            if (gitExec.init(initRepoPath) == 0) {
-                mRepository.insertRepo(new Repo(initRepoPath));
-                return true;
-            }
-        }
-        return false;
     }
 
     public Constants.AddRepo addLocalRepo(String path) {
@@ -56,18 +50,16 @@ public class LocalRepoViewModel extends AndroidViewModel {
         return OK;
     }
 
-    public boolean cloneRepo() {
+    public void cloneRepoHandler() {
         if (!StringUtils.isBlank(cloneRepoPath)) {
-            Uri uri = Uri.parse(cloneURLPath);
-            // get directory from URL
-            String lastPathSegment = uri.getLastPathSegment();
-            if (gitExec.clone(cloneRepoPath, cloneURLPath) == 0) {
-                String fullRepoPath = cloneRepoPath + "/" + lastPathSegment;
-                mRepository.insertRepo(new Repo(fullRepoPath));
-                return true;
-            }
+            gitExec.clone(cloneRepoPath, cloneURLPath);
         }
-        return false;
+    }
+
+    public void initRepoHandler() {
+        if (!StringUtils.isBlank(initRepoPath)) {
+            gitExec.init(initRepoPath);
+        }
     }
 
     public void setInitRepoPath(String name) {
@@ -92,5 +84,41 @@ public class LocalRepoViewModel extends AndroidViewModel {
 
     public void setCloneURLPath(String cloneURLPath) {
         this.cloneURLPath = cloneURLPath;
+    }
+
+    @Override
+    public void passResult(String result) {
+
+    }
+
+    @Override
+    public void passErrCode(int errCode,String task) {
+        if (task.equals("clone")) {
+            if (errCode == 0) {
+                Uri uri = Uri.parse(cloneURLPath);
+                // get directory from URL
+                String lastPathSegment = uri.getLastPathSegment();
+                String fullRepoPath = cloneRepoPath + "/" + lastPathSegment;
+                mRepository.insertRepo(new Repo(fullRepoPath));
+                mCloneResult.postValue("Clone successful");
+            } else {
+                mCloneResult.postValue("Clone failed");
+            }
+        } else if (task.equals("init")) {
+            if (errCode == 0) {
+                mRepository.insertRepo(new Repo(initRepoPath));
+                mInitResult.postValue("New repo " + initRepoPath + " initialized");
+            } else {
+                mInitResult.postValue("Init failed");
+            }
+        }
+    }
+
+    public SingleLiveEvent<String> getCloneResult() {
+        return mCloneResult;
+    }
+
+    public SingleLiveEvent<String> getInitResult() {
+        return mInitResult;
     }
 }

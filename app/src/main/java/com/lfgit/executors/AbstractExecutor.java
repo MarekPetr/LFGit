@@ -1,13 +1,11 @@
 package com.lfgit.executors;
-
-import android.os.Environment;
+import com.lfgit.utilites.Constants;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,16 +14,22 @@ import java.util.Map;
 import static com.lfgit.utilites.Constants.BIN_DIR;
 import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Constants.LIB_DIR;
+import static com.lfgit.utilites.Constants.RepoTask;
 import static com.lfgit.utilites.Logger.LogMsg;
 
 abstract class AbstractExecutor {
 
+    private Process mProcess = null;
     private String mResult = "";
     private int mErrCode;
     String mExeDir;
+    final StringBuffer mOutBuffer = new StringBuffer();
+    private static final String EOL = System.getProperty("line.separator");
+    private ExecCallback mCallback;
 
-    AbstractExecutor() {
+    AbstractExecutor(ExecCallback callback) {
         mExeDir = BIN_DIR;
+        mCallback = callback;
     }
 
     public String getResult() {
@@ -36,7 +40,7 @@ abstract class AbstractExecutor {
         return mErrCode;
     }
 
-    String executeBinary(String binary, String destDir, String... strings) {
+    void executeBinary(String binary, String destDir, String... strings) {
         String exeBin = mExeDir + "/" + binary;
         File f = new File(destDir);
         if (binary.equals("git") &&
@@ -61,61 +65,47 @@ abstract class AbstractExecutor {
         env.put("HOME", FILES_DIR);
         env.put("XDG_CONFIG_HOME",FILES_DIR);
 
-        Process javap;
-        Buffer buffer;
+        Process javap = null;
         try {
             javap = pb.start();
-            buffer = new Buffer(javap.getInputStream());
-            mErrCode = javap.waitFor();
-            mResult = buffer.getOutput();
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
+            mProcess = null;
             e.printStackTrace();
         }
-        if (mResult.isEmpty()) {
-            if (mErrCode == 0) {
-                mResult = "Operation successful";
-            } else {
-                mResult = "Operation failed";
-            }
-        }
-        return mResult;
-    }
-    // source https://github.com/jjNford/android-shell/blob/master/src/com/jjnford/android/util/Shell.java
-    private static class Buffer extends Thread {
-        private InputStream mInputStream;
-        private StringBuffer mBuffer;
-        private static final String EOL = System.getProperty("line.separator");
 
-        /**
-         * @param inputStream Data stream to get shell output from.
-         */
-        Buffer(InputStream inputStream) {
-            mInputStream = inputStream;
-            mBuffer = new StringBuffer();
-            this.start();
-        }
+        mProcess = javap;
 
-        public String getOutput() {
-            try {
-                this.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return mBuffer.toString();
-        }
-
-        @Override
-        public void run() {
-            try {
+        new Thread() {
+            @Override
+            public void run() {
                 String line;
-                BufferedReader reader = new BufferedReader(new InputStreamReader(mInputStream));
-                while((line = reader.readLine()) != null) {
-                    mBuffer.append(line).append(EOL);
+                try {
+                    InputStream stdout = mProcess.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
+                    while((line = reader.readLine()) != null) {
+                        mOutBuffer.append(line).append(EOL);
+                    }
+                } catch(IOException e) {
+                    // ignore
                 }
-            } catch(IOException e) {
-                e.printStackTrace();
+
+                try {
+                    mErrCode = mProcess.waitFor();
+                    mResult = mOutBuffer.toString();
+                    if (mResult.isEmpty()) {
+                        if (mErrCode == 0) {
+                            mResult = "Operation successful";
+                        } else {
+                            mResult = "Operation failed";
+                        }
+                    }
+                    mCallback.passResult(mResult);
+                    mCallback.passErrCode(mErrCode, strings[0]);
+                } catch (InterruptedException e) {
+                    // ignore
+                }
             }
-        }
+        }.start();
     }
 }
 

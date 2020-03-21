@@ -19,4 +19,14 @@ public class Constants {
             this.value = value;
         }
     }
+
+    public enum RepoTask {
+        INIT(0),
+        CLONE(1);
+
+        int value;
+        RepoTask(int value) {
+            this.value = value;
+        }
+    }
 }

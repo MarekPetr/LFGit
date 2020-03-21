@@ -5,7 +5,8 @@ import static com.lfgit.utilites.Constants.USR_DIR;
 
 public class GitAnnexExec extends AbstractExecutor {
 
-    public GitAnnexExec() {
+    GitAnnexExec(ExecCallback callback) {
+        super(callback);
         super.mExeDir = USR_DIR;
     }
 }

@@ -7,15 +7,27 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.model.Repo;
+import com.lfgit.executors.ExecCallback;
 import com.lfgit.executors.GitExec;
 
-public class RepoDetailViewModel extends AndroidViewModel {
+public class RepoDetailViewModel extends AndroidViewModel implements ExecCallback {
     private Repo mRepo;
     private MutableLiveData<String> taskResult = new MutableLiveData<>();
-    private GitExec gitExec = new GitExec();
+    private GitExec gitExec;
 
     public RepoDetailViewModel(@NonNull Application application) {
         super(application);
+        gitExec = new GitExec(this);
+    }
+
+    @Override
+    public void passResult(String result) {
+        setTaskResult(result);
+    }
+
+    @Override
+    public void passErrCode(int errCode, String task) {
+
     }
 
     public void setRepo(Repo repo) {
@@ -26,42 +38,40 @@ public class RepoDetailViewModel extends AndroidViewModel {
         return taskResult;
     }
     private void setTaskResult(String result) {
-        taskResult.setValue(result);
+        taskResult.postValue(result);
     }
 
     public void execGitTask(int drawerPosition) {
-        String result = "";
         switch(drawerPosition) {
-            case(0): result = gitAddAllToStage(); break;
-            case(1): result = gitCommit();        break;
-            case(2): result = gitPush();          break;
-            case(3): result = gitPull();          break;
-            case(4): result = gitStatus();        break;
-            case(5): result = gitNewBranch();     break;
-            case(6): result = gitAddRemote();     break;
-            case(7): result = gitRemoveRemote();  break;
-            case(8): result = gitMerge();         break;
+            case(0): gitAddAllToStage(); break;
+            case(1): gitCommit();        break;
+            case(2): gitPush();          break;
+            case(3): gitPull();          break;
+            case(4): gitStatus();        break;
+            case(5): gitNewBranch();     break;
+            case(6): gitAddRemote();     break;
+            case(7): gitRemoveRemote();  break;
+            case(8): gitMerge();         break;
         }
-        setTaskResult(result);
     }
 
     private String getRepoPath() { return mRepo.getLocalPath(); }
 
-    private String gitAddAllToStage() { return gitExec.addAllToStage(getRepoPath()); }
+    private void gitAddAllToStage() { gitExec.addAllToStage(getRepoPath()); }
 
-    private String gitCommit() { return gitExec.commit(getRepoPath()); }
+    private void gitCommit() { gitExec.commit(getRepoPath()); }
 
-    private String gitPush() { return gitExec.push(getRepoPath()); }
+    private void gitPush() { gitExec.push(getRepoPath()); }
 
-    private String gitPull() { return gitExec.pull(getRepoPath()); }
+    private void gitPull() { gitExec.pull(getRepoPath()); }
 
-    private String gitStatus() {return gitExec.status(getRepoPath());}
+    private void gitStatus() {gitExec.status(getRepoPath());}
 
-    private String gitNewBranch() {return null;}
+    private void gitNewBranch() {}
 
-    private String gitAddRemote() {return null;}
+    private void gitAddRemote() {}
 
-    private String gitRemoveRemote() {return null;}
+    private void gitRemoveRemote() {}
 
-    private String gitMerge() {return null;}
+    private void gitMerge() {}
 }
