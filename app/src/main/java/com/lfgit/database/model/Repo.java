@@ -2,6 +2,7 @@ package com.lfgit.database.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
@@ -34,6 +35,12 @@ public class Repo implements Serializable {
 
     public Repo(String localPath) {
         this.localPath = localPath;
+    }
+
+    @Ignore
+    public Repo(String localPath, String remoteURL) {
+        this.localPath = localPath;
+        this.remoteURL = remoteURL;
     }
 
     public String getDisplayName() {

@@ -1,8 +1,8 @@
 package com.lfgit.utilites;
-
-import com.lfgit.database.model.Repo;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class Constants {
     public static final String PKG = "com.lfgit/";
@@ -53,4 +53,19 @@ public class Constants {
             return null;
         }
     }
+
+    public enum task{
+        CLONE,
+        INIT,
+        COMMIT,
+        ADD,
+        PUSH,
+        PULL,
+        STATUS,
+        NEW_BRANCH,
+        ADD_REMOTE,
+        REMOVE_REMOTE,
+        MERGE;
+    }
+
 }

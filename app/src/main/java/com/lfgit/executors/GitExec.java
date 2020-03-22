@@ -1,5 +1,7 @@
 package com.lfgit.executors;
 
+import com.lfgit.database.model.Repo;
+
 public class GitExec extends AbstractExecutor {
 
     private String gitPath = "git";
@@ -21,26 +23,15 @@ public class GitExec extends AbstractExecutor {
         executeBinary(gitPath, ".","config", "--global", "user.name", username);
     }
 
-    public void credentialHelperStore() {
-        executeBinary(gitPath, ".", "config", "--global", "credential.helper", "store");
-    }
-
-    public int init(String dest) {
+    public void init(String dest) {
         String gitOperation = "init";
         executeBinary(gitPath, dest, gitOperation);
-        return getErrCode();
     }
 
     public void commit(String dest) {
         String gitOperation = "commit";
         String message = "-m \"newFileToCommit\"";
         executeBinary(gitPath, dest, gitOperation, message);
-    }
-
-    public void cloneUname(String dest, String userName, String password) {
-        String gitOperation = "clone";
-        String url = "https://" + userName + ":" + password + "@github.com/MarekPetr/test";
-        executeBinary(gitPath, dest, gitOperation, url);
     }
 
     public void clone(String dest, String remoteURL) {
@@ -63,13 +54,19 @@ public class GitExec extends AbstractExecutor {
         executeBinary(gitPath, dest, gitOperation);
     }
 
-    public void push_strace(String dest) {
-        String gitOperation = "push";
-        executeBinary("strace", dest, "/data/data/com.lfgit/files/usr/bin/git", "push");
-    }
-
-    public void pull(String dest) {
+    public void pull(Repo repo) {
         String gitOperation = "pull";
-        executeBinary(gitPath, dest, gitOperation);
+        String username = repo.getUsername();
+        String password = repo.getPassword();
+        String localPath = repo.getLocalPath();
+        String remoteURL = repo.getRemoteURL();
+
+        String regex = "://";
+        String[] parts = remoteURL.split(regex);
+        String scheme = parts[0]+"://";
+        String domain = parts[1];
+
+        String url = scheme + username + ":" + password + "@" + domain;
+        executeBinary(gitPath, localPath, gitOperation, url);
     }
 }

@@ -6,8 +6,7 @@ public class GitLfsExec extends AbstractExecutor {
         super(callback);
     }
 
-    public String install(String dest) {
+    public void install(String dest) {
         executeBinary("git-lfs",dest, "install");
-        return getResult();
     }
 }

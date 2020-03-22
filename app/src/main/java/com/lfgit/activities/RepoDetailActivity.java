@@ -1,14 +1,19 @@
 package com.lfgit.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,6 +28,7 @@ public class RepoDetailActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;
     private ActivityRepoDetailBinding mBinding;
+    private AlertDialog mDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,26 @@ public class RepoDetailActivity extends BasicAbstractActivity {
                 hideProgressDialog();
             }
         });
+        viewModel.getPromptCredentials().observe(this, promptCredentials -> {
+            if (promptCredentials) {
+                showCredentialsDialog();
+            } else {
+                hideCredentialsDialog();
+            }
+        });
+    }
+
+    private void showCredentialsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(R.layout.credentials_dialog_layout);
+        mDialog = builder.create();
+        mDialog.show();
+    }
+
+    private void hideCredentialsDialog() {
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
     }
 
     @Override
@@ -67,6 +93,14 @@ public class RepoDetailActivity extends BasicAbstractActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideCredentialsDialog();
+    }
+
     private void setupDrawer(RepoDetailViewModel viewModel) {
         mDrawerLayout = findViewById(R.id.drawerLayout);
         mRightDrawer = findViewById(R.id.rightDrawer);
@@ -84,7 +118,4 @@ public class RepoDetailActivity extends BasicAbstractActivity {
     public void openDrawer() {
         mDrawerLayout.openDrawer(mRightDrawer);
     }
-
-
-
 }

@@ -3,6 +3,7 @@ package com.lfgit.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
@@ -15,6 +16,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.lfgit.BuildConfig;
 import com.lfgit.R;
 import com.lfgit.adapters.RepoListAdapter;
 import com.lfgit.databinding.ActivityRepoListBinding;
@@ -29,27 +31,26 @@ import static com.lfgit.utilites.Logger.LogMsg;
 
 public class RepoListActivity extends BasicAbstractActivity implements FragmentCallback {
     private ActivityRepoListBinding mBinding;
-    private LocalRepoViewModel localRepoViewModel;
+    private LocalRepoViewModel mLocalRepoViewModel;
     private RepoListAdapter mRepoListAdapter;
-    private InstallPreference installPref = new InstallPreference();
+    private InstallPreference mInstallPref = new InstallPreference();
     FragmentManager mManager = getSupportFragmentManager();
-    private String installTag = "install";
+    private String mInstallTag = "install";
 
     private static final int ADD_REPO_REQUEST_CODE = 1;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (installPref.assetsInstalled()) {
+        if (mInstallPref.assetsInstalled()) {
             checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         } else {
             runInstallFragment();
         }
 
         RepoListViewModel repoListViewModel = new ViewModelProvider(this).get(RepoListViewModel.class);
-        localRepoViewModel = new ViewModelProvider(this).get(LocalRepoViewModel.class);
+        mLocalRepoViewModel = new ViewModelProvider(this).get(LocalRepoViewModel.class);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_list);
         mBinding.setLifecycleOwner(this);
@@ -62,7 +63,7 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
 
         repoListViewModel.getAllRepos().observe(this, repoList -> {
             mRepoListAdapter.setRepos(repoList);
-            localRepoViewModel.setAllRepos(repoList);
+            mLocalRepoViewModel.setAllRepos(repoList);
         });
     }
 
@@ -71,7 +72,7 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
         InstallFragment fragment = new InstallFragment();
         fragment.setCallback(this);
         transaction.add(R.id.repoListLayout,fragment);
-        transaction.addToBackStack(installTag);
+        transaction.addToBackStack(mInstallTag);
         transaction.commit();
     }
 
@@ -106,11 +107,11 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
 
     @Override
     public void removeFragment() {
-        Fragment fragment = mManager.findFragmentByTag(installTag);
+        Fragment fragment = mManager.findFragmentByTag(mInstallTag);
         if(fragment != null) {
             mManager.popBackStack();
         }
-        installPref.updateInstallPreference();
+        mInstallPref.updateInstallPreference();
         checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
@@ -123,7 +124,7 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
                 Uri uri = intent.getData();
                 String path = UriHelper.getDirPath(this, uri);
                 if (path != null) {
-                    if (localRepoViewModel.addLocalRepo(UriHelper.getDirPath(this, uri))
+                    if (mLocalRepoViewModel.addLocalRepo(path)
                             == Constants.AddRepo.ALREADY_ADDED) {
                         showToastMsg("Repository already added");
                     }
@@ -131,6 +132,37 @@ public class RepoListActivity extends BasicAbstractActivity implements FragmentC
                     showToastMsg(getString (R. string. browse_only_primary));
                 }
             }
+        }
+    }
+
+    class InstallPreference {
+        private final String PREFS_NAME = "mInstallPref";
+        private final String PREF_VERSION_CODE_KEY = "version_code";
+        private int currentVersionCode = BuildConfig.VERSION_CODE;
+
+        Boolean assetsInstalled() {
+            final int DOESNT_EXIST = -1;
+
+            // Get saved version code
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
+
+            // Check for first run or upgrade
+            if (currentVersionCode == savedVersionCode) {
+                // This is just a normal run
+                return true;
+            } else if (savedVersionCode == DOESNT_EXIST) {
+                // This is a new install (or the user cleared the shared preferences)
+            } else if (currentVersionCode > savedVersionCode) {
+                // This is an upgrade
+            }
+            return false;
+        }
+
+        void updateInstallPreference() {
+            // Update the shared preferences with the current version code
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).apply();
         }
     }
 }

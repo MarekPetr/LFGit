@@ -19,24 +19,13 @@ import static com.lfgit.utilites.Logger.LogMsg;
 abstract class AbstractExecutor {
 
     private Process mProcess = null;
-    private String mResult = "";
-    private int mErrCode;
     String mExeDir;
-    private final StringBuffer mOutBuffer = new StringBuffer();
     private static final String EOL = System.getProperty("line.separator");
     private ExecListener mCallback;
 
     AbstractExecutor(ExecListener callback) {
         mExeDir = BIN_DIR;
         mCallback = callback;
-    }
-
-    public String getResult() {
-        return mResult;
-    }
-
-    public int getErrCode() {
-        return mErrCode;
     }
 
     void executeBinary(String binary, String destDir, String... strings) {
@@ -76,6 +65,9 @@ abstract class AbstractExecutor {
         new Thread() {
             @Override
             public void run() {
+                StringBuilder mOutBuffer = new StringBuilder();
+                String result;
+                int errCode;
                 mCallback.onExecStarted();
                 String line;
                 try {
@@ -89,16 +81,16 @@ abstract class AbstractExecutor {
                 }
 
                 try {
-                    mErrCode = mProcess.waitFor();
-                    mResult = mOutBuffer.toString();
-                    if (mResult.isEmpty()) {
-                        if (mErrCode == 0) {
-                            mResult = "Operation successful";
+                    errCode = mProcess.waitFor();
+                    result = mOutBuffer.toString();
+                    if (result.isEmpty()) {
+                        if (errCode == 0) {
+                            result = "Operation successful";
                         } else {
-                            mResult = "Operation failed";
+                            result = "Operation failed";
                         }
                     }
-                    mCallback.onExecFinished(RepoTask.toValue(strings[0]), mResult, mErrCode);
+                    mCallback.onExecFinished(RepoTask.toValue(strings[0]), result, errCode);
                 } catch (InterruptedException e) {
                     // ignore
                 }

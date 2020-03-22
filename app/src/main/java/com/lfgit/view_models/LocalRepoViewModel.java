@@ -1,16 +1,8 @@
 package com.lfgit.view_models;
-
-import android.app.Activity;
 import android.app.Application;
 import android.net.Uri;
-
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.MutableLiveData;
-
 import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
-import com.lfgit.executors.ExecListener;
-import com.lfgit.executors.GitExec;
 import com.lfgit.utilites.Constants;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,9 +15,6 @@ import static com.lfgit.utilites.Constants.RepoTask.CLONE;
 import static com.lfgit.utilites.Constants.RepoTask.INIT;
 
 public class LocalRepoViewModel extends ExecViewModel {
-    private RepoRepository mRepository;
-    private List<Repo> mAllRepos;
-
     // data binding
     private String initRepoPath;
     private String cloneRepoPath;
@@ -36,11 +25,6 @@ public class LocalRepoViewModel extends ExecViewModel {
 
     public LocalRepoViewModel(Application application) {
         super(application);
-        mRepository = new RepoRepository(application);
-    }
-
-    public void setAllRepos(List<Repo> repoList) {
-        mAllRepos = repoList;
     }
 
     public Constants.AddRepo addLocalRepo(String path) {
@@ -69,23 +53,32 @@ public class LocalRepoViewModel extends ExecViewModel {
     public void onExecFinished(Constants.RepoTask task, String result, int errCode) {
         mExecPending.postValue(false);
         if (task == CLONE) {
-            if (errCode == 0) {
-                Uri uri = Uri.parse(cloneURLPath);
-                // get directory from URL
-                String lastPathSegment = uri.getLastPathSegment();
-                String fullRepoPath = cloneRepoPath + "/" + lastPathSegment;
-                mRepository.insertRepo(new Repo(fullRepoPath));
-                mCloneResult.postValue("Clone successful");
-            } else {
-                mCloneResult.postValue("Clone failed");
-            }
+            insertClonedRepo(errCode);
         } else if (task == INIT) {
-            if (errCode == 0) {
-                mRepository.insertRepo(new Repo(initRepoPath));
-                mInitResult.postValue("New repo " + initRepoPath + " initialized");
-            } else {
-                mInitResult.postValue("Init failed");
-            }
+            insertInitRepo(errCode);
+        }
+    }
+
+    private void insertClonedRepo(int errCode) {
+        if (errCode == 0) {
+            Uri uri = Uri.parse(cloneURLPath);
+            // get directory from URL
+            String lastPathSegment = uri.getLastPathSegment();
+            String fullRepoPath = cloneRepoPath + "/" + lastPathSegment;
+            Repo repo = new Repo(fullRepoPath, cloneURLPath);
+            mRepository.insertRepo(repo);
+            mCloneResult.postValue("Clone successful");
+        } else {
+            mCloneResult.postValue("Clone failed");
+        }
+    }
+
+    private void insertInitRepo(int errCode) {
+        if (errCode == 0) {
+            mRepository.insertRepo(new Repo(initRepoPath));
+            mInitResult.postValue("New repo " + initRepoPath + " initialized");
+        } else {
+            mInitResult.postValue("Init failed");
         }
     }
 
