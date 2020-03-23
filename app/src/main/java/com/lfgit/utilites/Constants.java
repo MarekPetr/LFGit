@@ -31,7 +31,8 @@ public class Constants {
         COMMIT("commit"),
         PUSH("push"),
         PULL("pull"),
-        STATUS("status");
+        STATUS("status"),
+        CONFIG("config");
 
         private String task;
         RepoTask(String task) {
@@ -54,7 +55,7 @@ public class Constants {
         }
     }
 
-    public enum task{
+    public enum task {
         CLONE,
         INIT,
         COMMIT,
@@ -65,7 +66,13 @@ public class Constants {
         NEW_BRANCH,
         ADD_REMOTE,
         REMOVE_REMOTE,
-        MERGE;
+        MERGE,
+        CONFIG,
+        NONE;
+    }
+
+    public enum internalTask {
+        GET_REMOTE;
     }
 
 }

@@ -47,7 +47,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     @Override
-    public void onExecStarted() {
+    public void onExecStarted(Constants.RepoTask task) {
 
     }
 

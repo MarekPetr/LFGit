@@ -14,6 +14,8 @@ import com.lfgit.utilites.Constants;
 
 import java.util.List;
 
+import static com.lfgit.utilites.Constants.RepoTask.CONFIG;
+
 public abstract class ExecViewModel extends AndroidViewModel implements ExecListener {
     GitExec mGitExec;
     RepoRepository mRepository;
@@ -30,20 +32,28 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
         mAllRepos = repoList;
     }
 
+    // background thread
     @Override
-    public void onExecStarted() {
-        setPending();
+    public void onExecStarted(Constants.RepoTask task) {
+        if (task != CONFIG) {
+            setPending();
+        }
     }
 
+    // background thread
     @Override
     public void onExecFinished(Constants.RepoTask task, String result, int errCode) {
-        unsetPending();
+        if (task != CONFIG) {
+            unsetPending();
+        }
     }
 
+    // background thread
     void setPending() {
         mExecPending.postValue(true);
     }
 
+    // background thread
     void unsetPending() {
         mExecPending.postValue(false);
     }

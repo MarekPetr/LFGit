@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import static com.lfgit.utilites.Constants.AddRepo.ALREADY_ADDED;
 import static com.lfgit.utilites.Constants.AddRepo.OK;
 import static com.lfgit.utilites.Constants.RepoTask.CLONE;
+import static com.lfgit.utilites.Constants.RepoTask.CONFIG;
 import static com.lfgit.utilites.Constants.RepoTask.INIT;
 
 public class LocalRepoViewModel extends ExecViewModel {
@@ -47,9 +48,12 @@ public class LocalRepoViewModel extends ExecViewModel {
         }
     }
 
+    // background thread
     @Override
     public void onExecFinished(Constants.RepoTask task, String result, int errCode) {
-        mExecPending.postValue(false);
+        if (task != CONFIG) {
+            unsetPending();
+        }
         if (task == CLONE) {
             insertClonedRepo(errCode);
         } else if (task == INIT) {
@@ -57,6 +61,7 @@ public class LocalRepoViewModel extends ExecViewModel {
         }
     }
 
+    // background thread
     private void insertClonedRepo(int errCode) {
         if (errCode == 0) {
             Uri uri = Uri.parse(cloneURLPath);
@@ -71,6 +76,7 @@ public class LocalRepoViewModel extends ExecViewModel {
         }
     }
 
+    // background thread
     private void insertInitRepo(int errCode) {
         if (errCode == 0) {
             mRepository.insertRepo(new Repo(initRepoPath));

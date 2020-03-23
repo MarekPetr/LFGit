@@ -36,4 +36,10 @@ public class RepoRepository {
         int id = repo.getId();
         RepoDatabase.databaseWriteExecutor.execute(() -> mRepoDao.updateCredentials(username, password, id));
     }
+
+    public void updateRemoteURL(Repo repo) {
+        String remoteURL = repo.getRemoteURL();
+        int id = repo.getId();
+        RepoDatabase.databaseWriteExecutor.execute(() -> mRepoDao.updateRemoteURL(remoteURL, id));
+    }
 }

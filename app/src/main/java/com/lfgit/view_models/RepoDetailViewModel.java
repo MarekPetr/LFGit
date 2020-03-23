@@ -10,26 +10,55 @@ import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
+import static com.lfgit.utilites.Constants.RepoTask.CONFIG;
+import static com.lfgit.utilites.Constants.internalTask.GET_REMOTE;
+import static com.lfgit.utilites.Constants.task.NONE;
+import static com.lfgit.utilites.Constants.task.PULL;
 import static com.lfgit.utilites.Logger.LogMsg;
 
 public class RepoDetailViewModel extends ExecViewModel {
     private Repo mRepo;
     private MutableLiveData<String> mTaskResult = new MutableLiveData<>();
-
     private SingleLiveEvent<Boolean> mPromptCredentials = new SingleLiveEvent<>();
+    private SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
     private String mUsername;
     private String mPassword;
 
-    private Constants.task lastTask;
+    private Constants.task pendingTask;
+    private Constants.RepoTask lastTask;
+    private Constants.internalTask interTask;
 
     public RepoDetailViewModel(@NonNull Application application) {
         super(application);
     }
 
+    // background thread
     @Override
     public void onExecFinished(Constants.RepoTask task, String result, int errCode) {
-        unsetPending();
-        setTaskResult(result);
+        lastTask = task;
+        if (task == CONFIG) {
+            processTaskResult(result);
+        } else {
+            LogMsg("setting result");
+            unsetPending();
+            setTaskResult(result);
+        }
+    }
+
+    // background thread
+    private void processTaskResult(String result) {
+        // Chop last end of line character
+        String res = StringUtils.chop(result);
+        if (lastTask == CONFIG) {
+            if (interTask == GET_REMOTE) {
+                mRepo.setRemoteURL(res);
+                mRepository.updateRemoteURL(mRepo);
+                if (pendingTask == PULL) {
+                    mGitExec.pull(mRepo);
+                    pendingTask = NONE;
+                }
+            }
+        }
     }
 
     public void execGitTask(int drawerPosition) {
@@ -51,6 +80,8 @@ public class RepoDetailViewModel extends ExecViewModel {
             gitRemoveRemote();
         } else if (drawerPosition == 8) {
             gitMerge();
+        } else if (drawerPosition == 9) {
+            setPromptCredentials(true);
         }
     }
 
@@ -69,7 +100,9 @@ public class RepoDetailViewModel extends ExecViewModel {
     private void gitPull() {
         if (mRepo.getPassword() == null || mRepo.getUsername() == null) {
             setPromptCredentials(true);
-            lastTask = Constants.task.PULL;
+            pendingTask = PULL;
+        } else {
+            pullCheckRemote();
         }
     }
 
@@ -87,6 +120,34 @@ public class RepoDetailViewModel extends ExecViewModel {
     }
 
     private void gitMerge() {
+    }
+
+    private void setCredentialsExecPending() {
+        if (!StringUtils.isBlank(mPassword) && !StringUtils.isBlank(mUsername)) {
+            mRepo.setUsername(mUsername);
+            mRepo.setPassword(mPassword);
+            mRepository.updateCredentials(mRepo);
+            if(pendingTask == PULL) {
+                pullCheckRemote();
+            }
+            setPromptCredentials(false);
+        }
+    }
+    
+    private void pullCheckRemote() {
+        if (mRepo.getRemoteURL() != null) {
+            mGitExec.pull(mRepo);
+            pendingTask = NONE;
+        } else {
+            interTask = GET_REMOTE;
+            mGitExec.getRemoteURL(mRepo);
+        }
+    }
+
+    public void handleCredentials(String username, String password) {
+        setUsername(username);
+        setPassword(password);
+        setCredentialsExecPending();
     }
 
     public void setRepo(Repo repo) {
@@ -108,32 +169,8 @@ public class RepoDetailViewModel extends ExecViewModel {
     public SingleLiveEvent<Boolean> getPromptCredentials() {
         return mPromptCredentials;
     }
-    public void setPromptCredentials(Boolean value) {
+    private void setPromptCredentials(Boolean value) {
         mPromptCredentials.setValue(value);
-    }
-
-    private void executeTask() {
-        if (!StringUtils.isBlank(mPassword) && !StringUtils.isBlank(mUsername)) {
-            mRepo.setUsername(mUsername);
-            mRepo.setPassword(mPassword);
-            mRepository.updateCredentials(mRepo);
-            if(lastTask == Constants.task.PULL) {
-                LogMsg("PULL");
-                if (mRepo.getRemoteURL() != null) {
-                    mGitExec.pull(mRepo);
-                } else {
-                    // TODO toast
-                    LogMsg("No remote URL");
-                }
-            }
-            setPromptCredentials(false);
-        }
-    }
-
-    public void handleCredentials(String username, String password) {
-        setUsername(username);
-        setPassword(password);
-        executeTask();
     }
 
     public String getPassword() {
@@ -150,5 +187,13 @@ public class RepoDetailViewModel extends ExecViewModel {
 
     public void setUsername(String username) {
         mUsername = username;
+    }
+
+    public SingleLiveEvent<String> getShowToast() {
+        return mShowToast;
+    }
+
+    public void setShowToast(String message) {
+        mShowToast.setValue(message);
     }
 }

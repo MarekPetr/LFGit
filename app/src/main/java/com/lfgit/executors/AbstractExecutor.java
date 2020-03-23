@@ -68,7 +68,7 @@ abstract class AbstractExecutor {
                 StringBuilder mOutBuffer = new StringBuilder();
                 String result;
                 int errCode;
-                mCallback.onExecStarted();
+                mCallback.onExecStarted(RepoTask.toValue(strings[0]));
                 String line;
                 try {
                     InputStream stdout = mProcess.getInputStream();

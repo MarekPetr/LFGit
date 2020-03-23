@@ -61,6 +61,10 @@ public class RepoDetailActivity extends BasicAbstractActivity implements Credent
                 hideCredentialsDialog();
             }
         });
+
+        viewModel.getShowToast().observe(this, message -> {
+            showToastMsg(message);
+        });
     }
 
     private void showCredentialsDialog() {
