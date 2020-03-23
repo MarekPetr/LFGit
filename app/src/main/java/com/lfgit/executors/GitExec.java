@@ -56,13 +56,18 @@ public class GitExec extends AbstractExecutor {
 
     public void pull(Repo repo) {
         String gitOperation = "pull";
+        String username = repo.getUsername();
+        String password = repo.getPassword();
+        String localPath = repo.getLocalPath();
+        String remoteURL = repo.getRemoteURL();
+
         String regex = "://";
-        String[] parts = repo.getRemoteURL().split(regex);
+        String[] parts = remoteURL.split(regex);
         String scheme = parts[0]+"://";
         String domain = parts[1];
 
-        String url = scheme + repo.getUsername() + ":" + repo.getPassword() + "@" + domain;
-        executeBinary(gitPath, repo.getLocalPath(), gitOperation, url);
+        String url = scheme + username + ":" + password + "@" + domain;
+        executeBinary(gitPath, localPath, gitOperation, url);
     }
 
     public void getRemoteURL(Repo repo) {

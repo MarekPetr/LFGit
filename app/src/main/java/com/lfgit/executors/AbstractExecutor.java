@@ -83,13 +83,6 @@ abstract class AbstractExecutor {
                 try {
                     errCode = mProcess.waitFor();
                     result = mOutBuffer.toString();
-                    if (result.isEmpty()) {
-                        if (errCode == 0) {
-                            result = "Operation successful";
-                        } else {
-                            result = "Operation failed";
-                        }
-                    }
                     mCallback.onExecFinished(RepoTask.toValue(strings[0]), result, errCode);
                 } catch (InterruptedException e) {
                     // ignore

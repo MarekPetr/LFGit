@@ -1,5 +1,6 @@
 package com.lfgit.view_models;
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -39,9 +40,16 @@ public class RepoDetailViewModel extends ExecViewModel {
         if (task == CONFIG) {
             processTaskResult(result);
         } else {
-            LogMsg("setting result");
             unsetPending();
-            setTaskResult(result);
+            if (result.isEmpty()) {
+                if (errCode == 0) {
+                    setShowToast("Operation successful");
+                } else {
+                    setShowToast("Operation failed");
+                }
+            } else {
+                setTaskResult(result);
+            }
         }
     }
 
@@ -51,11 +59,16 @@ public class RepoDetailViewModel extends ExecViewModel {
         String res = StringUtils.chop(result);
         if (lastTask == CONFIG) {
             if (interTask == GET_REMOTE) {
-                mRepo.setRemoteURL(res);
-                mRepository.updateRemoteURL(mRepo);
-                if (pendingTask == PULL) {
-                    mGitExec.pull(mRepo);
-                    pendingTask = NONE;
+                LogMsg(result);
+                if (res.isEmpty()) {
+                    postShowToast("Please add a remote");
+                } else {
+                    mRepo.setRemoteURL(res);
+                    mRepository.updateRemoteURL(mRepo);
+                    if (pendingTask == PULL) {
+                        mGitExec.pull(mRepo);
+                        pendingTask = NONE;
+                    }
                 }
             }
         }
@@ -98,12 +111,8 @@ public class RepoDetailViewModel extends ExecViewModel {
     }
 
     private void gitPull() {
-        if (mRepo.getPassword() == null || mRepo.getUsername() == null) {
-            setPromptCredentials(true);
-            pendingTask = PULL;
-        } else {
-            pullCheckRemote();
-        }
+        pendingTask = PULL;
+        pullCheckRemote();
     }
 
     private void gitStatus() {
@@ -133,11 +142,15 @@ public class RepoDetailViewModel extends ExecViewModel {
             setPromptCredentials(false);
         }
     }
-    
+
     private void pullCheckRemote() {
         if (mRepo.getRemoteURL() != null) {
-            mGitExec.pull(mRepo);
-            pendingTask = NONE;
+            if (mRepo.getPassword() == null || mRepo.getUsername() == null) {
+                setPromptCredentials(true);
+            } else {
+                mGitExec.pull(mRepo);
+                pendingTask = NONE;
+            }
         } else {
             interTask = GET_REMOTE;
             mGitExec.getRemoteURL(mRepo);
@@ -193,7 +206,11 @@ public class RepoDetailViewModel extends ExecViewModel {
         return mShowToast;
     }
 
-    public void setShowToast(String message) {
+    private void setShowToast(String message) {
         mShowToast.setValue(message);
+    }
+
+    private void postShowToast(String message) {
+        mShowToast.postValue(message);
     }
 }
