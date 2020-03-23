@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.model.Repo;
 import com.lfgit.utilites.Constants;
+import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -111,18 +112,28 @@ public class RepoDetailViewModel extends ExecViewModel {
         mPromptCredentials.setValue(value);
     }
 
-    public void enterButtonHandler() {
-        LogMsg("asdasd");
+    private void executeTask() {
         if (!StringUtils.isBlank(mPassword) && !StringUtils.isBlank(mUsername)) {
             mRepo.setUsername(mUsername);
             mRepo.setPassword(mPassword);
             mRepository.updateCredentials(mRepo);
             if(lastTask == Constants.task.PULL) {
                 LogMsg("PULL");
-                mGitExec.pull(mRepo);
+                if (mRepo.getRemoteURL() != null) {
+                    mGitExec.pull(mRepo);
+                } else {
+                    // TODO toast
+                    LogMsg("No remote URL");
+                }
             }
             setPromptCredentials(false);
         }
+    }
+
+    public void handleCredentials(String username, String password) {
+        setUsername(username);
+        setPassword(password);
+        executeTask();
     }
 
     public String getPassword() {

@@ -1,4 +1,4 @@
-package com.lfgit.view_models;
+package com.lfgit.view_models.Events;
 
 import android.util.Log;
 

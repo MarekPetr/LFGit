@@ -1,14 +1,11 @@
 package com.lfgit.activities;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,19 +13,24 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter;
 import com.lfgit.database.model.Repo;
 import com.lfgit.databinding.ActivityRepoDetailBinding;
+import com.lfgit.fragments.CredentialsDialog;
 import com.lfgit.view_models.RepoDetailViewModel;
 
-public class RepoDetailActivity extends BasicAbstractActivity {
+import org.w3c.dom.Text;
+
+public class RepoDetailActivity extends BasicAbstractActivity implements CredentialsDialog.CredentialsDialogListener {
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;
     private ActivityRepoDetailBinding mBinding;
-    private AlertDialog mDialog;
+    private CredentialsDialog mDialogFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,15 +64,19 @@ public class RepoDetailActivity extends BasicAbstractActivity {
     }
 
     private void showCredentialsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(R.layout.credentials_dialog_layout);
-        mDialog = builder.create();
-        mDialog.show();
+        mDialogFragment = CredentialsDialog.newInstance(this);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        mDialogFragment.show(ft, "dialog");
     }
 
     private void hideCredentialsDialog() {
-        if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
+        if (mDialogFragment != null) {
+            mDialogFragment.dismiss();
         }
     }
 
@@ -93,14 +99,6 @@ public class RepoDetailActivity extends BasicAbstractActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        hideCredentialsDialog();
-    }
-
     private void setupDrawer(RepoDetailViewModel viewModel) {
         mDrawerLayout = findViewById(R.id.drawerLayout);
         mRightDrawer = findViewById(R.id.rightDrawer);
@@ -117,5 +115,11 @@ public class RepoDetailActivity extends BasicAbstractActivity {
 
     public void openDrawer() {
         mDrawerLayout.openDrawer(mRightDrawer);
+    }
+
+    @Override
+    public void getCredentials(String username, String password) {
+        hideCredentialsDialog();
+        mBinding.getRepoDetailViewModel().handleCredentials(username, password);
     }
 }

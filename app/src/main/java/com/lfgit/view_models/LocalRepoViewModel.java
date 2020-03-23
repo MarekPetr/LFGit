@@ -1,13 +1,11 @@
 package com.lfgit.view_models;
 import android.app.Application;
 import android.net.Uri;
-import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
 import com.lfgit.utilites.Constants;
+import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
 
 import static com.lfgit.utilites.Constants.AddRepo.ALREADY_ADDED;
 import static com.lfgit.utilites.Constants.AddRepo.OK;
