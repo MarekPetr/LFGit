@@ -21,6 +21,7 @@ import static com.lfgit.utilites.Constants.Task.PULL;
 import static com.lfgit.utilites.Constants.InnerState.START;
 import static com.lfgit.utilites.Constants.Task.PUSH;
 import static com.lfgit.utilites.Constants.Task.STATUS;
+import static com.lfgit.utilites.Logger.LogMsg;
 
 public class RepoDetailViewModel extends ExecViewModel implements CredentialsDialog.CredentialsDialogListener{
     private Repo mRepo;
@@ -99,10 +100,10 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
         //CHECK_REMOTE_DB
         if (mRepo.getRemoteURL() != null) {
             //CHECK_CREDS_DB
-            if (mRepo.getPassword() == null || mRepo.getUsername() == null) {
-                setPromptCredentials(true);
-            } else {
+            if(checkCredentialsDB()) {
                 pushOrPullAndFinish();
+            } else {
+                setPromptCredentials(true);
             }
         } else {
             // GET_REMOTE_GIT
@@ -110,6 +111,10 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
             // Is a config command, so continues in processTaskResult.
             mGitExec.getRemoteURL(mRepo, mState);
         }
+    }
+
+    private Boolean checkCredentialsDB() {
+        return mRepo.getPassword() != null && mRepo.getUsername() != null;
     }
 
     @Override
@@ -170,7 +175,9 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
             } else {
                 mRepo.setRemoteURL(lines[0]);
                 mRepository.updateRemoteURL(mRepo);
-                postPromptCredentials(true);
+                if (!checkCredentialsDB()) {
+                    postPromptCredentials(true);
+                }
             }
         }
     }
