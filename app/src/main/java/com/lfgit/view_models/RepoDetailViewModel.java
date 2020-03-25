@@ -1,33 +1,30 @@
 package com.lfgit.view_models;
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.model.Repo;
+import com.lfgit.fragments.CredentialsDialog;
 import com.lfgit.utilites.Constants;
 import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
 import static com.lfgit.utilites.Constants.RepoTask.CONFIG;
-import static com.lfgit.utilites.Constants.internalTask.GET_REMOTE;
 import static com.lfgit.utilites.Constants.task.NONE;
+import static com.lfgit.utilites.Constants.innerState.GET_REMOTE_GIT;
 import static com.lfgit.utilites.Constants.task.PULL;
-import static com.lfgit.utilites.Logger.LogMsg;
+import static com.lfgit.utilites.Constants.innerState.START;
+import static com.lfgit.utilites.Constants.task.PUSH;
 
-public class RepoDetailViewModel extends ExecViewModel {
+public class RepoDetailViewModel extends ExecViewModel implements CredentialsDialog.CredentialsDialogListener{
     private Repo mRepo;
     private MutableLiveData<String> mTaskResult = new MutableLiveData<>();
     private SingleLiveEvent<Boolean> mPromptCredentials = new SingleLiveEvent<>();
     private SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
-    private String mUsername;
-    private String mPassword;
 
-    private Constants.task pendingTask;
-    private Constants.RepoTask lastTask;
-    private Constants.internalTask interTask;
+    private TaskState mState = new TaskState(START, NONE);
 
     public RepoDetailViewModel(@NonNull Application application) {
         super(application);
@@ -35,9 +32,8 @@ public class RepoDetailViewModel extends ExecViewModel {
 
     // background thread
     @Override
-    public void onExecFinished(Constants.RepoTask task, String result, int errCode) {
-        lastTask = task;
-        if (task == CONFIG) {
+    public void onExecFinished(Constants.RepoTask finishedTask, String result, int errCode) {
+        if (finishedTask == CONFIG) {
             processTaskResult(result);
         } else {
             unsetPending();
@@ -57,18 +53,15 @@ public class RepoDetailViewModel extends ExecViewModel {
     private void processTaskResult(String result) {
         // Chop last end of line character
         String res = StringUtils.chop(result);
-        if (lastTask == CONFIG) {
-            if (interTask == GET_REMOTE) {
-                LogMsg(result);
-                if (res.isEmpty()) {
-                    postShowToast("Please add a remote");
-                } else {
-                    mRepo.setRemoteURL(res);
-                    mRepository.updateRemoteURL(mRepo);
-                    if (pendingTask == PULL) {
-                        mGitExec.pull(mRepo);
-                        pendingTask = NONE;
-                    }
+        if (mState.getTaskState() == GET_REMOTE_GIT) {
+            if (res.isEmpty()) {
+                postShowToast("Please add a remote");
+            } else {
+                mRepo.setRemoteURL(res);
+                mRepository.updateRemoteURL(mRepo);
+                if (mState.getPendingTask() == PULL) {
+                    mGitExec.pull(mRepo);
+                    mState.newState(START, NONE);
                 }
             }
         }
@@ -107,12 +100,13 @@ public class RepoDetailViewModel extends ExecViewModel {
     }
 
     private void gitPush() {
-        mGitExec.push(getRepoPath());
+        mState.newState(START, PUSH);
+        checkRepo();
     }
 
     private void gitPull() {
-        pendingTask = PULL;
-        pullCheckRemote();
+        mState.newState(START, PULL);
+        checkRepo();
     }
 
     private void gitStatus() {
@@ -131,36 +125,49 @@ public class RepoDetailViewModel extends ExecViewModel {
     private void gitMerge() {
     }
 
-    private void setCredentialsExecPending() {
-        if (!StringUtils.isBlank(mPassword) && !StringUtils.isBlank(mUsername)) {
-            mRepo.setUsername(mUsername);
-            mRepo.setPassword(mPassword);
-            mRepository.updateCredentials(mRepo);
-            if(pendingTask == PULL) {
-                pullCheckRemote();
-            }
-            setPromptCredentials(false);
-        }
-    }
-
-    private void pullCheckRemote() {
+    private void checkRepo() {
+        //CHECK_REMOTE_DB
         if (mRepo.getRemoteURL() != null) {
+            //CHECK_CREDS_DB
             if (mRepo.getPassword() == null || mRepo.getUsername() == null) {
                 setPromptCredentials(true);
             } else {
-                mGitExec.pull(mRepo);
-                pendingTask = NONE;
+                pushOrPullAndFinish();
             }
         } else {
-            interTask = GET_REMOTE;
+            // GET_REMOTE_GIT
+            mState.setTaskState(GET_REMOTE_GIT);
             mGitExec.getRemoteURL(mRepo);
         }
     }
 
+    @Override
     public void handleCredentials(String username, String password) {
-        setUsername(username);
-        setPassword(password);
-        setCredentialsExecPending();
+        if (!StringUtils.isBlank(password) && !StringUtils.isBlank(username)) {
+            setPromptCredentials(false);
+            mRepo.setUsername(username);
+            mRepo.setPassword(password);
+            mRepository.updateCredentials(mRepo);
+            pushOrPullAndFinish();
+        } else {
+            setShowToast("Please provide username and password");
+        }
+    }
+
+    private void pushOrPullAndFinish() {
+        if (mState.getPendingTask() == PULL) {
+            mGitExec.pull(mRepo);
+        } else if (mState.getPendingTask() == PUSH) {
+            mGitExec.push(mRepo);
+        }
+        // FINISHED
+        mState.newState(START, NONE);
+    }
+
+    @Override
+    public void onCancelDialog() {
+        // FINISHED
+        mState.newState(START, NONE);
     }
 
     public void setRepo(Repo repo) {
@@ -184,22 +191,6 @@ public class RepoDetailViewModel extends ExecViewModel {
     }
     private void setPromptCredentials(Boolean value) {
         mPromptCredentials.setValue(value);
-    }
-
-    public String getPassword() {
-        return mPassword;
-    }
-
-    public void setPassword(String password) {
-        mPassword = password;
-    }
-
-    public String getUsername() {
-        return mUsername;
-    }
-
-    public void setUsername(String username) {
-        mUsername = username;
     }
 
     public SingleLiveEvent<String> getShowToast() {

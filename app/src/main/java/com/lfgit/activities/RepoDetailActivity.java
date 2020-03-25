@@ -4,13 +4,8 @@ import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -24,9 +19,8 @@ import com.lfgit.databinding.ActivityRepoDetailBinding;
 import com.lfgit.fragments.CredentialsDialog;
 import com.lfgit.view_models.RepoDetailViewModel;
 
-import org.w3c.dom.Text;
 
-public class RepoDetailActivity extends BasicAbstractActivity implements CredentialsDialog.CredentialsDialogListener {
+public class RepoDetailActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;
     private ActivityRepoDetailBinding mBinding;
@@ -68,7 +62,7 @@ public class RepoDetailActivity extends BasicAbstractActivity implements Credent
     }
 
     private void showCredentialsDialog() {
-        mDialogFragment = CredentialsDialog.newInstance(this);
+        mDialogFragment = CredentialsDialog.newInstance(mBinding.getRepoDetailViewModel());
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
         if (prev != null) {
@@ -119,11 +113,5 @@ public class RepoDetailActivity extends BasicAbstractActivity implements Credent
 
     public void openDrawer() {
         mDrawerLayout.openDrawer(mRightDrawer);
-    }
-
-    @Override
-    public void getCredentials(String username, String password) {
-        hideCredentialsDialog();
-        mBinding.getRepoDetailViewModel().handleCredentials(username, password);
     }
 }
