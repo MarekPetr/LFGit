@@ -15,7 +15,6 @@ import java.util.Map;
 import static com.lfgit.utilites.Constants.BIN_DIR;
 import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Constants.LIB_DIR;
-import static com.lfgit.utilites.Constants.RepoTask;
 import static com.lfgit.utilites.Logger.LogMsg;
 
 abstract class AbstractExecutor {

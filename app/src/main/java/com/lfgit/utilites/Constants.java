@@ -21,37 +21,6 @@ public class Constants {
         }
     }
 
-    public enum RepoTask {
-        INIT("init"),
-        CLONE("clone"),
-        ADD("add"),
-        COMMIT("commit"),
-        PUSH("push"),
-        PULL("pull"),
-        STATUS("status"),
-        CONFIG("config");
-
-        private String task;
-        RepoTask(String task) {
-            this.task = task;
-        }
-
-        @NotNull
-        @Override
-        public String toString(){
-            return task;
-        }
-
-        public static RepoTask toValue(String task) {
-            for(RepoTask needle : values()) {
-                if (needle.task.equals(task)) {
-                    return needle;
-                }
-            }
-            return null;
-        }
-    }
-
     public enum Task {
         CLONE,
         INIT,
