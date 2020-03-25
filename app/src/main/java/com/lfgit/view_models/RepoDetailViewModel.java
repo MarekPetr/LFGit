@@ -11,6 +11,8 @@ import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Objects;
+
 import static com.lfgit.utilites.Constants.InnerState.FINISH;
 import static com.lfgit.utilites.Constants.Task.ADD;
 import static com.lfgit.utilites.Constants.Task.NONE;
@@ -30,44 +32,6 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
 
     public RepoDetailViewModel(@NonNull Application application) {
         super(application);
-    }
-
-    // background thread
-    @Override
-    public void onExecFinished(TaskState state, String result, int errCode) {
-        if (state.getInnerState() != FINISH) {
-            processTaskResult(result);
-        } else {
-            unsetPending();
-            if (result.isEmpty()) {
-                if (errCode == 0) {
-                    setShowToast("Operation successful");
-                } else {
-                    setShowToast("Operation failed");
-                }
-            } else {
-                setTaskResult(result);
-            }
-            mState.newState(START, NONE);
-        }
-    }
-
-    // background thread
-    private void processTaskResult(String result) {
-        // Chop last end of line character
-        String res = StringUtils.chop(result);
-        if (mState.getInnerState() == GET_REMOTE_GIT) {
-            if (res.isEmpty()) {
-                postShowToast("Please add a remote");
-            } else {
-                mRepo.setRemoteURL(res);
-                mRepository.updateRemoteURL(mRepo);
-                if (mState.getPendingTask() == PULL) {
-                    mState.setInnerState(FINISH);
-                    mGitExec.pull(mRepo, mState);
-                }
-            }
-        }
     }
 
     public void execGitTask(int drawerPosition) {
@@ -161,6 +125,12 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
         }
     }
 
+    @Override
+    public void onCancelCredentialsDialog() {
+        // FINISHED
+        mState.newState(START, NONE);
+    }
+
     private void pushOrPullAndFinish() {
         if (mState.getPendingTask() == PULL) {
             pullAndFinish();
@@ -169,21 +139,50 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
         }
     }
 
+    // background thread
+    @Override
+    public void onExecFinished(TaskState state, String result, int errCode) {
+        if (state.getInnerState() != FINISH) {
+            processTaskResult(result);
+        } else {
+            unsetPending();
+            if (result.isEmpty()) {
+                if (errCode == 0) {
+                    setShowToast("Operation successful");
+                } else {
+                    setShowToast("Operation failed");
+                }
+            } else {
+                setTaskResult(result);
+            }
+            mState.newState(START, NONE);
+        }
+    }
+
+    // background thread
+    private void processTaskResult(String result) {
+        // get first remote URL from multiline result String
+        String[] lines = result.split(Objects.requireNonNull(System.getProperty("line.separator")));
+
+        if (mState.getInnerState() == GET_REMOTE_GIT) {
+            if (lines.length == 0) {
+                postShowToast("Please add a remote");
+            } else {
+                mRepo.setRemoteURL(lines[0]);
+                mRepository.updateRemoteURL(mRepo);
+                postPromptCredentials(true);
+            }
+        }
+    }
+
     private void pushAndFinish() {
         mState.newState(FINISH, PUSH);
         mGitExec.push(mRepo, mState);
-
     }
 
     private void pullAndFinish() {
-        mState.newState(FINISH, NONE);
-        mGitExec.push(mRepo, mState);
-    }
-
-    @Override
-    public void onCancelDialog() {
-        // FINISHED
-        mState.newState(START, NONE);
+        mState.newState(FINISH, PULL);
+        mGitExec.pull(mRepo, mState);
     }
 
     public void setRepo(Repo repo) {
@@ -208,6 +207,10 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
     private void setPromptCredentials(Boolean value) {
         mPromptCredentials.setValue(value);
     }
+    private void postPromptCredentials(Boolean value) {
+        mPromptCredentials.postValue(value);
+    }
+
 
     public SingleLiveEvent<String> getShowToast() {
         return mShowToast;

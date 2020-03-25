@@ -48,7 +48,6 @@ abstract class AbstractExecutor {
         pb.redirectErrorStream(true); // redirect error stream to input stream
         pb.directory(new File(destDir));
         Map<String, String> env = pb.environment();
-        LogMsg("LIB_DIR: " + LIB_DIR);
         env.put("LD_LIBRARY_PATH", LIB_DIR);
         env.put("PATH", BIN_DIR);
         env.put("HOME", FILES_DIR);

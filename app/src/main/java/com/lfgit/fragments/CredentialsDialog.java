@@ -58,11 +58,11 @@ public class CredentialsDialog extends DialogFragment {
     @Override
     public void onCancel(@NotNull DialogInterface dialog) {
         super.onCancel(dialog);
-        mListener.onCancelDialog();
+        mListener.onCancelCredentialsDialog();
     }
 
     public interface CredentialsDialogListener {
         void handleCredentials(String username, String password);
-        void onCancelDialog();
+        void onCancelCredentialsDialog();
     }
 }
