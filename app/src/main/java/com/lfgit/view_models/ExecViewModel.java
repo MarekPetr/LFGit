@@ -10,11 +10,11 @@ import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
 import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
-import com.lfgit.utilites.Constants;
+import com.lfgit.utilites.TaskState;
 
 import java.util.List;
 
-import static com.lfgit.utilites.Constants.RepoTask.CONFIG;
+import static com.lfgit.utilites.Constants.InnerState.FINISH;
 
 public abstract class ExecViewModel extends AndroidViewModel implements ExecListener {
     GitExec mGitExec;
@@ -34,16 +34,16 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
 
     // background thread
     @Override
-    public void onExecStarted(Constants.RepoTask task) {
-        if (task != CONFIG) {
+    public void onExecStarted(TaskState task) {
+        if (task.getInnerState() == FINISH) {
             setPending();
         }
     }
 
     // background thread
     @Override
-    public void onExecFinished(Constants.RepoTask task, String result, int errCode) {
-        if (task != CONFIG) {
+    public void onExecFinished(TaskState task, String result, int errCode) {
+        if (task.getInnerState() == FINISH) {
             unsetPending();
         }
     }

@@ -3,15 +3,17 @@ import android.app.Application;
 import android.net.Uri;
 import com.lfgit.database.model.Repo;
 import com.lfgit.utilites.Constants;
+import com.lfgit.utilites.TaskState;
 import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
 import static com.lfgit.utilites.Constants.AddRepo.ALREADY_ADDED;
 import static com.lfgit.utilites.Constants.AddRepo.OK;
-import static com.lfgit.utilites.Constants.RepoTask.CLONE;
-import static com.lfgit.utilites.Constants.RepoTask.CONFIG;
-import static com.lfgit.utilites.Constants.RepoTask.INIT;
+import static com.lfgit.utilites.Constants.Task.CLONE;
+import static com.lfgit.utilites.Constants.Task.INIT;
+import static com.lfgit.utilites.Constants.InnerState.FINISH;
+import static com.lfgit.utilites.Constants.InnerState.START;
 
 public class LocalRepoViewModel extends ExecViewModel {
     // data binding
@@ -21,6 +23,7 @@ public class LocalRepoViewModel extends ExecViewModel {
 
     private SingleLiveEvent<String> mCloneResult = new SingleLiveEvent<>();
     private SingleLiveEvent<String> mInitResult = new SingleLiveEvent<>();
+
 
     public LocalRepoViewModel(Application application) {
         super(application);
@@ -38,25 +41,27 @@ public class LocalRepoViewModel extends ExecViewModel {
 
     public void cloneRepoHandler() {
         if (!StringUtils.isBlank(cloneRepoPath)) {
-            mGitExec.clone(cloneRepoPath, cloneURLPath);
+            TaskState state = new TaskState(FINISH, CLONE);
+            mGitExec.clone(cloneRepoPath, cloneURLPath, state);
         }
     }
 
     public void initRepoHandler() {
         if (!StringUtils.isBlank(initRepoPath)) {
-            mGitExec.init(initRepoPath);
+            TaskState state = new TaskState(FINISH, INIT);
+            mGitExec.init(initRepoPath, state);
         }
     }
 
     // background thread
     @Override
-    public void onExecFinished(Constants.RepoTask task, String result, int errCode) {
-        if (task != CONFIG) {
+    public void onExecFinished(TaskState task, String result, int errCode) {
+        if (task.getInnerState() == FINISH) {
             unsetPending();
         }
-        if (task == CLONE) {
+        if (task.getPendingTask() == CLONE) {
             insertClonedRepo(errCode);
-        } else if (task == INIT) {
+        } else if (task.getPendingTask() == INIT) {
             insertInitRepo(errCode);
         }
     }

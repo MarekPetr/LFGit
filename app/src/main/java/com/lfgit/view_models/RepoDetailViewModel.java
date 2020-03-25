@@ -6,17 +6,19 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.model.Repo;
 import com.lfgit.fragments.CredentialsDialog;
-import com.lfgit.utilites.Constants;
+import com.lfgit.utilites.TaskState;
 import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
-import static com.lfgit.utilites.Constants.RepoTask.CONFIG;
-import static com.lfgit.utilites.Constants.task.NONE;
-import static com.lfgit.utilites.Constants.innerState.GET_REMOTE_GIT;
-import static com.lfgit.utilites.Constants.task.PULL;
-import static com.lfgit.utilites.Constants.innerState.START;
-import static com.lfgit.utilites.Constants.task.PUSH;
+import static com.lfgit.utilites.Constants.InnerState.FINISH;
+import static com.lfgit.utilites.Constants.Task.ADD;
+import static com.lfgit.utilites.Constants.Task.NONE;
+import static com.lfgit.utilites.Constants.InnerState.GET_REMOTE_GIT;
+import static com.lfgit.utilites.Constants.Task.PULL;
+import static com.lfgit.utilites.Constants.InnerState.START;
+import static com.lfgit.utilites.Constants.Task.PUSH;
+import static com.lfgit.utilites.Constants.Task.STATUS;
 
 public class RepoDetailViewModel extends ExecViewModel implements CredentialsDialog.CredentialsDialogListener{
     private Repo mRepo;
@@ -32,8 +34,8 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
 
     // background thread
     @Override
-    public void onExecFinished(Constants.RepoTask finishedTask, String result, int errCode) {
-        if (finishedTask == CONFIG) {
+    public void onExecFinished(TaskState state, String result, int errCode) {
+        if (state.getInnerState() != FINISH) {
             processTaskResult(result);
         } else {
             unsetPending();
@@ -46,6 +48,7 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
             } else {
                 setTaskResult(result);
             }
+            mState.newState(START, NONE);
         }
     }
 
@@ -53,15 +56,15 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
     private void processTaskResult(String result) {
         // Chop last end of line character
         String res = StringUtils.chop(result);
-        if (mState.getTaskState() == GET_REMOTE_GIT) {
+        if (mState.getInnerState() == GET_REMOTE_GIT) {
             if (res.isEmpty()) {
                 postShowToast("Please add a remote");
             } else {
                 mRepo.setRemoteURL(res);
                 mRepository.updateRemoteURL(mRepo);
                 if (mState.getPendingTask() == PULL) {
-                    mGitExec.pull(mRepo);
-                    mState.newState(START, NONE);
+                    mState.setInnerState(FINISH);
+                    mGitExec.pull(mRepo, mState);
                 }
             }
         }
@@ -92,11 +95,13 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
     }
 
     private void gitAddAllToStage() {
-        mGitExec.addAllToStage(getRepoPath());
+        mState.newState(FINISH, ADD);
+        mGitExec.addAllToStage(getRepoPath(), mState);
     }
 
     private void gitCommit() {
-        mGitExec.commit(getRepoPath());
+        mState.newState(FINISH, PUSH);
+        mGitExec.commit(getRepoPath(), mState);
     }
 
     private void gitPush() {
@@ -110,7 +115,8 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
     }
 
     private void gitStatus() {
-        mGitExec.status(getRepoPath());
+        mState.newState(FINISH, STATUS);
+        mGitExec.status(getRepoPath(), mState);
     }
 
     private void gitNewBranch() {
@@ -136,8 +142,9 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
             }
         } else {
             // GET_REMOTE_GIT
-            mState.setTaskState(GET_REMOTE_GIT);
-            mGitExec.getRemoteURL(mRepo);
+            mState.setInnerState(GET_REMOTE_GIT);
+            // Is a config command, so continues in processTaskResult.
+            mGitExec.getRemoteURL(mRepo, mState);
         }
     }
 
@@ -156,12 +163,21 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
 
     private void pushOrPullAndFinish() {
         if (mState.getPendingTask() == PULL) {
-            mGitExec.pull(mRepo);
+            pullAndFinish();
         } else if (mState.getPendingTask() == PUSH) {
-            mGitExec.push(mRepo);
+            pushAndFinish();
         }
-        // FINISHED
-        mState.newState(START, NONE);
+    }
+
+    private void pushAndFinish() {
+        mState.newState(FINISH, PUSH);
+        mGitExec.push(mRepo, mState);
+
+    }
+
+    private void pullAndFinish() {
+        mState.newState(FINISH, NONE);
+        mGitExec.push(mRepo, mState);
     }
 
     @Override

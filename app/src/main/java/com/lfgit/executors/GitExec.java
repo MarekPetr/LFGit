@@ -1,6 +1,7 @@
 package com.lfgit.executors;
 
 import com.lfgit.database.model.Repo;
+import com.lfgit.utilites.TaskState;
 
 public class GitExec extends AbstractExecutor {
 
@@ -10,46 +11,46 @@ public class GitExec extends AbstractExecutor {
         super(callback);
     }
 
-    public void config(String email, String username) {
-        executeBinary(gitPath, ".","config", "--global", "user.name", username);
-        executeBinary(gitPath, ".","config", "--global", "user.email", email);
+    public void config(String email, String username, TaskState state) {
+        executeBinary(state, gitPath, ".","config", "--global", "user.name", username);
+        executeBinary(state, gitPath, ".","config", "--global", "user.email", email);
     }
 
-    public void setEmail(String email) {
-        executeBinary(gitPath, ".","config", "--global", "user.email", email);
+    public void setEmail(String email, TaskState state) {
+        executeBinary(state, gitPath, ".","config", "--global", "user.email", email);
     }
 
-    public void setUsername(String username) {
-        executeBinary(gitPath, ".","config", "--global", "user.name", username);
+    public void setUsername(String username, TaskState state) {
+        executeBinary(state, gitPath, ".","config", "--global", "user.name", username);
     }
 
-    public void init(String dest) {
+    public void init(String dest, TaskState state) {
         String gitOperation = "init";
-        executeBinary(gitPath, dest, gitOperation);
+        executeBinary(state, gitPath, dest, gitOperation);
     }
 
-    public void commit(String dest) {
+    public void commit(String dest, TaskState state) {
         String gitOperation = "commit";
         String message = "-m \"newFileToCommit\"";
-        executeBinary(gitPath, dest, gitOperation, message);
+        executeBinary(state, gitPath, dest, gitOperation, message);
     }
 
-    public void clone(String dest, String remoteURL) {
+    public void clone(String dest, String remoteURL, TaskState state) {
         String gitOperation = "clone";
-        executeBinary(gitPath, dest, gitOperation, remoteURL);
+        executeBinary(state, gitPath, dest, gitOperation, remoteURL);
     }
 
-    public void status(String dest) {
+    public void status(String dest, TaskState state) {
         String gitOperation = "status";
-        executeBinary(gitPath, dest, gitOperation);
+        executeBinary(state, gitPath, dest, gitOperation);
     }
 
-    public void addAllToStage(String dest) {
+    public void addAllToStage(String dest, TaskState state) {
         String gitOperation = "add";
-        executeBinary(gitPath, dest, gitOperation, ".");
+        executeBinary(state, gitPath, dest, gitOperation, ".");
     }
 
-    public void push(Repo repo) {
+    public void push(Repo repo, TaskState state) {
         String gitOperation = "push";
         String username = repo.getUsername();
         String password = repo.getPassword();
@@ -61,10 +62,10 @@ public class GitExec extends AbstractExecutor {
         String scheme = parts[0]+"://";
         String domain = parts[1];
         String url = scheme + username + ":" + password + "@" + domain;
-        executeBinary(gitPath, localPath, gitOperation, url);
+        executeBinary(state, gitPath, localPath, gitOperation, url);
     }
 
-    public void pull(Repo repo) {
+    public void pull(Repo repo, TaskState state) {
         String gitOperation = "pull";
         String username = repo.getUsername();
         String password = repo.getPassword();
@@ -77,11 +78,11 @@ public class GitExec extends AbstractExecutor {
         String domain = parts[1];
 
         String url = scheme + username + ":" + password + "@" + domain;
-        executeBinary(gitPath, localPath, gitOperation, url);
+        executeBinary(state, gitPath, localPath, gitOperation, url);
     }
 
-    public void getRemoteURL(Repo repo) {
+    public void getRemoteURL(Repo repo, TaskState state) {
         String localPath = repo.getLocalPath();
-        executeBinary(gitPath, localPath, "config", "--get", "remote.origin.url");
+        executeBinary(state, gitPath, localPath, "config", "--get", "remote.origin.url");
     }
 }

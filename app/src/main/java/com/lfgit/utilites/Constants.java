@@ -52,7 +52,7 @@ public class Constants {
         }
     }
 
-    public enum task {
+    public enum Task {
         CLONE,
         INIT,
         COMMIT,
@@ -68,8 +68,9 @@ public class Constants {
         NONE,
     }
 
-    public enum innerState {
+    public enum InnerState {
         START,
+        FINISH,
         GET_REMOTE_GIT,
     }
 }
