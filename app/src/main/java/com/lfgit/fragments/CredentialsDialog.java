@@ -1,7 +1,6 @@
 package com.lfgit.fragments;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +12,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.lfgit.R;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -48,13 +49,20 @@ public class CredentialsDialog extends DialogFragment {
             public void onClick(View view) {
                 String username = mUsernameEditText.getText().toString();
                 String password = mPasswordEditText.getText().toString();
-                mListener.getCredentials(username, password);
+                mListener.handleCredentials(username, password);
             }
         });
         return alertDialogBuilder.create();
     }
 
+    @Override
+    public void onCancel(@NotNull DialogInterface dialog) {
+        super.onCancel(dialog);
+        mListener.onCancelDialog();
+    }
+
     public interface CredentialsDialogListener {
-        void getCredentials(String username, String password);
+        void handleCredentials(String username, String password);
+        void onCancelDialog();
     }
 }

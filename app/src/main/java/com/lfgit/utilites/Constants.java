@@ -1,9 +1,6 @@
 package com.lfgit.utilites;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 public class Constants {
     public static final String PKG = "com.lfgit/";
     public static final String APP_DIR = "/data/data" + "/" + PKG;
@@ -68,11 +65,11 @@ public class Constants {
         REMOVE_REMOTE,
         MERGE,
         CONFIG,
-        NONE;
+        NONE,
     }
 
-    public enum internalTask {
-        GET_REMOTE;
+    public enum innerState {
+        START,
+        GET_REMOTE_GIT,
     }
-
 }
