@@ -1,5 +1,7 @@
 package com.lfgit.executors;
 
+import com.lfgit.utilites.TaskState;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -13,16 +15,12 @@ import java.util.Map;
 import static com.lfgit.utilites.Constants.BIN_DIR;
 import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Constants.LIB_DIR;
-import static com.lfgit.utilites.Constants.RepoTask;
 import static com.lfgit.utilites.Logger.LogMsg;
 
 abstract class AbstractExecutor {
 
     private Process mProcess = null;
-    private String mResult = "";
-    private int mErrCode;
     String mExeDir;
-    private final StringBuffer mOutBuffer = new StringBuffer();
     private static final String EOL = System.getProperty("line.separator");
     private ExecListener mCallback;
 
@@ -31,15 +29,7 @@ abstract class AbstractExecutor {
         mCallback = callback;
     }
 
-    public String getResult() {
-        return mResult;
-    }
-
-    public int getErrCode() {
-        return mErrCode;
-    }
-
-    void executeBinary(String binary, String destDir, String... strings) {
+    void executeBinary(TaskState state, String binary, String destDir, String... strings) {
         String exeBin = mExeDir + "/" + binary;
         File f = new File(destDir);
         if (binary.equals("git") &&
@@ -76,7 +66,10 @@ abstract class AbstractExecutor {
         new Thread() {
             @Override
             public void run() {
-                mCallback.onExecStarted();
+                StringBuilder mOutBuffer = new StringBuilder();
+                String result;
+                int errCode;
+                mCallback.onExecStarted(state);
                 String line;
                 try {
                     InputStream stdout = mProcess.getInputStream();
@@ -89,16 +82,9 @@ abstract class AbstractExecutor {
                 }
 
                 try {
-                    mErrCode = mProcess.waitFor();
-                    mResult = mOutBuffer.toString();
-                    if (mResult.isEmpty()) {
-                        if (mErrCode == 0) {
-                            mResult = "Operation successful";
-                        } else {
-                            mResult = "Operation failed";
-                        }
-                    }
-                    mCallback.onExecFinished(RepoTask.toValue(strings[0]), mResult, mErrCode);
+                    errCode = mProcess.waitFor();
+                    result = mOutBuffer.toString();
+                    mCallback.onExecFinished(state, result, errCode);
                 } catch (InterruptedException e) {
                     // ignore
                 }

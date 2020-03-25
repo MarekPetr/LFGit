@@ -10,6 +10,7 @@
         <item>Add Remote</item>
         <item>Remove Remote</item>
         <item>Merge</item>
+        <item>Change Credentials</item>
     </string-array>
 
     <string-array name="repo_options">

@@ -1,8 +1,7 @@
 package com.lfgit.executors;
-
-import com.lfgit.utilites.Constants;
+import com.lfgit.utilites.TaskState;
 
 public interface ExecListener {
-    void onExecStarted();
-    void onExecFinished(Constants.RepoTask task, String result, int errCode);
+    void onExecStarted(TaskState state);
+    void onExecFinished(TaskState state, String result, int errCode);
 }

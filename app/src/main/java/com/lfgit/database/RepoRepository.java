@@ -29,4 +29,17 @@ public class RepoRepository {
     public void deleteByID(int repoId) {
         RepoDatabase.databaseWriteExecutor.execute(() -> mRepoDao.deleteByRepoId(repoId));
     }
+
+    public void updateCredentials(Repo repo) {
+        String username = repo.getUsername();
+        String password = repo.getPassword();
+        int id = repo.getId();
+        RepoDatabase.databaseWriteExecutor.execute(() -> mRepoDao.updateCredentials(username, password, id));
+    }
+
+    public void updateRemoteURL(Repo repo) {
+        String remoteURL = repo.getRemoteURL();
+        int id = repo.getId();
+        RepoDatabase.databaseWriteExecutor.execute(() -> mRepoDao.updateRemoteURL(remoteURL, id));
+    }
 }

@@ -1,5 +1,5 @@
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools">
     <data>
         <variable
             name="RepoDetailViewModel"
@@ -20,6 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:scrollbars="vertical"
+                android:layout_marginHorizontal="@dimen/smallMargin"
                 android:text="@={RepoDetailViewModel.taskResult}">
             </TextView>
         </LinearLayout>

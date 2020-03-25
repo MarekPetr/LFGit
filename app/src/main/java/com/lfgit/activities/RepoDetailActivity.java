@@ -1,28 +1,30 @@
 package com.lfgit.activities;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter;
 import com.lfgit.database.model.Repo;
 import com.lfgit.databinding.ActivityRepoDetailBinding;
+import com.lfgit.fragments.CredentialsDialog;
 import com.lfgit.view_models.RepoDetailViewModel;
+
 
 public class RepoDetailActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;
     private ActivityRepoDetailBinding mBinding;
+    private CredentialsDialog mDialogFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,34 @@ public class RepoDetailActivity extends BasicAbstractActivity {
                 hideProgressDialog();
             }
         });
+        viewModel.getPromptCredentials().observe(this, promptCredentials -> {
+            if (promptCredentials) {
+                showCredentialsDialog();
+            } else {
+                hideCredentialsDialog();
+            }
+        });
+
+        viewModel.getShowToast().observe(this, message -> {
+            showToastMsg(message);
+        });
+    }
+
+    private void showCredentialsDialog() {
+        mDialogFragment = CredentialsDialog.newInstance(mBinding.getRepoDetailViewModel());
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        mDialogFragment.show(ft, "dialog");
+    }
+
+    private void hideCredentialsDialog() {
+        if (mDialogFragment != null) {
+            mDialogFragment.dismiss();
+        }
     }
 
     @Override
@@ -84,7 +114,4 @@ public class RepoDetailActivity extends BasicAbstractActivity {
     public void openDrawer() {
         mDrawerLayout.openDrawer(mRightDrawer);
     }
-
-
-
 }

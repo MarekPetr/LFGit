@@ -1,4 +1,4 @@
-package com.lfgit.view_models;
+package com.lfgit.view_models.Events;
 
 import android.util.Log;
 
@@ -25,13 +25,11 @@ import androidx.lifecycle.Observer;
  */
 @SuppressWarnings("unused")
 public class SingleLiveEvent<T> extends MutableLiveData<T> {
-
     private static final String TAG = "SingleLiveEvent";
 
     private final AtomicBoolean mPending = new AtomicBoolean(false);
 
     @MainThread
-    @Override
     public void observe(@NonNull final LifecycleOwner owner, @NonNull final Observer<? super T> observer) {
         if (hasActiveObservers()) {
             Log.w(TAG, "Multiple observers registered but only one will be notified of changes.");
@@ -44,30 +42,26 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
             }
         });
     }
-
+    /**
+     * Used for cases where T is Void, to make calls cleaner.
+     */
     @MainThread
     @Override
     public void setValue(@Nullable final T t) {
         mPending.set(true);
         super.setValue(t);
     }
-
     @MainThread
+    public void setCall() {
+        setValue(null);
+    }
+
     @Override
     public void postValue(@Nullable final T t) {
         mPending.set(true);
         super.postValue(t);
     }
 
-    /**
-     * Used for cases where T is Void, to make calls cleaner.
-     */
-    @MainThread
-    public void setCall() {
-        setValue(null);
-    }
-
-    @MainThread
     public void postCall() {
         postValue(null);
     }

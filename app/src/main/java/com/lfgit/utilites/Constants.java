@@ -1,7 +1,4 @@
 package com.lfgit.utilites;
-
-import com.lfgit.database.model.Repo;
-
 import org.jetbrains.annotations.NotNull;
 
 public class Constants {
@@ -24,33 +21,25 @@ public class Constants {
         }
     }
 
-    public enum RepoTask {
-        INIT("init"),
-        CLONE("clone"),
-        ADD("add"),
-        COMMIT("commit"),
-        PUSH("push"),
-        PULL("pull"),
-        STATUS("status");
+    public enum Task {
+        CLONE,
+        INIT,
+        COMMIT,
+        ADD,
+        PUSH,
+        PULL,
+        STATUS,
+        NEW_BRANCH,
+        ADD_REMOTE,
+        REMOVE_REMOTE,
+        MERGE,
+        CONFIG,
+        NONE,
+    }
 
-        private String task;
-        RepoTask(String task) {
-            this.task = task;
-        }
-
-        @NotNull
-        @Override
-        public String toString(){
-            return task;
-        }
-
-        public static RepoTask toValue(String task) {
-            for(RepoTask needle : values()) {
-                if (needle.task.equals(task)) {
-                    return needle;
-                }
-            }
-            return null;
-        }
+    public enum InnerState {
+        START,
+        FINISH,
+        GET_REMOTE_GIT,
     }
 }
