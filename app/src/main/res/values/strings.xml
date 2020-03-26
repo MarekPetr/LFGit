@@ -34,4 +34,13 @@
     <string name="git_username_key">git_username</string>
     <string name="git_email_key">git_email</string>
 
+    <!-- credentials dialog -->
+    <string name="username_hint">username</string>
+    <string name="password_hint">password</string>
+    <string name="credentials_title">Provide credentials:</string>
+    <string name="enter_button">ENTER</string>
+
+    <!-- add_remote_layout -->
+    <string name="add_remote_title">Provide remote path for origin:</string>
+
 </resources>
