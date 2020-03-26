@@ -2,12 +2,10 @@ package com.lfgit.database.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
-
-// TODO https://medium.com/mindorks/using-room-database-android-jetpack-675a89a0e942
-// DAO
 
 @Entity(tableName = "repo")
 public class Repo implements Serializable {
@@ -26,8 +24,8 @@ public class Repo implements Serializable {
     private String username;
     @ColumnInfo(name = "password")
     private String password;
-    @ColumnInfo(name = "latestCommitterUname")
-    private String latestCommitterUname;
+    @ColumnInfo(name = "latestCommitterName")
+    private String latestCommitterName;
     @ColumnInfo(name = "latestCommitterEmail")
     private String latestCommitterEmail;
     @ColumnInfo(name = "latestCommitDate")
@@ -37,6 +35,12 @@ public class Repo implements Serializable {
 
     public Repo(String localPath) {
         this.localPath = localPath;
+    }
+
+    @Ignore
+    public Repo(String localPath, String remoteURL) {
+        this.localPath = localPath;
+        this.remoteURL = remoteURL;
     }
 
     public String getDisplayName() {
@@ -91,12 +95,12 @@ public class Repo implements Serializable {
         this.password = password;
     }
 
-    public String getLatestCommitterUname() {
-        return latestCommitterUname;
+    public String getLatestCommitterName() {
+        return latestCommitterName;
     }
 
-    public void setLatestCommitterUname(String latestCommitterUname) {
-        this.latestCommitterUname = latestCommitterUname;
+    public void setLatestCommitterName(String latestCommitterName) {
+        this.latestCommitterName = latestCommitterName;
     }
 
     public String getLatestCommitterEmail() {

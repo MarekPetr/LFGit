@@ -5,14 +5,14 @@
         <item>Commit</item>
         <item>Push</item>
         <item>Pull</item>
-        <item>New Branch</item>
-        <item>Add Remote</item>
-        <item>Remove Remote</item>
-        <item>Merge</item>
+        <item>Status</item>
+        <item>Add Origin Remote</item>
+        <item>Set Origin Remote</item>
+        <item>Change Credentials</item>
     </string-array>
 
     <string-array name="repo_options">
-        <item>Delete</item>
+        <item>Close</item>
     </string-array>
     <!-- Reply Preference -->
     <string-array name="reply_entries">

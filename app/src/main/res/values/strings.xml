@@ -4,13 +4,21 @@
 
     <!-- menu items -->
     <string name="menu_settings">Settings</string>
-    <string name="menu_init_repo">Init repository</string>
+    <string name="menu_init_repo">Init/Clone repository</string>
+    <string name="menu_add_repo">Add repository</string>
 
     <!-- git actions -->
     <string name="path_text_edit">Directory in internal storage</string>
-    <string name="init_button">Initialize</string>
-    <string name="set_path_button">Set path</string>
+    <string name="init_text">Initialize repository</string>
+    <string name="clone_text">Clone repository</string>
+    <string name="remote_url">Remote URL</string>
     <string name="init_directory">Directory</string>
+    <string name="init_button">Initialize</string>
+    <string name="clone_button">Clone</string>
+    <string name="set_path_button">Set path</string>
+    <string name="browse_button">Browse</string>
+
+    <string name="browse_only_primary">Only primary volume is supported</string>
 
     <string name="title_activity_settings">Settings</string>
 
@@ -26,4 +34,16 @@
     <string name="git_username_key">git_username</string>
     <string name="git_email_key">git_email</string>
 
+    <!-- credentials dialog -->
+    <string name="username_hint">username</string>
+    <string name="password_hint">password</string>
+    <string name="credentials_title">Enter credentials:</string>
+    <string name="enter_button">ENTER</string>
+
+    <!-- add_remote_layout -->
+    <string name="add_remote_title">Enter remote path for origin:</string>
+
+    <!-- commit_dialog_layout -->
+    <string name="commit_msg">Commit Message</string>
+    <string name="commit_title">Enter commit message</string>
 </resources>

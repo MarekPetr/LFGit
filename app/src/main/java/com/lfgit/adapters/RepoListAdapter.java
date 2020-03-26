@@ -99,13 +99,6 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         assert repo != null;
         remove(repo);
         notifyDataSetChanged();
-        String repoPath = repo.getLocalPath();
-        mContext.showToastMsg("Deleting: " + repoPath);
-        try {
-            FileUtils.deleteDirectory(new File(repoPath));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         mRepoListViewModel.deleteRepoById(repo.getId());
     }
 

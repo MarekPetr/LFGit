@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/smallMargin"
+            android:text="@string/commit_title"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toTopOf="parent">
+        </TextView>
+
+        <EditText
+            android:id="@+id/commitMsgEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:autofillHints="Directory"
+            android:hint="@string/commit_msg"
+            android:inputType="text"
+            bind:layout_constraintStart_toStartOf="@+id/titleTextView"
+            bind:layout_constraintTop_toBottomOf="@+id/titleTextView"
+            bind:layout_constraintEnd_toEndOf="parent">
+        </EditText>
+        <Button
+            android:id="@+id/enterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/smallMargin"
+            android:text="@string/enter_button"
+            bind:layout_constraintStart_toStartOf="@+id/commitMsgEditText"
+            bind:layout_constraintTop_toBottomOf="@+id/commitMsgEditText">
+        </Button>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

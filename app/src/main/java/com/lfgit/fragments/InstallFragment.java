@@ -88,4 +88,8 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
     public void setCallback(FragmentCallback callback) {
         this.mCallback = callback;
     }
+
+    public interface FragmentCallback {
+        void removeFragment();
+    }
 }

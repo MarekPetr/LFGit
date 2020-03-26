@@ -11,7 +11,7 @@ android {
     buildToolsVersion '29.0.3'
     defaultConfig {
         applicationId "com.lfgit"
-        minSdkVersion 21
+        minSdkVersion 26
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -37,7 +37,7 @@ repositories {
 }
 
 dependencies {
-    def room_version = "2.2.4"
+    def room_version = "2.2.5"
     implementation "androidx.room:room-runtime:$room_version"
     implementation 'androidx.preference:preference:1.1.0'
     kapt "androidx.room:room-compiler:$room_version"

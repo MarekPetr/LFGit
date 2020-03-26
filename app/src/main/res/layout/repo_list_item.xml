@@ -6,7 +6,7 @@
     <TextView
         android:id="@+id/repoTitle"
         android:layout_width="match_parent"
-        android:layout_height="40pt">
+        android:layout_height="80sp">
     </TextView>
 
 </LinearLayout>
