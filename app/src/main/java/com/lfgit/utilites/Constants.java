@@ -29,10 +29,7 @@ public class Constants {
         PUSH,
         PULL,
         STATUS,
-        NEW_BRANCH,
         ADD_REMOTE,
-        REMOVE_REMOTE,
-        MERGE,
         CONFIG,
         NONE,
     }
@@ -41,5 +38,6 @@ public class Constants {
         START,
         FINISH,
         GET_REMOTE_GIT,
+        ADD_ORIGIN_REMOTE,
     }
 }

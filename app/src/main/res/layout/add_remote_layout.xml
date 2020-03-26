@@ -1,4 +1,5 @@
-<layout xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:bind="http://schemas.android.com/apk/res-auto">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -10,43 +11,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/smallMargin"
-            android:text="@string/credentials_title"
+            android:text="@string/add_remote_title"
             bind:layout_constraintStart_toStartOf="parent"
             bind:layout_constraintTop_toTopOf="parent">
         </TextView>
 
         <EditText
-            android:id="@+id/usernameEditText"
+            android:id="@+id/remotePathEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:autofillHints="Directory"
-            android:hint="@string/username_hint"
+            android:hint="@string/remote_url"
             android:inputType="text"
             bind:layout_constraintStart_toStartOf="@+id/titleTextView"
             bind:layout_constraintTop_toBottomOf="@+id/titleTextView"
             bind:layout_constraintEnd_toEndOf="parent">
         </EditText>
-
-        <EditText
-            android:id="@+id/passwordEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:autofillHints="Directory"
-            android:hint="@string/password_hint"
-            android:inputType="textPassword"
-            bind:layout_constraintStart_toStartOf="@+id/usernameEditText"
-            bind:layout_constraintTop_toBottomOf="@+id/usernameEditText"
-            bind:layout_constraintEnd_toEndOf="parent">
-        </EditText>
-
         <Button
             android:id="@+id/enterButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/smallMargin"
             android:text="@string/enter_button"
-            bind:layout_constraintStart_toStartOf="@+id/passwordEditText"
-            bind:layout_constraintTop_toBottomOf="@+id/passwordEditText">
+            bind:layout_constraintStart_toStartOf="@+id/remotePathEditText"
+            bind:layout_constraintTop_toBottomOf="@+id/remotePathEditText">
         </Button>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

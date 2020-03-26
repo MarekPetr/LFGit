@@ -59,16 +59,10 @@ public class GitExec extends AbstractExecutor {
 
     public void push(Repo repo, TaskState state) {
         pushOrPull("push", repo, state);
-
     }
 
     public void pull(Repo repo, TaskState state) {
         pushOrPull("pull", repo, state);
-    }
-
-    public void getRemoteURL(Repo repo, TaskState state) {
-        String localPath = repo.getLocalPath();
-        executeBinary(state, gitPath, localPath, "config", "--get", "remote.origin.url");
     }
 
     private void pushOrPull(String gitOperation, Repo repo, TaskState state) {
@@ -90,5 +84,15 @@ public class GitExec extends AbstractExecutor {
         String domain = parts[1];
         String url = scheme + username + ":" + password + "@" + domain;
         executeBinary(state, gitPath, localPath, gitOperation, url);
+    }
+
+    public void getRemoteURL(Repo repo, TaskState state) {
+        String localPath = repo.getLocalPath();
+        executeBinary(state, gitPath, localPath, "config", "--get", "remote.origin.url");
+    }
+
+    public void addOriginRemote(Repo repo, String remoteURL, TaskState state) {
+        String localPath = repo.getLocalPath();
+        executeBinary(state, gitPath, localPath, "remote", "add", "origin", remoteURL);
     }
 }

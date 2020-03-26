@@ -16,6 +16,7 @@ import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter;
 import com.lfgit.database.model.Repo;
 import com.lfgit.databinding.ActivityRepoDetailBinding;
+import com.lfgit.fragments.AddRemoteDialog;
 import com.lfgit.fragments.CredentialsDialog;
 import com.lfgit.view_models.RepoDetailViewModel;
 
@@ -24,7 +25,8 @@ public class RepoDetailActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;
     private ActivityRepoDetailBinding mBinding;
-    private CredentialsDialog mDialogFragment;
+    private CredentialsDialog mCredsDialog;
+    private AddRemoteDialog mAddRemoteDialog;
     private RepoDetailViewModel mRepoDetailViewModel;
 
     @Override
@@ -57,27 +59,54 @@ public class RepoDetailActivity extends BasicAbstractActivity {
             }
         });
 
+        mRepoDetailViewModel.getPromptAddRemote().observe(this, promptRemote -> {
+            if (promptRemote) {
+                showAddRemoteDialog();
+            } else {
+                hideAddRemoteDialog();
+            }
+        });
+
         mRepoDetailViewModel.getShowToast().observe(this, message -> {
             showToastMsg(message);
         });
+
     }
 
     private void showCredentialsDialog() {
-        mDialogFragment = CredentialsDialog.newInstance(mBinding.getRepoDetailViewModel());
+        mCredsDialog = CredentialsDialog.newInstance(mRepoDetailViewModel);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("creds_dialog");
         if (prev != null) {
             ft.remove(prev);
         }
         ft.addToBackStack(null);
-        mDialogFragment.show(ft, "dialog");
+        mCredsDialog.show(ft, "creds_dialog");
     }
 
     private void hideCredentialsDialog() {
-        if (mDialogFragment != null) {
-            mDialogFragment.dismiss();
+        if (mCredsDialog != null) {
+            mCredsDialog.dismiss();
         }
     }
+
+    private void showAddRemoteDialog() {
+        mAddRemoteDialog = AddRemoteDialog.newInstance(mRepoDetailViewModel);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("remote_dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        mAddRemoteDialog.show(ft, "remote_dialog");
+    }
+
+    private void hideAddRemoteDialog() {
+        if (mAddRemoteDialog != null) {
+            mAddRemoteDialog.dismiss();
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
