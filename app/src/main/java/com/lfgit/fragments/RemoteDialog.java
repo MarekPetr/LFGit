@@ -17,16 +17,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class AddRemoteDialog extends DialogFragment {
+public class RemoteDialog extends DialogFragment {
     private AddRemoteDialogListener mListener;
     private EditText mRemoteURL;
 
-    public AddRemoteDialog() {
+    public RemoteDialog() {
         // empty constructor required
     }
 
-    public static AddRemoteDialog newInstance(AddRemoteDialogListener listener) {
-        AddRemoteDialog dialog = new AddRemoteDialog();
+    public static RemoteDialog newInstance(AddRemoteDialogListener listener) {
+        RemoteDialog dialog = new RemoteDialog();
         dialog.mListener = listener;
         return dialog;
     }

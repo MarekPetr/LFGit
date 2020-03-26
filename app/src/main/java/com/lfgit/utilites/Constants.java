@@ -30,6 +30,7 @@ public class Constants {
         PULL,
         STATUS,
         ADD_REMOTE,
+        EDIT_REMOTE,
         CONFIG,
         NONE,
     }
@@ -39,5 +40,6 @@ public class Constants {
         FINISH,
         GET_REMOTE_GIT,
         ADD_ORIGIN_REMOTE,
+        SET_ORIGIN_REMOTE,
     }
 }

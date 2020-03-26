@@ -16,7 +16,7 @@ import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter;
 import com.lfgit.database.model.Repo;
 import com.lfgit.databinding.ActivityRepoDetailBinding;
-import com.lfgit.fragments.AddRemoteDialog;
+import com.lfgit.fragments.RemoteDialog;
 import com.lfgit.fragments.CredentialsDialog;
 import com.lfgit.view_models.RepoDetailViewModel;
 
@@ -26,7 +26,7 @@ public class RepoDetailActivity extends BasicAbstractActivity {
     private DrawerLayout mDrawerLayout;
     private ActivityRepoDetailBinding mBinding;
     private CredentialsDialog mCredsDialog;
-    private AddRemoteDialog mAddRemoteDialog;
+    private RemoteDialog mRemoteDialog;
     private RepoDetailViewModel mRepoDetailViewModel;
 
     @Override
@@ -91,19 +91,19 @@ public class RepoDetailActivity extends BasicAbstractActivity {
     }
 
     private void showAddRemoteDialog() {
-        mAddRemoteDialog = AddRemoteDialog.newInstance(mRepoDetailViewModel);
+        mRemoteDialog = RemoteDialog.newInstance(mRepoDetailViewModel);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag("remote_dialog");
         if (prev != null) {
             ft.remove(prev);
         }
         ft.addToBackStack(null);
-        mAddRemoteDialog.show(ft, "remote_dialog");
+        mRemoteDialog.show(ft, "remote_dialog");
     }
 
     private void hideAddRemoteDialog() {
-        if (mAddRemoteDialog != null) {
-            mAddRemoteDialog.dismiss();
+        if (mRemoteDialog != null) {
+            mRemoteDialog.dismiss();
         }
     }
 

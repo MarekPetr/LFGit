@@ -95,4 +95,9 @@ public class GitExec extends AbstractExecutor {
         String localPath = repo.getLocalPath();
         executeBinary(state, gitPath, localPath, "remote", "add", "origin", remoteURL);
     }
+
+    public void editOriginRemote(Repo repo, String remoteURL, TaskState state) {
+        String localPath = repo.getLocalPath();
+        executeBinary(state, gitPath, localPath, "remote", "set-url", "origin", remoteURL);
+    }
 }

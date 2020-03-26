@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.model.Repo;
-import com.lfgit.fragments.AddRemoteDialog;
+import com.lfgit.fragments.RemoteDialog;
 import com.lfgit.fragments.CredentialsDialog;
 import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.TaskState;
@@ -16,8 +16,10 @@ import java.util.Objects;
 
 import static com.lfgit.utilites.Constants.InnerState.ADD_ORIGIN_REMOTE;
 import static com.lfgit.utilites.Constants.InnerState.FINISH;
+import static com.lfgit.utilites.Constants.InnerState.SET_ORIGIN_REMOTE;
 import static com.lfgit.utilites.Constants.Task.ADD;
 import static com.lfgit.utilites.Constants.Task.ADD_REMOTE;
+import static com.lfgit.utilites.Constants.Task.EDIT_REMOTE;
 import static com.lfgit.utilites.Constants.Task.NONE;
 import static com.lfgit.utilites.Constants.InnerState.GET_REMOTE_GIT;
 import static com.lfgit.utilites.Constants.Task.PULL;
@@ -27,13 +29,13 @@ import static com.lfgit.utilites.Constants.Task.STATUS;
 
 public class RepoDetailViewModel extends ExecViewModel implements
         CredentialsDialog.CredentialsDialogListener,
-        AddRemoteDialog.AddRemoteDialogListener
+        RemoteDialog.AddRemoteDialogListener
 {
 
     private Repo mRepo;
     private MutableLiveData<String> mTaskResult = new MutableLiveData<>();
     private SingleLiveEvent<Boolean> mPromptCredentials = new SingleLiveEvent<>();
-    private SingleLiveEvent<Boolean> mPromptAddRemote = new SingleLiveEvent<>();
+    private SingleLiveEvent<Boolean> mPromptRemote = new SingleLiveEvent<>();
     private SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
 
     private TaskState mState = new TaskState(START, NONE);
@@ -55,8 +57,10 @@ public class RepoDetailViewModel extends ExecViewModel implements
         } else if (drawerPosition == 4) {
             gitStatus();
         } else if (drawerPosition == 5) {
-            gitSetRemote();
+            gitAddRemote();
         } else if (drawerPosition == 6) {
+            gitSetRemote();
+        } else if (drawerPosition == 7) {
             setPromptCredentials(true);
         }
     }
@@ -86,9 +90,14 @@ public class RepoDetailViewModel extends ExecViewModel implements
         mGitExec.status(getRepoPath(), mState);
     }
 
-    private void gitSetRemote() {
+    private void gitAddRemote() {
         mState.newState(START, ADD_REMOTE);
-        setPromptAddRemote(true);
+        setPromptRemote(true);
+    }
+
+    private void gitSetRemote() {
+        mState.newState(START, EDIT_REMOTE);
+        setPromptRemote(true);
     }
 
     private void checkRepo() {
@@ -142,10 +151,18 @@ public class RepoDetailViewModel extends ExecViewModel implements
     @Override
     public void handleRemoteURL(String remoteURL) {
         if (!StringUtils.isBlank(remoteURL)) {
-            setPromptAddRemote(false);
-            mState.setInnerState(ADD_ORIGIN_REMOTE);
+            Constants.Task task = mState.getPendingTask();
+            setPromptRemote(false);
             mTempRemoteURL = remoteURL;
-            mGitExec.addOriginRemote(mRepo, remoteURL, mState);
+
+            if (task == ADD_REMOTE) {
+                mState.setInnerState(ADD_ORIGIN_REMOTE);
+                mGitExec.addOriginRemote(mRepo, remoteURL, mState);
+            } else if (task == EDIT_REMOTE){
+                mState.setInnerState(SET_ORIGIN_REMOTE);
+                mGitExec.editOriginRemote(mRepo, remoteURL, mState);
+            }
+
         } else {
             setShowToast("Please provide remote URL");
         }
@@ -162,7 +179,7 @@ public class RepoDetailViewModel extends ExecViewModel implements
     public void onExecFinished(TaskState state, String result, int errCode) {
         mState = state;
         if (state.getInnerState() != FINISH) {
-            processTaskResult(result);
+            processTaskResult(result, errCode);
         } else {
             postHidePendingOnRemoteFinish(state);
             if (result.isEmpty()) {
@@ -179,7 +196,7 @@ public class RepoDetailViewModel extends ExecViewModel implements
     }
 
     // background thread
-    private void processTaskResult(String result) {
+    private void processTaskResult(String result, int errCode) {
         // get first remote URL from multiline result String
         String[] resultLines = result.split(Objects.requireNonNull(System.getProperty("line.separator")));
 
@@ -194,13 +211,21 @@ public class RepoDetailViewModel extends ExecViewModel implements
                     postPromptCredentials(true);
                 }
             }
-        } else if (innerState == ADD_ORIGIN_REMOTE) {
-            if (resultLines.length != 0) {
-                postTaskResult(result);
+        } else if (innerState == ADD_ORIGIN_REMOTE || innerState == SET_ORIGIN_REMOTE) {
+            if (errCode != 0) {
+                if (resultLines.length != 0) {
+                    postTaskResult(result);
+                } else {
+                    postShowToast("Operation failed");
+                }
             } else {
                 mRepo.setRemoteURL(mTempRemoteURL);
                 mRepository.updateRemoteURL(mRepo);
-                postShowToast("Remote origin added");
+                if (innerState == ADD_ORIGIN_REMOTE) {
+                    postShowToast("Remote origin added");
+                } else {
+                    postShowToast("Remote origin set");
+                }
             }
             mState.newState(START, NONE);
         }
@@ -251,14 +276,14 @@ public class RepoDetailViewModel extends ExecViewModel implements
     }
 
     public SingleLiveEvent<Boolean> getPromptAddRemote() {
-        return mPromptAddRemote;
+        return mPromptRemote;
     }
 
-    public void setPromptAddRemote(Boolean prompt) {
-        mPromptAddRemote.setValue(prompt);
+    public void setPromptRemote(Boolean prompt) {
+        mPromptRemote.setValue(prompt);
     }
-    public void postPromptAddRemote(Boolean prompt) {
-        mPromptAddRemote.postValue(prompt);
+    public void postPromptRemote(Boolean prompt) {
+        mPromptRemote.postValue(prompt);
     }
 
 }
