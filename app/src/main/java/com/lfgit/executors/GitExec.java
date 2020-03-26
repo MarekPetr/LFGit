@@ -36,10 +36,9 @@ public class GitExec extends AbstractExecutor {
         executeBinary(state, gitPath, dest, gitOperation);
     }
 
-    public void commit(String dest, TaskState state) {
+    public void commit(String dest, String message, TaskState state) {
         String gitOperation = "commit";
-        String message = "-m \"newFileToCommit\"";
-        executeBinary(state, gitPath, dest, gitOperation, message);
+        executeBinary(state, gitPath, dest, gitOperation, "-m", "\"" + message + "\"");
     }
 
     public void clone(String dest, String remoteURL, TaskState state) {

@@ -1,4 +1,4 @@
-package com.lfgit.fragments;
+package com.lfgit.fragments.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;

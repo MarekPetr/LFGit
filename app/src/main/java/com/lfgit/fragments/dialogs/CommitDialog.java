@@ -1,4 +1,4 @@
-package com.lfgit.fragments;
+package com.lfgit.fragments.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -17,18 +17,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class CredentialsDialog extends DialogFragment {
-    private CredentialsDialogListener mListener;
-    private EditText mUsernameEditText;
-    private EditText mPasswordEditText;
+public class CommitDialog extends DialogFragment {
+    private CommitDialogListener mListener;
+    private EditText mCommitMsgEditText;
     private Button mEnterButton;
 
-    public CredentialsDialog() {
+    public CommitDialog() {
         // empty constructor required
     }
 
-    public static CredentialsDialog newInstance(CredentialsDialogListener listener) {
-        CredentialsDialog dialog = new CredentialsDialog();
+    public static CommitDialog newInstance(CommitDialogListener listener) {
+        CommitDialog dialog = new CommitDialog();
         dialog.mListener = listener;
         return dialog;
     }
@@ -36,10 +35,9 @@ public class CredentialsDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        View view = inflater.inflate(R.layout.credentials_dialog_layout, null, false);
+        View view = inflater.inflate(R.layout.commit_dialog_layout, null, false);
 
-        mUsernameEditText = view.findViewById(R.id.usernameEditText);
-        mPasswordEditText = view.findViewById(R.id.passwordEditText);
+        mCommitMsgEditText = view.findViewById(R.id.commitMsgEditText);
         mEnterButton = view.findViewById(R.id.enterButton);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
@@ -47,9 +45,8 @@ public class CredentialsDialog extends DialogFragment {
         mEnterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username = mUsernameEditText.getText().toString();
-                String password = mPasswordEditText.getText().toString();
-                mListener.handleCredentials(username, password);
+                String commitMsg = mCommitMsgEditText.getText().toString();
+                mListener.handleCommitMsg(commitMsg);
             }
         });
         return alertDialogBuilder.create();
@@ -58,11 +55,11 @@ public class CredentialsDialog extends DialogFragment {
     @Override
     public void onCancel(@NotNull DialogInterface dialog) {
         super.onCancel(dialog);
-        mListener.onCancelCredentialsDialog();
+        mListener.onCancelCommitDialog();
     }
 
-    public interface CredentialsDialogListener {
-        void handleCredentials(String username, String password);
-        void onCancelCredentialsDialog();
+    public interface CommitDialogListener {
+        void handleCommitMsg(String commitMsg);
+        void onCancelCommitDialog();
     }
 }

@@ -16,8 +16,9 @@ import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter;
 import com.lfgit.database.model.Repo;
 import com.lfgit.databinding.ActivityRepoDetailBinding;
-import com.lfgit.fragments.RemoteDialog;
-import com.lfgit.fragments.CredentialsDialog;
+import com.lfgit.fragments.dialogs.CommitDialog;
+import com.lfgit.fragments.dialogs.RemoteDialog;
+import com.lfgit.fragments.dialogs.CredentialsDialog;
 import com.lfgit.view_models.RepoDetailViewModel;
 
 
@@ -27,6 +28,7 @@ public class RepoDetailActivity extends BasicAbstractActivity {
     private ActivityRepoDetailBinding mBinding;
     private CredentialsDialog mCredsDialog;
     private RemoteDialog mRemoteDialog;
+    private CommitDialog mCommitDialog;
     private RepoDetailViewModel mRepoDetailViewModel;
 
     @Override
@@ -67,20 +69,28 @@ public class RepoDetailActivity extends BasicAbstractActivity {
             }
         });
 
-        mRepoDetailViewModel.getShowToast().observe(this, message -> {
-            showToastMsg(message);
+        mRepoDetailViewModel.getPromptAddRemote().observe(this, promptRemote -> {
+            if (promptRemote) {
+                showAddRemoteDialog();
+            } else {
+                hideAddRemoteDialog();
+            }
         });
 
+        mRepoDetailViewModel.getPromptCommit().observe(this, promptCommit -> {
+            if (promptCommit) {
+                showCommitDialog();
+            } else {
+                hideCommitDialog();
+            }
+        });
+
+        mRepoDetailViewModel.getShowToast().observe(this, this::showToastMsg);
     }
 
     private void showCredentialsDialog() {
         mCredsDialog = CredentialsDialog.newInstance(mRepoDetailViewModel);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment prev = getSupportFragmentManager().findFragmentByTag("creds_dialog");
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
+        FragmentTransaction ft = getFragmentTransaction("creds_dialog");
         mCredsDialog.show(ft, "creds_dialog");
     }
 
@@ -92,12 +102,7 @@ public class RepoDetailActivity extends BasicAbstractActivity {
 
     private void showAddRemoteDialog() {
         mRemoteDialog = RemoteDialog.newInstance(mRepoDetailViewModel);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment prev = getSupportFragmentManager().findFragmentByTag("remote_dialog");
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
+        FragmentTransaction ft = getFragmentTransaction("remote_dialog");
         mRemoteDialog.show(ft, "remote_dialog");
     }
 
@@ -105,6 +110,28 @@ public class RepoDetailActivity extends BasicAbstractActivity {
         if (mRemoteDialog != null) {
             mRemoteDialog.dismiss();
         }
+    }
+
+    public void showCommitDialog() {
+        mCommitDialog = CommitDialog.newInstance(mRepoDetailViewModel);
+        FragmentTransaction ft = getFragmentTransaction("commit_dialog");
+        mCommitDialog.show(ft, "commit_dialog");
+    }
+
+    public void hideCommitDialog() {
+        if (mCommitDialog != null) {
+            mCommitDialog.dismiss();
+        }
+    }
+
+    private FragmentTransaction getFragmentTransaction(String tag) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("commit_dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        return ft;
     }
 
 

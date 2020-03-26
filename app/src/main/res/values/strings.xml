@@ -37,10 +37,13 @@
     <!-- credentials dialog -->
     <string name="username_hint">username</string>
     <string name="password_hint">password</string>
-    <string name="credentials_title">Provide credentials:</string>
+    <string name="credentials_title">Enter credentials:</string>
     <string name="enter_button">ENTER</string>
 
     <!-- add_remote_layout -->
-    <string name="add_remote_title">Provide remote path for origin:</string>
+    <string name="add_remote_title">Enter remote path for origin:</string>
 
+    <!-- commit_dialog_layout -->
+    <string name="commit_msg">Commit Message</string>
+    <string name="commit_title">Enter commit message</string>
 </resources>

@@ -5,8 +5,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.model.Repo;
-import com.lfgit.fragments.RemoteDialog;
-import com.lfgit.fragments.CredentialsDialog;
+import com.lfgit.fragments.dialogs.CommitDialog;
+import com.lfgit.fragments.dialogs.RemoteDialog;
+import com.lfgit.fragments.dialogs.CredentialsDialog;
 import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.TaskState;
 import com.lfgit.view_models.Events.SingleLiveEvent;
@@ -19,6 +20,7 @@ import static com.lfgit.utilites.Constants.InnerState.FINISH;
 import static com.lfgit.utilites.Constants.InnerState.SET_ORIGIN_REMOTE;
 import static com.lfgit.utilites.Constants.Task.ADD;
 import static com.lfgit.utilites.Constants.Task.ADD_REMOTE;
+import static com.lfgit.utilites.Constants.Task.COMMIT;
 import static com.lfgit.utilites.Constants.Task.EDIT_REMOTE;
 import static com.lfgit.utilites.Constants.Task.NONE;
 import static com.lfgit.utilites.Constants.InnerState.GET_REMOTE_GIT;
@@ -26,16 +28,19 @@ import static com.lfgit.utilites.Constants.Task.PULL;
 import static com.lfgit.utilites.Constants.InnerState.START;
 import static com.lfgit.utilites.Constants.Task.PUSH;
 import static com.lfgit.utilites.Constants.Task.STATUS;
+import static com.lfgit.utilites.Logger.LogMsg;
 
 public class RepoDetailViewModel extends ExecViewModel implements
         CredentialsDialog.CredentialsDialogListener,
-        RemoteDialog.AddRemoteDialogListener
+        RemoteDialog.AddRemoteDialogListener,
+        CommitDialog.CommitDialogListener
 {
 
     private Repo mRepo;
     private MutableLiveData<String> mTaskResult = new MutableLiveData<>();
     private SingleLiveEvent<Boolean> mPromptCredentials = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptRemote = new SingleLiveEvent<>();
+    private SingleLiveEvent<Boolean> mPromptCommit = new SingleLiveEvent<>();
     private SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
 
     private TaskState mState = new TaskState(START, NONE);
@@ -71,8 +76,8 @@ public class RepoDetailViewModel extends ExecViewModel implements
     }
 
     private void gitCommit() {
-        mState.newState(FINISH, PUSH);
-        mGitExec.commit(getRepoPath(), mState);
+        mState.newState(START, COMMIT);
+        setPromptCommit(true);        
     }
 
     private void gitPush() {
@@ -130,7 +135,7 @@ public class RepoDetailViewModel extends ExecViewModel implements
             mRepository.updateCredentials(mRepo);
             pushOrPullAndFinish();
         } else {
-            setShowToast("Please provide username and password");
+            setShowToast("Please enter username and password");
         }
     }
 
@@ -140,6 +145,16 @@ public class RepoDetailViewModel extends ExecViewModel implements
         } else if (mState.getPendingTask() == PUSH) {
             pushAndFinish();
         }
+    }
+
+    private void pushAndFinish() {
+        mState.newState(FINISH, PUSH);
+        mGitExec.push(mRepo, mState);
+    }
+
+    private void pullAndFinish() {
+        mState.newState(FINISH, PULL);
+        mGitExec.pull(mRepo, mState);
     }
 
     @Override
@@ -164,12 +179,29 @@ public class RepoDetailViewModel extends ExecViewModel implements
             }
 
         } else {
-            setShowToast("Please provide remote URL");
+            setShowToast("Please enter remote URL");
         }
     }
 
     @Override
     public void onCancelAddRemoteDialog() {
+        // FINISHED
+        mState.newState(START, NONE);
+    }
+
+    @Override
+    public void handleCommitMsg(String message) {
+        if (!StringUtils.isBlank(message)) {
+            setPromptCommit(false);
+            mState.setInnerState(FINISH);
+            mGitExec.commit(getRepoPath(), message, mState);
+        } else {
+            setShowToast("Please enter commit message");
+        }
+    }
+
+    @Override
+    public void onCancelCommitDialog() {
         // FINISHED
         mState.newState(START, NONE);
     }
@@ -231,16 +263,6 @@ public class RepoDetailViewModel extends ExecViewModel implements
         }
     }
 
-    private void pushAndFinish() {
-        mState.newState(FINISH, PUSH);
-        mGitExec.push(mRepo, mState);
-    }
-
-    private void pullAndFinish() {
-        mState.newState(FINISH, PULL);
-        mGitExec.pull(mRepo, mState);
-    }
-
     public void setRepo(Repo repo) {
         mRepo = repo;
     }
@@ -282,8 +304,12 @@ public class RepoDetailViewModel extends ExecViewModel implements
     public void setPromptRemote(Boolean prompt) {
         mPromptRemote.setValue(prompt);
     }
-    public void postPromptRemote(Boolean prompt) {
-        mPromptRemote.postValue(prompt);
+
+    public SingleLiveEvent<Boolean> getPromptCommit() {
+        return mPromptCommit;
     }
 
+    public void setPromptCommit(Boolean prompt) {
+        mPromptCommit.setValue(prompt);
+    }
 }
