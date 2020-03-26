@@ -13,7 +13,6 @@ import static com.lfgit.utilites.Constants.AddRepo.OK;
 import static com.lfgit.utilites.Constants.Task.CLONE;
 import static com.lfgit.utilites.Constants.Task.INIT;
 import static com.lfgit.utilites.Constants.InnerState.FINISH;
-import static com.lfgit.utilites.Constants.InnerState.START;
 
 public class LocalRepoViewModel extends ExecViewModel {
     // data binding
@@ -55,13 +54,12 @@ public class LocalRepoViewModel extends ExecViewModel {
 
     // background thread
     @Override
-    public void onExecFinished(TaskState task, String result, int errCode) {
-        if (task.getInnerState() == FINISH) {
-            unsetPending();
-        }
-        if (task.getPendingTask() == CLONE) {
+    public void onExecFinished(TaskState state, String result, int errCode) {
+        postHidePendingOnRemoteFinish(state);
+        
+        if (state.getPendingTask() == CLONE) {
             insertClonedRepo(errCode);
-        } else if (task.getPendingTask() == INIT) {
+        } else if (state.getPendingTask() == INIT) {
             insertInitRepo(errCode);
         }
     }

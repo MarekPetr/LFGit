@@ -25,30 +25,31 @@ public class RepoDetailActivity extends BasicAbstractActivity {
     private DrawerLayout mDrawerLayout;
     private ActivityRepoDetailBinding mBinding;
     private CredentialsDialog mDialogFragment;
+    private RepoDetailViewModel mRepoDetailViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repo_detail);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_detail);
-        RepoDetailViewModel viewModel = new ViewModelProvider(this).get(RepoDetailViewModel.class);
-        mBinding.setRepoDetailViewModel(viewModel);
+        mRepoDetailViewModel = new ViewModelProvider(this).get(RepoDetailViewModel.class);
+        mBinding.setRepoDetailViewModel(mRepoDetailViewModel);
         mBinding.setLifecycleOwner(this);
 
-        setupDrawer(viewModel);
+        setupDrawer();
         mBinding.taskResult.setMovementMethod(new ScrollingMovementMethod());
 
         Repo repo = (Repo) getIntent().getSerializableExtra(Repo.TAG);
-        viewModel.setRepo(repo);
+        mRepoDetailViewModel.setRepo(repo);
 
-        viewModel.getExecPending().observe(this, isPending -> {
+        mRepoDetailViewModel.getExecPending().observe(this, isPending -> {
             if (isPending) {
                 showProgressDialog();
             } else {
                 hideProgressDialog();
             }
         });
-        viewModel.getPromptCredentials().observe(this, promptCredentials -> {
+        mRepoDetailViewModel.getPromptCredentials().observe(this, promptCredentials -> {
             if (promptCredentials) {
                 showCredentialsDialog();
             } else {
@@ -56,7 +57,7 @@ public class RepoDetailActivity extends BasicAbstractActivity {
             }
         });
 
-        viewModel.getShowToast().observe(this, message -> {
+        mRepoDetailViewModel.getShowToast().observe(this, message -> {
             showToastMsg(message);
         });
     }
@@ -97,12 +98,12 @@ public class RepoDetailActivity extends BasicAbstractActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupDrawer(RepoDetailViewModel viewModel) {
+    private void setupDrawer() {
         mDrawerLayout = findViewById(R.id.drawerLayout);
         mRightDrawer = findViewById(R.id.rightDrawer);
         ListView mRepoOperationList = findViewById(R.id.repoOperationList);
 
-        RepoOperationsAdapter mDrawerAdapter = new RepoOperationsAdapter(this, viewModel);
+        RepoOperationsAdapter mDrawerAdapter = new RepoOperationsAdapter(this, mRepoDetailViewModel);
         mRepoOperationList.setAdapter(mDrawerAdapter);
         mRepoOperationList.setOnItemClickListener(mDrawerAdapter);
     }

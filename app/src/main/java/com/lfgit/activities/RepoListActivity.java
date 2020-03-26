@@ -21,7 +21,6 @@ import com.lfgit.R;
 import com.lfgit.adapters.RepoListAdapter;
 import com.lfgit.databinding.ActivityRepoListBinding;
 import com.lfgit.fragments.InstallFragment;
-import com.lfgit.fragments.FragmentCallback;
 import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.UriHelper;
 import com.lfgit.view_models.LocalRepoViewModel;
@@ -29,7 +28,7 @@ import com.lfgit.view_models.RepoListViewModel;
 
 import static com.lfgit.utilites.Logger.LogMsg;
 
-public class RepoListActivity extends BasicAbstractActivity implements FragmentCallback {
+public class RepoListActivity extends BasicAbstractActivity implements InstallFragment.FragmentCallback {
     private ActivityRepoListBinding mBinding;
     private LocalRepoViewModel mLocalRepoViewModel;
     private RepoListAdapter mRepoListAdapter;

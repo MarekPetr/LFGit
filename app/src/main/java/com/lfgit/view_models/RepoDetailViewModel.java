@@ -21,7 +21,6 @@ import static com.lfgit.utilites.Constants.Task.PULL;
 import static com.lfgit.utilites.Constants.InnerState.START;
 import static com.lfgit.utilites.Constants.Task.PUSH;
 import static com.lfgit.utilites.Constants.Task.STATUS;
-import static com.lfgit.utilites.Logger.LogMsg;
 
 public class RepoDetailViewModel extends ExecViewModel implements CredentialsDialog.CredentialsDialogListener{
     private Repo mRepo;
@@ -150,15 +149,15 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
         if (state.getInnerState() != FINISH) {
             processTaskResult(result);
         } else {
-            unsetPending();
+            postHidePendingOnRemoteFinish(state);
             if (result.isEmpty()) {
                 if (errCode == 0) {
-                    setShowToast("Operation successful");
+                    postTaskResult("Operation successful");
                 } else {
-                    setShowToast("Operation failed");
+                    postTaskResult("Operation failed");
                 }
             } else {
-                setTaskResult(result);
+                postTaskResult(result);
             }
             mState.newState(START, NONE);
         }
@@ -195,7 +194,6 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
     public void setRepo(Repo repo) {
         mRepo = repo;
     }
-
     private String getRepoPath() {
         return mRepo.getLocalPath();
     }
@@ -203,8 +201,7 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
     public MutableLiveData<String> getTaskResult() {
         return mTaskResult;
     }
-
-    private void setTaskResult(String result) {
+    private void postTaskResult(String result) {
         mTaskResult.postValue(result);
     }
 
@@ -218,15 +215,12 @@ public class RepoDetailViewModel extends ExecViewModel implements CredentialsDia
         mPromptCredentials.postValue(value);
     }
 
-
     public SingleLiveEvent<String> getShowToast() {
         return mShowToast;
     }
-
     private void setShowToast(String message) {
         mShowToast.setValue(message);
     }
-
     private void postShowToast(String message) {
         mShowToast.postValue(message);
     }

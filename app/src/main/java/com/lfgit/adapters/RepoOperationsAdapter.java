@@ -82,7 +82,7 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id)
     {
-        mViewModel.execGitTask(position);
         mRepoDetailActivity.closeDrawer();
+        mViewModel.execGitTask(position);
     }
 }

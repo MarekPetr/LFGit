@@ -10,11 +10,15 @@ import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
 import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
+import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.TaskState;
 
 import java.util.List;
 
 import static com.lfgit.utilites.Constants.InnerState.FINISH;
+import static com.lfgit.utilites.Constants.Task.CLONE;
+import static com.lfgit.utilites.Constants.Task.PULL;
+import static com.lfgit.utilites.Constants.Task.PUSH;
 
 public abstract class ExecViewModel extends AndroidViewModel implements ExecListener {
     GitExec mGitExec;
@@ -34,28 +38,48 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
 
     // background thread
     @Override
-    public void onExecStarted(TaskState task) {
-        if (task.getInnerState() == FINISH) {
-            setPending();
-        }
+    public void onExecStarted(TaskState state) {
+        postShowPendingOnRemoteFinish(state);   
     }
 
     // background thread
     @Override
-    public void onExecFinished(TaskState task, String result, int errCode) {
-        if (task.getInnerState() == FINISH) {
-            unsetPending();
-        }
+    public void onExecFinished(TaskState state, String result, int errCode) {
+        postHidePendingOnRemoteFinish(state);      
     }
 
     // background thread
-    void setPending() {
+    void postShowPending() {
         mExecPending.postValue(true);
     }
 
     // background thread
-    void unsetPending() {
+    void postHidePending() {
         mExecPending.postValue(false);
+    }
+
+    // background thread
+    Boolean isRemoteTask(Constants.Task currentTask) {
+        return currentTask == CLONE || currentTask == PUSH || currentTask == PULL;
+    }
+    
+    // background thread
+    Boolean remoteTaskFinished(TaskState state) {
+        Constants.Task currentTask = state.getPendingTask();
+        if (isRemoteTask(currentTask)) {
+            return state.getInnerState() == FINISH;
+        }
+        return false;
+    }
+    
+    // background thread
+    void postShowPendingOnRemoteFinish(TaskState state) {
+        if (remoteTaskFinished(state)) postShowPending();
+    }
+
+    // background thread
+    void postHidePendingOnRemoteFinish(TaskState state) {
+        if (remoteTaskFinished(state)) postHidePending();
     }
 
     public MutableLiveData<Boolean> getExecPending() {

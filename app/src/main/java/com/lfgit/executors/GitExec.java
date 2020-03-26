@@ -1,7 +1,14 @@
 package com.lfgit.executors;
 
+import android.net.Uri;
+
 import com.lfgit.database.model.Repo;
 import com.lfgit.utilites.TaskState;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+import static com.lfgit.utilites.Logger.LogMsg;
 
 public class GitExec extends AbstractExecutor {
 
@@ -51,38 +58,37 @@ public class GitExec extends AbstractExecutor {
     }
 
     public void push(Repo repo, TaskState state) {
-        String gitOperation = "push";
-        String username = repo.getUsername();
-        String password = repo.getPassword();
-        String localPath = repo.getLocalPath();
-        String remoteURL = repo.getRemoteURL();
+        pushOrPull("push", repo, state);
 
-        String regex = "://";
-        String[] parts = remoteURL.split(regex);
-        String scheme = parts[0]+"://";
-        String domain = parts[1];
-        String url = scheme + username + ":" + password + "@" + domain;
-        executeBinary(state, gitPath, localPath, gitOperation, url);
     }
 
     public void pull(Repo repo, TaskState state) {
-        String gitOperation = "pull";
-        String username = repo.getUsername();
-        String password = repo.getPassword();
-        String localPath = repo.getLocalPath();
-        String remoteURL = repo.getRemoteURL();
-
-        String regex = "://";
-        String[] parts = remoteURL.split(regex);
-        String scheme = parts[0]+"://";
-        String domain = parts[1];
-
-        String url = scheme + username + ":" + password + "@" + domain;
-        executeBinary(state, gitPath, localPath, gitOperation, url);
+        pushOrPull("pull", repo, state);
     }
 
     public void getRemoteURL(Repo repo, TaskState state) {
         String localPath = repo.getLocalPath();
         executeBinary(state, gitPath, localPath, "config", "--get", "remote.origin.url");
+    }
+
+    private void pushOrPull(String gitOperation, Repo repo, TaskState state) {
+        String username = repo.getUsername();
+        String password = repo.getPassword();
+        try {
+            username = URLEncoder.encode(repo.getUsername(), "UTF-8");
+            password = URLEncoder.encode(repo.getPassword(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            // try it without encoding
+            LogMsg("PushOrPull encoding failed");
+        }
+        String localPath = repo.getLocalPath();
+        String remoteURL = repo.getRemoteURL();
+
+        String regex = "://";
+        String[] parts = remoteURL.split(regex);
+        String scheme = parts[0]+"://";
+        String domain = parts[1];
+        String url = scheme + username + ":" + password + "@" + domain;
+        executeBinary(state, gitPath, localPath, gitOperation, url);
     }
 }
