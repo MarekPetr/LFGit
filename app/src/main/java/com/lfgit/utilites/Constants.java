@@ -31,13 +31,14 @@ public class Constants {
         STATUS,
         ADD_REMOTE,
         EDIT_REMOTE,
+        LIST_BRANCHES,
         CONFIG,
         NONE,
     }
 
     public enum InnerState {
-        START,
-        FINISH,
+        FOR_APP,
+        FOR_USER,
         GET_REMOTE_GIT,
         ADD_ORIGIN_REMOTE,
         SET_ORIGIN_REMOTE,

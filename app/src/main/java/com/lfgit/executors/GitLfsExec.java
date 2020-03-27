@@ -9,6 +9,6 @@ public class GitLfsExec extends AbstractExecutor {
     }
 
     public void install(String dest, TaskState state) {
-        executeBinary(state, "git-lfs",dest, "install");
+        executeBinary("git-lfs",dest, "install");
     }
 }

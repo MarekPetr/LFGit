@@ -12,7 +12,7 @@ import static com.lfgit.utilites.Constants.AddRepo.ALREADY_ADDED;
 import static com.lfgit.utilites.Constants.AddRepo.OK;
 import static com.lfgit.utilites.Constants.Task.CLONE;
 import static com.lfgit.utilites.Constants.Task.INIT;
-import static com.lfgit.utilites.Constants.InnerState.FINISH;
+import static com.lfgit.utilites.Constants.InnerState.FOR_USER;
 
 public class AddRepoViewModel extends ExecViewModel {
     // data binding
@@ -22,7 +22,6 @@ public class AddRepoViewModel extends ExecViewModel {
 
     private SingleLiveEvent<String> mCloneResult = new SingleLiveEvent<>();
     private SingleLiveEvent<String> mInitResult = new SingleLiveEvent<>();
-
 
     public AddRepoViewModel(Application application) {
         super(application);
@@ -40,26 +39,26 @@ public class AddRepoViewModel extends ExecViewModel {
 
     public void cloneRepoHandler() {
         if (!StringUtils.isBlank(cloneRepoPath)) {
-            TaskState state = new TaskState(FINISH, CLONE);
-            mGitExec.clone(cloneRepoPath, cloneURLPath, state);
+            mState = new TaskState(FOR_USER, CLONE);
+            mGitExec.clone(cloneRepoPath, cloneURLPath);
         }
     }
 
     public void initRepoHandler() {
         if (!StringUtils.isBlank(initRepoPath)) {
-            TaskState state = new TaskState(FINISH, INIT);
-            mGitExec.init(initRepoPath, state);
+            mState = new TaskState(FOR_USER, INIT);
+            mGitExec.init(initRepoPath);
         }
     }
 
     // background thread
     @Override
-    public void onExecFinished(TaskState state, String result, int errCode) {
-        postHidePendingOnRemoteFinish(state);
+    public void onExecFinished(String result, int errCode) {
+        hidePendingOnRemoteUserTask(mState);
         
-        if (state.getPendingTask() == CLONE) {
+        if (mState.getPendingTask() == CLONE) {
             insertClonedRepo(errCode);
-        } else if (state.getPendingTask() == INIT) {
+        } else if (mState.getPendingTask() == INIT) {
             insertInitRepo(errCode);
         }
     }
