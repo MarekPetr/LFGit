@@ -38,7 +38,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         setContentView(R.layout.activity_repo_detail);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_detail);
         mRepoTasksViewModel = new ViewModelProvider(this).get(RepoTasksViewModel.class);
-        mBinding.setRepoDetailViewModel(mRepoTasksViewModel);
+        mBinding.setRepoTasksViewModel(mRepoTasksViewModel);
         mBinding.setLifecycleOwner(this);
 
         setupDrawer();

@@ -87,7 +87,7 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
                 this.startActivity(intent);
                 break;
             case R.id.menu_init_repo:
-                intent = new Intent(this, InitRepoActivity.class);
+                intent = new Intent(this, AddRepoActivity.class);
                 this.startActivity(intent);
                 break;
             case R.id.menu_add_repo:

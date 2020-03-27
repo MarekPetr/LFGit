@@ -14,7 +14,7 @@ import com.lfgit.R;
 import com.lfgit.utilites.UriHelper;
 import com.lfgit.view_models.AddRepoViewModel;
 
-public class InitRepoActivity extends BasicAbstractActivity {
+public class AddRepoActivity extends BasicAbstractActivity {
     private ActivityInitRepoBinding mBinding;
     private static final int INIT_BROWSE_REQUEST_CODE = 1;
     private static final int CLONE_BROWSE_REQUEST_CODE = 2;
@@ -24,7 +24,7 @@ public class InitRepoActivity extends BasicAbstractActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_init_repo);
         AddRepoViewModel addRepoViewModel = new ViewModelProvider(this).get(AddRepoViewModel.class);
-        mBinding.setLocalRepoViewModel(addRepoViewModel);
+        mBinding.setAddRepoViewModel(addRepoViewModel);
         mBinding.setLifecycleOwner(this);
 
         addRepoViewModel.getCloneResult().observe(this, cloneResult -> {
@@ -59,9 +59,9 @@ public class InitRepoActivity extends BasicAbstractActivity {
         // path is null when primary directory URI was not returned from intent
         if (path != null) {
             if (requestCode == INIT_BROWSE_REQUEST_CODE) {
-                mBinding.getLocalRepoViewModel().setInitRepoPath(path);
+                mBinding.getAddRepoViewModel().setInitRepoPath(path);
             } else if (requestCode == CLONE_BROWSE_REQUEST_CODE) {
-                mBinding.getLocalRepoViewModel().setCloneRepoPath(path);
+                mBinding.getAddRepoViewModel().setCloneRepoPath(path);
             }
         } else {
             showToastMsg(getString (R. string. browse_only_primary));

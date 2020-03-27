@@ -27,7 +27,7 @@
             android:parentActivityName=".activities.RepoListActivity">
         </activity>
         <activity
-            android:name=".activities.InitRepoActivity"
+            android:name=".activities.AddRepoActivity"
             android:parentActivityName=".activities.RepoListActivity">
         </activity>
         <activity
