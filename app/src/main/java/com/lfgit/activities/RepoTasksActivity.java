@@ -56,27 +56,15 @@ public class RepoTasksActivity extends BasicAbstractActivity {
             }
         });
         mRepoTasksViewModel.getPromptCredentials().observe(this, promptCredentials -> {
-            if (promptCredentials) {
-                showDialog(mCredsDialog, "creds_dialog");
-            } else {
-                hideDialog(mCredsDialog);
-            }
+            toggleDialog(promptCredentials, mCredsDialog, "creds_dialog");
         });
 
         mRepoTasksViewModel.getPromptAddRemote().observe(this, promptRemote -> {
-            if (promptRemote) {
-                showDialog(mRemoteDialog, "remote_dialog");
-            } else {
-                hideDialog(mRemoteDialog);
-            }
+            toggleDialog(promptRemote, mRemoteDialog, "remote_dialog");
         });
 
         mRepoTasksViewModel.getPromptCommit().observe(this, promptCommit -> {
-            if (promptCommit) {
-                showDialog(mCommitDialog, "commit_dialog");
-            } else {
-                hideDialog(mCommitDialog);
-            }
+            toggleDialog(promptCommit, mCommitDialog, "commit_dialog");
         });
 
         mRepoTasksViewModel.getShowToast().observe(this, this::showToastMsg);
@@ -91,6 +79,14 @@ public class RepoTasksActivity extends BasicAbstractActivity {
     private void showDialog(DialogFragment dialog, String tag) {
         FragmentTransaction ft = getFragmentTransaction(tag);
         dialog.show(ft, tag);
+    }
+
+    private void toggleDialog(Boolean show, DialogFragment dialog, String tag) {
+        if (show) {
+            showDialog(dialog, tag);
+        } else {
+            hideDialog(dialog);
+        }
     }
 
     private void setupDialogs() {
