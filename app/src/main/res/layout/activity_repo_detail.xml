@@ -2,8 +2,8 @@
     xmlns:bind="http://schemas.android.com/tools">
     <data>
         <variable
-            name="RepoDetailViewModel"
-            type="com.lfgit.view_models.RepoDetailViewModel" />
+            name="RepoTasksViewModel"
+            type="com.lfgit.view_models.RepoTasksViewModel" />
     </data>
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawerLayout"
@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:scrollbars="vertical"
                 android:layout_marginHorizontal="@dimen/smallMargin"
-                android:text="@={RepoDetailViewModel.taskResult}">
+                android:text="@={RepoTasksViewModel.taskResult}">
             </TextView>
         </LinearLayout>
 

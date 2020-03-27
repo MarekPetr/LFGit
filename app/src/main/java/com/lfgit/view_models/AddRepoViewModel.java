@@ -14,7 +14,7 @@ import static com.lfgit.utilites.Constants.Task.CLONE;
 import static com.lfgit.utilites.Constants.Task.INIT;
 import static com.lfgit.utilites.Constants.InnerState.FINISH;
 
-public class LocalRepoViewModel extends ExecViewModel {
+public class AddRepoViewModel extends ExecViewModel {
     // data binding
     private String initRepoPath;
     private String cloneRepoPath;
@@ -24,7 +24,7 @@ public class LocalRepoViewModel extends ExecViewModel {
     private SingleLiveEvent<String> mInitResult = new SingleLiveEvent<>();
 
 
-    public LocalRepoViewModel(Application application) {
+    public AddRepoViewModel(Application application) {
         super(application);
     }
 

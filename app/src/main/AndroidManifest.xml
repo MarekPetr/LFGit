@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.RepoDetailActivity"
+            android:name=".activities.RepoTasksActivity"
             android:parentActivityName=".activities.RepoListActivity">
         </activity>
         <activity

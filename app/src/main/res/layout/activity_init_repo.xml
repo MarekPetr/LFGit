@@ -3,8 +3,8 @@
     xmlns:bind="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="localRepoViewModel"
-            type="com.lfgit.view_models.LocalRepoViewModel"/>
+            name="addRepoViewModel"
+            type="com.lfgit.view_models.AddRepoViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,7 +31,7 @@
             android:autofillHints="Directory"
             android:hint="@string/init_directory"
             android:inputType="text"
-            android:text="@={localRepoViewModel.initRepoPath}"
+            android:text="@={addRepoViewModel.initRepoPath}"
             bind:layout_constraintStart_toStartOf="parent"
             bind:layout_constraintEnd_toStartOf="@id/initBrowseButton"
             bind:layout_constraintTop_toBottomOf="@+id/initTextView" />
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/marginStart"
-            android:onClick="@{() -> localRepoViewModel.initRepoHandler()}"
+            android:onClick="@{() -> addRepoViewModel.initRepoHandler()}"
             android:text="@string/init_button"
             bind:layout_constraintStart_toStartOf="@+id/initPathEditText"
             bind:layout_constraintTop_toBottomOf="@+id/initPathEditText" />
@@ -76,7 +76,7 @@
             android:autofillHints="remote URL"
             android:hint="@string/remote_url"
             android:inputType="text"
-            android:text="@={localRepoViewModel.CloneURLPath}"
+            android:text="@={addRepoViewModel.CloneURLPath}"
             bind:layout_constraintEnd_toEndOf="parent"
             bind:layout_constraintStart_toStartOf="parent"
             bind:layout_constraintTop_toBottomOf="@+id/cloneTextView" />
@@ -89,7 +89,7 @@
             android:autofillHints="Directory"
             android:hint="@string/init_directory"
             android:inputType="text"
-            android:text="@={localRepoViewModel.cloneRepoPath}"
+            android:text="@={addRepoViewModel.cloneRepoPath}"
             bind:layout_constraintEnd_toStartOf="@+id/cloneBrowseButton"
             bind:layout_constraintStart_toStartOf="parent"
             bind:layout_constraintTop_toBottomOf="@+id/remotePathEditText" />
@@ -109,7 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/marginStart"
-            android:onClick="@{() -> localRepoViewModel.cloneRepoHandler()}"
+            android:onClick="@{() -> addRepoViewModel.cloneRepoHandler()}"
             android:text="@string/clone_button"
             bind:layout_constraintStart_toStartOf="@+id/cloneLocalPathEditText"
             bind:layout_constraintTop_toBottomOf="@+id/cloneLocalPathEditText" />

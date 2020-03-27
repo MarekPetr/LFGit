@@ -8,6 +8,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,109 +20,78 @@ import com.lfgit.databinding.ActivityRepoDetailBinding;
 import com.lfgit.fragments.dialogs.CommitDialog;
 import com.lfgit.fragments.dialogs.RemoteDialog;
 import com.lfgit.fragments.dialogs.CredentialsDialog;
-import com.lfgit.view_models.RepoDetailViewModel;
+import com.lfgit.view_models.RepoTasksViewModel;
 
 
-public class RepoDetailActivity extends BasicAbstractActivity {
+public class RepoTasksActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;
     private ActivityRepoDetailBinding mBinding;
     private CredentialsDialog mCredsDialog;
     private RemoteDialog mRemoteDialog;
     private CommitDialog mCommitDialog;
-    private RepoDetailViewModel mRepoDetailViewModel;
+    private RepoTasksViewModel mRepoTasksViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repo_detail);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_detail);
-        mRepoDetailViewModel = new ViewModelProvider(this).get(RepoDetailViewModel.class);
-        mBinding.setRepoDetailViewModel(mRepoDetailViewModel);
+        mRepoTasksViewModel = new ViewModelProvider(this).get(RepoTasksViewModel.class);
+        mBinding.setRepoDetailViewModel(mRepoTasksViewModel);
         mBinding.setLifecycleOwner(this);
 
         setupDrawer();
         mBinding.taskResult.setMovementMethod(new ScrollingMovementMethod());
 
         Repo repo = (Repo) getIntent().getSerializableExtra(Repo.TAG);
-        mRepoDetailViewModel.setRepo(repo);
+        mRepoTasksViewModel.setRepo(repo);
 
-        mRepoDetailViewModel.getExecPending().observe(this, isPending -> {
+        mRepoTasksViewModel.getExecPending().observe(this, isPending -> {
             if (isPending) {
                 showProgressDialog();
             } else {
                 hideProgressDialog();
             }
         });
-        mRepoDetailViewModel.getPromptCredentials().observe(this, promptCredentials -> {
+        mRepoTasksViewModel.getPromptCredentials().observe(this, promptCredentials -> {
             if (promptCredentials) {
-                showCredentialsDialog();
+                showDialog(mCredsDialog, "creds_dialog");
             } else {
-                hideCredentialsDialog();
+                hideDialog(mCredsDialog);
             }
         });
 
-        mRepoDetailViewModel.getPromptAddRemote().observe(this, promptRemote -> {
+        mRepoTasksViewModel.getPromptAddRemote().observe(this, promptRemote -> {
             if (promptRemote) {
-                showAddRemoteDialog();
+                showDialog(mRemoteDialog, "remote_dialog");
             } else {
-                hideAddRemoteDialog();
+                hideDialog(mRemoteDialog);
             }
         });
 
-        mRepoDetailViewModel.getPromptAddRemote().observe(this, promptRemote -> {
-            if (promptRemote) {
-                showAddRemoteDialog();
-            } else {
-                hideAddRemoteDialog();
-            }
-        });
-
-        mRepoDetailViewModel.getPromptCommit().observe(this, promptCommit -> {
+        mRepoTasksViewModel.getPromptCommit().observe(this, promptCommit -> {
             if (promptCommit) {
-                showCommitDialog();
+                //showCommitDialog();
+                showDialog(mCommitDialog, "commit_dialog");
             } else {
-                hideCommitDialog();
+                hideDialog(mCommitDialog);
             }
         });
 
-        mRepoDetailViewModel.getShowToast().observe(this, this::showToastMsg);
+        mRepoTasksViewModel.getShowToast().observe(this, this::showToastMsg);
     }
 
-    private void showCredentialsDialog() {
-        mCredsDialog = CredentialsDialog.newInstance(mRepoDetailViewModel);
-        FragmentTransaction ft = getFragmentTransaction("creds_dialog");
-        mCredsDialog.show(ft, "creds_dialog");
-    }
-
-    private void hideCredentialsDialog() {
-        if (mCredsDialog != null) {
-            mCredsDialog.dismiss();
+    private void hideDialog(DialogFragment dialog) {
+        if (dialog != null) {
+            dialog.dismiss();
         }
     }
 
-    private void showAddRemoteDialog() {
-        mRemoteDialog = RemoteDialog.newInstance(mRepoDetailViewModel);
-        FragmentTransaction ft = getFragmentTransaction("remote_dialog");
-        mRemoteDialog.show(ft, "remote_dialog");
-    }
-
-    private void hideAddRemoteDialog() {
-        if (mRemoteDialog != null) {
-            mRemoteDialog.dismiss();
-        }
-    }
-
-    public void showCommitDialog() {
-        mCommitDialog = CommitDialog.newInstance(mRepoDetailViewModel);
-        FragmentTransaction ft = getFragmentTransaction("commit_dialog");
-        mCommitDialog.show(ft, "commit_dialog");
-    }
-
-    public void hideCommitDialog() {
-        if (mCommitDialog != null) {
-            mCommitDialog.dismiss();
-        }
+    private void showDialog(DialogFragment dialog, String tag) {
+        dialog = RemoteDialog.newInstance(mRepoTasksViewModel);
+        FragmentTransaction ft = getFragmentTransaction(tag);
+        dialog.show(ft, tag);
     }
 
     private FragmentTransaction getFragmentTransaction(String tag) {
@@ -133,7 +103,6 @@ public class RepoDetailActivity extends BasicAbstractActivity {
         ft.addToBackStack(null);
         return ft;
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -159,7 +128,7 @@ public class RepoDetailActivity extends BasicAbstractActivity {
         mRightDrawer = findViewById(R.id.rightDrawer);
         ListView mRepoOperationList = findViewById(R.id.repoOperationList);
 
-        RepoOperationsAdapter mDrawerAdapter = new RepoOperationsAdapter(this, mRepoDetailViewModel);
+        RepoOperationsAdapter mDrawerAdapter = new RepoOperationsAdapter(this, mRepoTasksViewModel);
         mRepoOperationList.setAdapter(mDrawerAdapter);
         mRepoOperationList.setOnItemClickListener(mDrawerAdapter);
     }
