@@ -1,6 +1,8 @@
 package com.lfgit.view_models;
 import android.app.Application;
 import android.net.Uri;
+import android.os.Environment;
+
 import com.lfgit.database.model.Repo;
 import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.TaskState;
@@ -20,8 +22,10 @@ public class AddRepoViewModel extends ExecViewModel {
     private String cloneRepoPath;
     private String cloneURLPath;
 
+    //private String mLocalPath = Environment.getExternalStorageDirectory().toString() + "/";
     private SingleLiveEvent<String> mCloneResult = new SingleLiveEvent<>();
     private SingleLiveEvent<String> mInitResult = new SingleLiveEvent<>();
+    private String mExtStorage = Environment.getExternalStorageDirectory().toString() + "/";
 
     public AddRepoViewModel(Application application) {
         super(application);
@@ -38,24 +42,38 @@ public class AddRepoViewModel extends ExecViewModel {
     }
 
     public void cloneRepoHandler() {
-        if (!StringUtils.isBlank(cloneRepoPath)) {
+        if (!StringUtils.isBlank(cloneRepoPath) && !StringUtils.isBlank(cloneURLPath) ) {
+            if (checkExternal(cloneRepoPath)) return;
             mState = new TaskState(FOR_USER, CLONE);
             mGitExec.clone(cloneRepoPath, cloneURLPath);
+        } else {
+            setShowToast("Please enter remote URL and directory");
         }
     }
 
     public void initRepoHandler() {
         if (!StringUtils.isBlank(initRepoPath)) {
+            if (checkExternal(initRepoPath)) return;
             mState = new TaskState(FOR_USER, INIT);
-            mGitExec.init(initRepoPath);
+            mGitExec.init(cloneRepoPath);
+        } else {
+            setShowToast("Please enter directory");
         }
+    }
+
+    private Boolean checkExternal(String path) {
+        if (!initRepoPath.startsWith(mExtStorage)) {
+            setShowToast("Please enter directory from internal storage");
+            return false;
+        }
+        return true;
     }
 
     // background thread
     @Override
     public void onExecFinished(String result, int errCode) {
         hidePendingOnRemoteUserTask(mState);
-        
+
         if (mState.getPendingTask() == CLONE) {
             insertClonedRepo(errCode);
         } else if (mState.getPendingTask() == INIT) {

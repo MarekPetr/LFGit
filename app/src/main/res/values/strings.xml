@@ -18,7 +18,7 @@
     <string name="set_path_button">Set path</string>
     <string name="browse_button">Browse</string>
 
-    <string name="browse_only_primary">Only primary volume is supported</string>
+    <string name="internal_storage_only">Only internal storage is supported</string>
 
     <string name="title_activity_settings">Settings</string>
 

@@ -12,6 +12,7 @@ import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
 import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.TaskState;
+import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import java.util.List;
 
@@ -27,8 +28,8 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     RepoRepository mRepository;
     List<Repo> mAllRepos;
     TaskState mState = new TaskState(FOR_APP, NONE);
-
-    MutableLiveData<Boolean> mExecPending = new MutableLiveData<>();
+    SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
+    SingleLiveEvent<Boolean> mExecPending = new SingleLiveEvent<>();
 
     ExecViewModel(@NonNull Application application) {
         super(application);
@@ -62,6 +63,16 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
         mExecPending.postValue(false);
     }
 
+    public SingleLiveEvent<String> getShowToast() {
+        return mShowToast;
+    }
+    void setShowToast(String message) {
+        mShowToast.setValue(message);
+    }
+    void postShowToast(String message) {
+        mShowToast.postValue(message);
+    }
+
     // background thread
     Boolean isRemoteTask(Constants.Task currentTask) {
         return currentTask == CLONE || currentTask == PUSH || currentTask == PULL;
@@ -87,7 +98,7 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
         if (remoteTaskFinished(state)) postHidePending();
     }
 
-    public MutableLiveData<Boolean> getExecPending() {
+    public SingleLiveEvent<Boolean> getExecPending() {
         return mExecPending;
     }
 }

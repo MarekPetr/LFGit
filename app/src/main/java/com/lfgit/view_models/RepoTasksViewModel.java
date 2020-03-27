@@ -40,7 +40,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
     private SingleLiveEvent<Boolean> mPromptCredentials = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptRemote = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptCommit = new SingleLiveEvent<>();
-    private SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
     private String mTempRemoteURL;
 
     public RepoTasksViewModel(@NonNull Application application) {
@@ -290,20 +289,9 @@ public class RepoTasksViewModel extends ExecViewModel implements
         mPromptCredentials.postValue(prompt);
     }
 
-    public SingleLiveEvent<String> getShowToast() {
-        return mShowToast;
-    }
-    private void setShowToast(String message) {
-        mShowToast.setValue(message);
-    }
-    private void postShowToast(String message) {
-        mShowToast.postValue(message);
-    }
-
     public SingleLiveEvent<Boolean> getPromptAddRemote() {
         return mPromptRemote;
     }
-
     public void setPromptRemote(Boolean prompt) {
         mPromptRemote.setValue(prompt);
     }
@@ -311,7 +299,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
     public SingleLiveEvent<Boolean> getPromptCommit() {
         return mPromptCommit;
     }
-
     public void setPromptCommit(Boolean prompt) {
         mPromptCommit.setValue(prompt);
     }

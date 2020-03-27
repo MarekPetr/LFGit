@@ -41,6 +41,9 @@ public class AddRepoActivity extends BasicAbstractActivity {
             if (isPending) showProgressDialog();
             else hideProgressDialog();
         });
+
+        addRepoViewModel.getShowToast().observe(this, this::showToastMsg);
+
     }
 
     public void cloneBrowseButtonHandler(View view) {
@@ -64,7 +67,7 @@ public class AddRepoActivity extends BasicAbstractActivity {
                 mBinding.getAddRepoViewModel().setCloneRepoPath(path);
             }
         } else {
-            showToastMsg(getString (R. string. browse_only_primary));
+            showToastMsg(getString (R. string.internal_storage_only));
         }
         return path;
     }
