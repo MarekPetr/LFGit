@@ -42,6 +42,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         mBinding.setLifecycleOwner(this);
 
         setupDrawer();
+        setupDialogs();
         mBinding.taskResult.setMovementMethod(new ScrollingMovementMethod());
 
         Repo repo = (Repo) getIntent().getSerializableExtra(Repo.TAG);
@@ -72,7 +73,6 @@ public class RepoTasksActivity extends BasicAbstractActivity {
 
         mRepoTasksViewModel.getPromptCommit().observe(this, promptCommit -> {
             if (promptCommit) {
-                //showCommitDialog();
                 showDialog(mCommitDialog, "commit_dialog");
             } else {
                 hideDialog(mCommitDialog);
@@ -89,9 +89,14 @@ public class RepoTasksActivity extends BasicAbstractActivity {
     }
 
     private void showDialog(DialogFragment dialog, String tag) {
-        dialog = RemoteDialog.newInstance(mRepoTasksViewModel);
         FragmentTransaction ft = getFragmentTransaction(tag);
         dialog.show(ft, tag);
+    }
+
+    private void setupDialogs() {
+        mCommitDialog = CommitDialog.newInstance(mRepoTasksViewModel);
+        mCredsDialog = CredentialsDialog.newInstance(mRepoTasksViewModel);
+        mRemoteDialog = RemoteDialog.newInstance(mRepoTasksViewModel);
     }
 
     private FragmentTransaction getFragmentTransaction(String tag) {
