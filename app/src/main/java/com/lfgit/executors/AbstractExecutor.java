@@ -1,7 +1,5 @@
 package com.lfgit.executors;
 
-import com.lfgit.utilites.TaskState;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +27,7 @@ abstract class AbstractExecutor {
         mCallback = callback;
     }
 
-    void executeBinary(TaskState state, String binary, String destDir, String... strings) {
+    void executeBinary(String binary, String destDir, String... strings) {
         String exeBin = mExeDir + "/" + binary;
         File f = new File(destDir);
         if (binary.equals("git") &&
@@ -68,7 +66,7 @@ abstract class AbstractExecutor {
                 StringBuilder mOutBuffer = new StringBuilder();
                 String result;
                 int errCode;
-                mCallback.onExecStarted(state);
+                mCallback.onExecStarted();
                 String line;
                 try {
                     InputStream stdout = mProcess.getInputStream();
@@ -83,7 +81,7 @@ abstract class AbstractExecutor {
                 try {
                     errCode = mProcess.waitFor();
                     result = mOutBuffer.toString();
-                    mCallback.onExecFinished(state, result, errCode);
+                    mCallback.onExecFinished(result, errCode);
                 } catch (InterruptedException e) {
                     // ignore
                 }

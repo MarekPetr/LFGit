@@ -15,8 +15,10 @@ import com.lfgit.utilites.TaskState;
 
 import java.util.List;
 
-import static com.lfgit.utilites.Constants.InnerState.FINISH;
+import static com.lfgit.utilites.Constants.InnerState.FOR_USER;
+import static com.lfgit.utilites.Constants.InnerState.FOR_APP;
 import static com.lfgit.utilites.Constants.Task.CLONE;
+import static com.lfgit.utilites.Constants.Task.NONE;
 import static com.lfgit.utilites.Constants.Task.PULL;
 import static com.lfgit.utilites.Constants.Task.PUSH;
 
@@ -24,6 +26,8 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     GitExec mGitExec;
     RepoRepository mRepository;
     List<Repo> mAllRepos;
+    TaskState mState = new TaskState(FOR_APP, NONE);
+
     MutableLiveData<Boolean> mExecPending = new MutableLiveData<>();
 
     ExecViewModel(@NonNull Application application) {
@@ -38,14 +42,14 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
 
     // background thread
     @Override
-    public void onExecStarted(TaskState state) {
-        postShowPendingOnRemoteFinish(state);   
+    public void onExecStarted() {
+        showPendingOnRemoteUserTask(mState);
     }
 
     // background thread
     @Override
-    public void onExecFinished(TaskState state, String result, int errCode) {
-        postHidePendingOnRemoteFinish(state);      
+    public void onExecFinished(String result, int errCode) {
+        hidePendingOnRemoteUserTask(mState);
     }
 
     // background thread
@@ -67,23 +71,23 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     Boolean remoteTaskFinished(TaskState state) {
         Constants.Task currentTask = state.getPendingTask();
         if (isRemoteTask(currentTask)) {
-            return state.getInnerState() == FINISH;
+            return state.getInnerState() == FOR_USER;
         }
         return false;
     }
     
     // background thread
-    void postShowPendingOnRemoteFinish(TaskState state) {
+    void showPendingOnRemoteUserTask(TaskState state) {
         if (remoteTaskFinished(state)) postShowPending();
     }
 
     // background thread
-    void postHidePendingOnRemoteFinish(TaskState state) {
+    // hides pending when task state is FINISH
+    void hidePendingOnRemoteUserTask(TaskState state) {
         if (remoteTaskFinished(state)) postHidePending();
     }
 
     public MutableLiveData<Boolean> getExecPending() {
         return mExecPending;
     }
-
 }
