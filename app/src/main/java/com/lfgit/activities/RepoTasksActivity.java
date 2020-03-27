@@ -48,13 +48,8 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         Repo repo = (Repo) getIntent().getSerializableExtra(Repo.TAG);
         mRepoTasksViewModel.setRepo(repo);
 
-        mRepoTasksViewModel.getExecPending().observe(this, isPending -> {
-            if (isPending) {
-                showProgressDialog();
-            } else {
-                hideProgressDialog();
-            }
-        });
+        mRepoTasksViewModel.getExecPending().observe(this, this::toggleProgressDialog);
+
         mRepoTasksViewModel.getPromptCredentials().observe(this, promptCredentials -> {
             toggleDialog(promptCredentials, mCredsDialog, "creds_dialog");
         });

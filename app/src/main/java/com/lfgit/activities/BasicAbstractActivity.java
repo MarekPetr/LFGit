@@ -75,4 +75,12 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
             mProgressDialog.dismiss();
         }
     }
+
+    void toggleProgressDialog(Boolean show) {
+        if (show) {
+            showProgressDialog();
+        } else {
+            hideProgressDialog();
+        }
+    }
 }
