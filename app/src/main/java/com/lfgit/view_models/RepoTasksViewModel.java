@@ -9,26 +9,25 @@ import com.lfgit.fragments.dialogs.CommitDialog;
 import com.lfgit.fragments.dialogs.RemoteDialog;
 import com.lfgit.fragments.dialogs.CredentialsDialog;
 import com.lfgit.utilites.Constants;
-import com.lfgit.utilites.TaskState;
 import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
 import java.util.Objects;
 
 import static com.lfgit.utilites.Constants.InnerState.ADD_ORIGIN_REMOTE;
-import static com.lfgit.utilites.Constants.InnerState.FINISH;
+import static com.lfgit.utilites.Constants.InnerState.FOR_USER;
 import static com.lfgit.utilites.Constants.InnerState.SET_ORIGIN_REMOTE;
 import static com.lfgit.utilites.Constants.Task.ADD;
 import static com.lfgit.utilites.Constants.Task.ADD_REMOTE;
 import static com.lfgit.utilites.Constants.Task.COMMIT;
 import static com.lfgit.utilites.Constants.Task.EDIT_REMOTE;
+import static com.lfgit.utilites.Constants.Task.LIST_BRANCHES;
 import static com.lfgit.utilites.Constants.Task.NONE;
 import static com.lfgit.utilites.Constants.InnerState.GET_REMOTE_GIT;
 import static com.lfgit.utilites.Constants.Task.PULL;
-import static com.lfgit.utilites.Constants.InnerState.START;
+import static com.lfgit.utilites.Constants.InnerState.FOR_APP;
 import static com.lfgit.utilites.Constants.Task.PUSH;
 import static com.lfgit.utilites.Constants.Task.STATUS;
-import static com.lfgit.utilites.Logger.LogMsg;
 
 public class RepoTasksViewModel extends ExecViewModel implements
         CredentialsDialog.CredentialsDialogListener,
@@ -42,8 +41,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
     private SingleLiveEvent<Boolean> mPromptRemote = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptCommit = new SingleLiveEvent<>();
     private SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
-
-    private TaskState mState = new TaskState(START, NONE);
     private String mTempRemoteURL;
 
     public RepoTasksViewModel(@NonNull Application application) {
@@ -66,43 +63,50 @@ public class RepoTasksViewModel extends ExecViewModel implements
         } else if (drawerPosition == 6) {
             gitSetRemote();
         } else if (drawerPosition == 7) {
+            gitListBranches();
+        }else if (drawerPosition == 8) {
             setPromptCredentials(true);
         }
     }
 
     private void gitAddAllToStage() {
-        mState.newState(FINISH, ADD);
-        mGitExec.addAllToStage(getRepoPath(), mState);
+        mState.newState(FOR_USER, ADD);
+        mGitExec.addAllToStage(getRepoPath());
     }
 
     private void gitCommit() {
-        mState.newState(START, COMMIT);
+        mState.newState(FOR_APP, COMMIT);
         setPromptCommit(true);        
     }
 
     private void gitPush() {
-        mState.newState(START, PUSH);
+        mState.newState(FOR_APP, PUSH);
         checkRepo();
     }
 
     private void gitPull() {
-        mState.newState(START, PULL);
+        mState.newState(FOR_APP, PULL);
         checkRepo();
     }
 
     private void gitStatus() {
-        mState.newState(FINISH, STATUS);
-        mGitExec.status(getRepoPath(), mState);
+        mState.newState(FOR_USER, STATUS);
+        mGitExec.status(getRepoPath());
     }
 
     private void gitAddRemote() {
-        mState.newState(START, ADD_REMOTE);
+        mState.newState(FOR_APP, ADD_REMOTE);
         setPromptRemote(true);
     }
 
     private void gitSetRemote() {
-        mState.newState(START, EDIT_REMOTE);
+        mState.newState(FOR_APP, EDIT_REMOTE);
         setPromptRemote(true);
+    }
+
+    private void gitListBranches() {
+        mState.newState(FOR_USER, LIST_BRANCHES);
+
     }
 
     private void checkRepo() {
@@ -118,7 +122,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
             // GET_REMOTE_GIT
             mState.setInnerState(GET_REMOTE_GIT);
             // Is a config command, so continues in processTaskResult.
-            mGitExec.getRemoteURL(mRepo, mState);
+            mGitExec.getRemoteURL(mRepo);
         }
     }
 
@@ -148,19 +152,19 @@ public class RepoTasksViewModel extends ExecViewModel implements
     }
 
     private void pushAndFinish() {
-        mState.newState(FINISH, PUSH);
-        mGitExec.push(mRepo, mState);
+        mState.newState(FOR_USER, PUSH);
+        mGitExec.push(mRepo);
     }
 
     private void pullAndFinish() {
-        mState.newState(FINISH, PULL);
-        mGitExec.pull(mRepo, mState);
+        mState.newState(FOR_USER, PULL);
+        mGitExec.pull(mRepo);
     }
 
     @Override
     public void onCancelCredentialsDialog() {
         // FINISHED
-        mState.newState(START, NONE);
+        mState.newState(FOR_APP, NONE);
     }
 
     @Override
@@ -172,10 +176,10 @@ public class RepoTasksViewModel extends ExecViewModel implements
 
             if (task == ADD_REMOTE) {
                 mState.setInnerState(ADD_ORIGIN_REMOTE);
-                mGitExec.addOriginRemote(mRepo, remoteURL, mState);
+                mGitExec.addOriginRemote(mRepo, remoteURL);
             } else if (task == EDIT_REMOTE){
                 mState.setInnerState(SET_ORIGIN_REMOTE);
-                mGitExec.editOriginRemote(mRepo, remoteURL, mState);
+                mGitExec.editOriginRemote(mRepo, remoteURL);
             }
 
         } else {
@@ -186,15 +190,15 @@ public class RepoTasksViewModel extends ExecViewModel implements
     @Override
     public void onCancelAddRemoteDialog() {
         // FINISHED
-        mState.newState(START, NONE);
+        mState.newState(FOR_APP, NONE);
     }
 
     @Override
     public void handleCommitMsg(String message) {
         if (!StringUtils.isBlank(message)) {
             setPromptCommit(false);
-            mState.setInnerState(FINISH);
-            mGitExec.commit(getRepoPath(), message, mState);
+            mState.setInnerState(FOR_USER);
+            mGitExec.commit(getRepoPath(), message);
         } else {
             setShowToast("Please enter commit message");
         }
@@ -203,17 +207,16 @@ public class RepoTasksViewModel extends ExecViewModel implements
     @Override
     public void onCancelCommitDialog() {
         // FINISHED
-        mState.newState(START, NONE);
+        mState.newState(FOR_APP, NONE);
     }
 
     // background thread
     @Override
-    public void onExecFinished(TaskState state, String result, int errCode) {
-        mState = state;
-        if (state.getInnerState() != FINISH) {
+    public void onExecFinished(String result, int errCode) {
+        if (mState.getInnerState() != FOR_USER) {
             processTaskResult(result, errCode);
         } else {
-            postHidePendingOnRemoteFinish(state);
+            hidePendingOnRemoteUserTask(mState);
             if (result.isEmpty()) {
                 if (errCode == 0) {
                     postShowToast("Operation successful");
@@ -223,7 +226,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
             } else {
                 postTaskResult(result);
             }
-            mState.newState(START, NONE);
+            mState.newState(FOR_APP, NONE);
         }
     }
 
@@ -259,7 +262,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
                     postShowToast("Remote origin set");
                 }
             }
-            mState.newState(START, NONE);
+            mState.newState(FOR_APP, NONE);
         }
     }
 

@@ -9,7 +9,7 @@ import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
 import com.lfgit.utilites.TaskState;
 
-import static com.lfgit.utilites.Constants.InnerState.START;
+import static com.lfgit.utilites.Constants.InnerState.FOR_APP;
 import static com.lfgit.utilites.Constants.Task.NONE;
 import static com.lfgit.utilites.Logger.LogMsg;
 
@@ -29,11 +29,11 @@ public class SettingsFragment extends PreferenceFragmentCompat
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         String prefValue = sharedPreferences.getString(key, "");
         LogMsg(prefValue);
-        TaskState state = new TaskState(START, NONE);
+        TaskState state = new TaskState(FOR_APP, NONE);
         if (key.equals(getString(R.string.git_username_key))) {
-            gitExec.setUsername(prefValue, state);
+            gitExec.setUsername(prefValue);
         } else if (key.equals(getString(R.string.git_email_key))) {
-            gitExec.setEmail(prefValue, state);
+            gitExec.setEmail(prefValue);
         }
     }
 
@@ -50,10 +50,10 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     @Override
-    public void onExecStarted(TaskState state) {
+    public void onExecStarted() {
     }
 
     @Override
-    public void onExecFinished(TaskState state, String result, int errCode) {
+    public void onExecFinished(String result, int errCode) {
     }
 }
