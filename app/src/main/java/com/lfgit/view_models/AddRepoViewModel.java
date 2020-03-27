@@ -22,10 +22,9 @@ public class AddRepoViewModel extends ExecViewModel {
     private String cloneRepoPath;
     private String cloneURLPath;
 
-    //private String mLocalPath = Environment.getExternalStorageDirectory().toString() + "/";
     private SingleLiveEvent<String> mCloneResult = new SingleLiveEvent<>();
     private SingleLiveEvent<String> mInitResult = new SingleLiveEvent<>();
-    private String mExtStorage = Environment.getExternalStorageDirectory().toString() + "/";
+
 
     public AddRepoViewModel(Application application) {
         super(application);
@@ -43,7 +42,7 @@ public class AddRepoViewModel extends ExecViewModel {
 
     public void cloneRepoHandler() {
         if (!StringUtils.isBlank(cloneRepoPath) && !StringUtils.isBlank(cloneURLPath) ) {
-            if (checkExternal(cloneRepoPath)) return;
+            if (!isInternalStorage(cloneRepoPath)) return;
             mState = new TaskState(FOR_USER, CLONE);
             mGitExec.clone(cloneRepoPath, cloneURLPath);
         } else {
@@ -53,17 +52,18 @@ public class AddRepoViewModel extends ExecViewModel {
 
     public void initRepoHandler() {
         if (!StringUtils.isBlank(initRepoPath)) {
-            if (checkExternal(initRepoPath)) return;
+            if (!isInternalStorage(initRepoPath)) return;
             mState = new TaskState(FOR_USER, INIT);
-            mGitExec.init(cloneRepoPath);
+            mGitExec.init(initRepoPath);
         } else {
             setShowToast("Please enter directory");
         }
     }
 
-    private Boolean checkExternal(String path) {
-        if (!initRepoPath.startsWith(mExtStorage)) {
-            setShowToast("Please enter directory from internal storage");
+    private Boolean isInternalStorage(String path) {
+        String mExtStorage = Environment.getExternalStorageDirectory().toString() + "/";
+        if (!path.startsWith(mExtStorage)) {
+            setShowToast("Please enter internal storage directory");
             return false;
         }
         return true;

@@ -19,6 +19,7 @@
     <string name="browse_button">Browse</string>
 
     <string name="internal_storage_only">Only internal storage is supported</string>
+    <string name="enter_internal_storage">Please enter internal storage directory</string>
 
     <string name="title_activity_settings">Settings</string>
 
