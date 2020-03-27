@@ -30,7 +30,7 @@ import static com.lfgit.utilites.Constants.Task.PUSH;
 import static com.lfgit.utilites.Constants.Task.STATUS;
 import static com.lfgit.utilites.Logger.LogMsg;
 
-public class RepoDetailViewModel extends ExecViewModel implements
+public class RepoTasksViewModel extends ExecViewModel implements
         CredentialsDialog.CredentialsDialogListener,
         RemoteDialog.AddRemoteDialogListener,
         CommitDialog.CommitDialogListener
@@ -46,7 +46,7 @@ public class RepoDetailViewModel extends ExecViewModel implements
     private TaskState mState = new TaskState(START, NONE);
     private String mTempRemoteURL;
 
-    public RepoDetailViewModel(@NonNull Application application) {
+    public RepoTasksViewModel(@NonNull Application application) {
         super(application);
     }
 

@@ -9,12 +9,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import com.lfgit.R;
-import com.lfgit.activities.RepoDetailActivity;
+import com.lfgit.activities.RepoTasksActivity;
 import com.lfgit.adapters.RepoOperationsAdapter.DrawerItem;
-import com.lfgit.view_models.RepoDetailViewModel;
+import com.lfgit.view_models.RepoTasksViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,14 +21,14 @@ import org.jetbrains.annotations.NotNull;
 public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
         implements OnItemClickListener {
 
-    private RepoDetailViewModel mViewModel;
-    private RepoDetailActivity mRepoDetailActivity;
+    private RepoTasksViewModel mViewModel;
+    private RepoTasksActivity mRepoTasksActivity;
 
-    public RepoOperationsAdapter(Context context, RepoDetailViewModel viewModel) {
+    public RepoOperationsAdapter(Context context, RepoTasksViewModel viewModel) {
         super(context, 0);
         setupDrawerItem();
         mViewModel = viewModel;
-        mRepoDetailActivity = (RepoDetailActivity) context;
+        mRepoTasksActivity = (RepoTasksActivity) context;
     }
 
     @NotNull
@@ -82,7 +80,7 @@ public class RepoOperationsAdapter extends ArrayAdapter<DrawerItem>
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id)
     {
-        mRepoDetailActivity.closeDrawer();
+        mRepoTasksActivity.closeDrawer();
         mViewModel.execGitTask(position);
     }
 }

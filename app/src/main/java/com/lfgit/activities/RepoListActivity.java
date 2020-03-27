@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -23,14 +22,12 @@ import com.lfgit.databinding.ActivityRepoListBinding;
 import com.lfgit.fragments.InstallFragment;
 import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.UriHelper;
-import com.lfgit.view_models.LocalRepoViewModel;
+import com.lfgit.view_models.AddRepoViewModel;
 import com.lfgit.view_models.RepoListViewModel;
-
-import static com.lfgit.utilites.Logger.LogMsg;
 
 public class RepoListActivity extends BasicAbstractActivity implements InstallFragment.FragmentCallback {
     private ActivityRepoListBinding mBinding;
-    private LocalRepoViewModel mLocalRepoViewModel;
+    private AddRepoViewModel mAddRepoViewModel;
     private RepoListAdapter mRepoListAdapter;
     private InstallPreference mInstallPref = new InstallPreference();
     FragmentManager mManager = getSupportFragmentManager();
@@ -49,7 +46,7 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
         }
 
         RepoListViewModel repoListViewModel = new ViewModelProvider(this).get(RepoListViewModel.class);
-        mLocalRepoViewModel = new ViewModelProvider(this).get(LocalRepoViewModel.class);
+        mAddRepoViewModel = new ViewModelProvider(this).get(AddRepoViewModel.class);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_list);
         mBinding.setLifecycleOwner(this);
@@ -62,7 +59,7 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
 
         repoListViewModel.getAllRepos().observe(this, repoList -> {
             mRepoListAdapter.setRepos(repoList);
-            mLocalRepoViewModel.setAllRepos(repoList);
+            mAddRepoViewModel.setAllRepos(repoList);
         });
     }
 
@@ -90,7 +87,7 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
                 this.startActivity(intent);
                 break;
             case R.id.menu_init_repo:
-                intent = new Intent(this, InitRepoActivity.class);
+                intent = new Intent(this, AddRepoActivity.class);
                 this.startActivity(intent);
                 break;
             case R.id.menu_add_repo:
@@ -123,7 +120,7 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
                 Uri uri = intent.getData();
                 String path = UriHelper.getDirPath(this, uri);
                 if (path != null) {
-                    if (mLocalRepoViewModel.addLocalRepo(path)
+                    if (mAddRepoViewModel.addLocalRepo(path)
                             == Constants.AddRepo.ALREADY_ADDED) {
                         showToastMsg("Repository already added");
                     }
