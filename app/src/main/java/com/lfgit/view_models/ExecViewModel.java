@@ -16,12 +16,8 @@ import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import java.util.List;
 
-import static com.lfgit.utilites.Constants.InnerState.FOR_USER;
-import static com.lfgit.utilites.Constants.InnerState.FOR_APP;
-import static com.lfgit.utilites.Constants.Task.CLONE;
-import static com.lfgit.utilites.Constants.Task.NONE;
-import static com.lfgit.utilites.Constants.Task.PULL;
-import static com.lfgit.utilites.Constants.Task.PUSH;
+import static com.lfgit.utilites.Constants.InnerState.*;
+import static com.lfgit.utilites.Constants.Task.*;
 
 public abstract class ExecViewModel extends AndroidViewModel implements ExecListener {
     GitExec mGitExec;
@@ -74,8 +70,9 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     }
 
     // background thread
-    Boolean isRemoteTask(Constants.Task currentTask) {
-        return currentTask == CLONE || currentTask == PUSH || currentTask == PULL;
+    Boolean isRemoteTask(Constants.Task task) {
+        return task == CLONE || task == PUSH || task == PULL ||
+                task == CHECKOUT;
     }
     
     // background thread

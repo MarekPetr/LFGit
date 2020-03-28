@@ -47,4 +47,9 @@
     <!-- commit_dialog_layout -->
     <string name="commit_msg">Commit Message</string>
     <string name="commit_title">Enter commit message</string>
+
+    <!-- checkout_dialog_layout -->
+    <string name="branch_name">Branch</string>
+    <string name="checkout_title">Enter branch to checkout</string>
+
 </resources>
