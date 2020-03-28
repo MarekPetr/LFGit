@@ -1,5 +1,7 @@
 package com.lfgit.view_models;
 import android.app.Application;
+import android.telecom.Call;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -37,30 +39,27 @@ public class RepoTasksViewModel extends ExecViewModel implements
         super(application);
     }
 
+    interface GitAction {
+        void execute();
+    }
+
+    private GitAction[] tasks = new GitAction[] {
+        this::gitAddAllToStage,
+        this::gitCommit,
+        this::gitPush,
+        this::gitPull,
+        this::gitStatus,
+        this::gitLog,
+        this::gitAddRemote,
+        this::gitSetRemote,
+        this::gitBranch,
+        this::gitCheckoutLocal,
+        this::gitCheckoutRemote,
+        () -> setPromptCheckout(true),
+    };
+
     public void execGitTask(int drawerPosition) {
-        if (drawerPosition == 0) {
-            gitAddAllToStage();
-        } else if (drawerPosition == 1) {
-            gitCommit();
-        } else if (drawerPosition == 2) {
-            gitPush();
-        } else if (drawerPosition == 3) {
-            gitPull();
-        } else if (drawerPosition == 4) {
-            gitStatus();
-        } else if (drawerPosition == 5) {
-            gitAddRemote();
-        } else if (drawerPosition == 6) {
-            gitSetRemote();
-        } else if (drawerPosition == 7) {
-            gitBranch();
-        } else if (drawerPosition == 8) {
-            gitCheckoutLocal();
-        } else if (drawerPosition == 9) {
-            gitCheckoutRemote();
-        } else if (drawerPosition == 10) {
-            setPromptCredentials(true);
-        }
+        tasks[drawerPosition].execute();
     }
 
     private void gitAddAllToStage() {
@@ -86,6 +85,11 @@ public class RepoTasksViewModel extends ExecViewModel implements
     private void gitStatus() {
         mState.newState(FOR_USER, STATUS);
         mGitExec.status(getRepoPath());
+    }
+
+    private void gitLog() {
+        mState.newState(FOR_USER, STATUS);
+        mGitExec.log(getRepoPath());
     }
 
     private void gitAddRemote() {

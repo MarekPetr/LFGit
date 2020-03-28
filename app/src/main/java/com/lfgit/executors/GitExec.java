@@ -1,7 +1,5 @@
 package com.lfgit.executors;
 
-import android.net.Uri;
-
 import com.lfgit.database.model.Repo;
 import com.lfgit.utilites.TaskState;
 
@@ -10,62 +8,64 @@ import java.net.URLEncoder;
 
 import static com.lfgit.utilites.Logger.LogMsg;
 
-public class GitExec extends AbstractExecutor {
+public class GitExec {
 
     private String gitPath = "git";
+    private String lfsPath = "git-lfs";
+    private BinaryExecutor executor;
 
     public GitExec(ExecListener callback) {
-        super(callback);
+        executor = new BinaryExecutor(callback);
     }
 
     public void config(String email, String username) {
-        executeBinary(gitPath, ".","config", "--global", "user.name", username);
-        executeBinary(gitPath, ".","config", "--global", "user.email", email);
+        executor.run(gitPath, ".","config", "--global", "user.name", username);
+        executor.run(gitPath, ".","config", "--global", "user.email", email);
     }
 
     public void setEmail(String email) {
-        executeBinary(gitPath, ".","config", "--global", "user.email", email);
+        executor.run(gitPath, ".","config", "--global", "user.email", email);
     }
 
     public void setUsername(String username) {
-        executeBinary(gitPath, ".","config", "--global", "user.name", username);
+        executor.run(gitPath, ".","config", "--global", "user.name", username);
     }
 
-    public void init(String dest) {
+    public void init(String localPath) {
         String gitOperation = "init";
-        executeBinary(gitPath, dest, gitOperation);
+        executor.run(gitPath, localPath, gitOperation);
     }
 
-    public void commit(String dest, String message) {
+    public void commit(String localPath, String message) {
         String gitOperation = "commit";
-        executeBinary(gitPath, dest, gitOperation, "-m", "\"" + message + "\"");
+        executor.run(gitPath, localPath, gitOperation, "-m", "\"" + message + "\"");
     }
 
-    public void clone(String dest, String remoteURL) {
+    public void clone(String localPath, String remoteURL) {
         String gitOperation = "clone";
-        executeBinary(gitPath, dest, gitOperation, remoteURL);
+        executor.run(gitPath, localPath, gitOperation, remoteURL);
     }
 
-    public void status(String dest) {
+    public void status(String localPath) {
         String gitOperation = "status";
-        executeBinary(gitPath, dest, gitOperation);
+        executor.run(gitPath, localPath, gitOperation);
     }
 
-    public void addAllToStage(String dest) {
+    public void addAllToStage(String localPath) {
         String gitOperation = "add";
-        executeBinary(gitPath, dest, gitOperation, ".");
+        executor.run(gitPath, localPath, gitOperation, ".");
     }
 
-    public void branch(String dest) {
-        executeBinary(gitPath, dest, "branch", "-a");
+    public void branch(String localPath) {
+        executor.run(gitPath, localPath, "branch", "-a");
     }
 
-    public void checkoutLocal(String dest, String branch) {
-        executeBinary(gitPath, dest, "checkout", branch);
+    public void checkoutLocal(String localPath, String branch) {
+        executor.run(gitPath, localPath, "checkout", branch);
     }
 
-    public void checkoutRemote(String dest, String branch) {
-        executeBinary(gitPath, dest, "checkout", "--track", branch);
+    public void checkoutRemote(String localPath, String branch) {
+        executor.run(gitPath, localPath, "checkout", "--track", branch);
     }
 
     public void push(Repo repo) {
@@ -74,7 +74,7 @@ public class GitExec extends AbstractExecutor {
 
     public void pull(Repo repo) {
         //pushOrPull("pull", repo);
-        executeBinary(gitPath, repo.getLocalPath(), "pull");
+        executor.run(gitPath, repo.getLocalPath(), "pull");
     }
 
     private void pushOrPull(String gitOperation, Repo repo) {
@@ -95,21 +95,29 @@ public class GitExec extends AbstractExecutor {
         String scheme = parts[0]+"://";
         String domain = parts[1];
         String url = scheme + username + ":" + password + "@" + domain;
-        executeBinary(gitPath, localPath, gitOperation, url);
+        executor.run(gitPath, localPath, gitOperation, url);
     }
 
     public void getRemoteURL(Repo repo) {
         String localPath = repo.getLocalPath();
-        executeBinary(gitPath, localPath, "config", "--get", "remote.origin.url");
+        executor.run(gitPath, localPath, "config", "--get", "remote.origin.url");
     }
 
     public void addOriginRemote(Repo repo, String remoteURL) {
         String localPath = repo.getLocalPath();
-        executeBinary(gitPath, localPath, "remote", "add", "origin", remoteURL);
+        executor.run(gitPath, localPath, "remote", "add", "origin", remoteURL);
     }
 
     public void editOriginRemote(Repo repo, String remoteURL) {
         String localPath = repo.getLocalPath();
-        executeBinary(gitPath, localPath, "remote", "set-url", "origin", remoteURL);
+        executor.run(gitPath, localPath, "remote", "set-url", "origin", remoteURL);
+    }
+    
+    public void log(String localPath) {
+        executor.run(gitPath, localPath, "log");
+    }
+
+    public void lfsInstall(String localPath) {
+        executor.run(lfsPath, localPath, "install");
     }
 }

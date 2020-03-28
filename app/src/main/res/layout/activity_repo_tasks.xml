@@ -20,21 +20,25 @@
                 android:id="@+id/resultTitle"
                 android:layout_width="0sp"
                 android:layout_height="wrap_content"
-                android:text="Task result"
+                android:text="@string/task_result_title"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                android:layout_marginTop="@dimen/smallMargin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
             </TextView>
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/resultLayout"
                 android:layout_width="match_parent"
-                android:layout_height="150sp"
+                android:layout_height="0sp"
                 android:background="@drawable/border"
+                app:layout_constrainedHeight="true"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/resultTitle">
+
                 <TextView
                     android:id="@+id/taskResult"
                     android:layout_width="match_parent"
@@ -44,7 +48,7 @@
                     android:scrollbars="vertical"
                     android:text="@={RepoTasksViewModel.taskResult}">
                 </TextView>
-            </RelativeLayout>
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <RelativeLayout
