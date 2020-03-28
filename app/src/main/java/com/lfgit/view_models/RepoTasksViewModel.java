@@ -54,9 +54,11 @@ public class RepoTasksViewModel extends ExecViewModel implements
             gitSetRemote();
         } else if (drawerPosition == 7) {
             gitBranch();
-        }else if (drawerPosition == 8) {
-            gitCheckout();
-        }else if (drawerPosition == 9) {
+        } else if (drawerPosition == 8) {
+            gitCheckoutLocal();
+        } else if (drawerPosition == 9) {
+            gitCheckoutRemote();
+        } else if (drawerPosition == 10) {
             setPromptCredentials(true);
         }
     }
@@ -73,7 +75,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
 
     private void gitPush() {
         mState.newState(FOR_APP, PUSH);
-        get_remote_git();
+        getRemoteGit();
     }
 
     private void gitPull() {
@@ -101,12 +103,17 @@ public class RepoTasksViewModel extends ExecViewModel implements
         mGitExec.branch(getRepoPath());
     }
 
-    private void gitCheckout() {
-        mState.newState(FOR_USER, CHECKOUT);
+    private void gitCheckoutLocal() {
+        mState.newState(FOR_USER, CHECKOUT_LOCAL);
         setPromptCheckout(true);
     }
 
-    private void get_remote_git() {
+    private void gitCheckoutRemote() {
+        mState.newState(FOR_USER, CHECKOUT_REMOTE);
+        setPromptCheckout(true);
+    }
+
+    private void getRemoteGit() {
         mState.setInnerState(GET_REMOTE_GIT);
         mGitExec.getRemoteURL(mRepo);
     }
@@ -184,7 +191,11 @@ public class RepoTasksViewModel extends ExecViewModel implements
         if (!StringUtils.isBlank(branch)) {
             setPromptCheckout(false);
             mState.setInnerState(FOR_USER);
-            mGitExec.checkout(getRepoPath(), branch);
+            if (mState.getPendingTask() == CHECKOUT_LOCAL) {
+                mGitExec.checkoutLocal(getRepoPath(), branch);
+            } else {
+                mGitExec.checkoutRemote(getRepoPath(), branch);
+            }
         } else {
             setShowToast("Please enter branch");
         }

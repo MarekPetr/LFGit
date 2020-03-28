@@ -57,11 +57,15 @@ public class GitExec extends AbstractExecutor {
     }
 
     public void branch(String dest) {
-        executeBinary(gitPath, dest, "branch");
+        executeBinary(gitPath, dest, "branch", "-a");
     }
 
-    public void checkout(String dest, String branch) {
+    public void checkoutLocal(String dest, String branch) {
         executeBinary(gitPath, dest, "checkout", branch);
+    }
+
+    public void checkoutRemote(String dest, String branch) {
+        executeBinary(gitPath, dest, "checkout", "--track", branch);
     }
 
     public void push(Repo repo) {
