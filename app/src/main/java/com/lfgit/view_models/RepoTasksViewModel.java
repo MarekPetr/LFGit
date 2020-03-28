@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.model.Repo;
+import com.lfgit.fragments.dialogs.CheckoutDialog;
 import com.lfgit.fragments.dialogs.CommitDialog;
 import com.lfgit.fragments.dialogs.RemoteDialog;
 import com.lfgit.fragments.dialogs.CredentialsDialog;
@@ -14,25 +15,14 @@ import com.lfgit.view_models.Events.SingleLiveEvent;
 import org.apache.commons.lang3.StringUtils;
 import java.util.Objects;
 
-import static com.lfgit.utilites.Constants.InnerState.ADD_ORIGIN_REMOTE;
-import static com.lfgit.utilites.Constants.InnerState.FOR_USER;
-import static com.lfgit.utilites.Constants.InnerState.SET_ORIGIN_REMOTE;
-import static com.lfgit.utilites.Constants.Task.ADD;
-import static com.lfgit.utilites.Constants.Task.ADD_REMOTE;
-import static com.lfgit.utilites.Constants.Task.COMMIT;
-import static com.lfgit.utilites.Constants.Task.EDIT_REMOTE;
-import static com.lfgit.utilites.Constants.Task.LIST_BRANCHES;
-import static com.lfgit.utilites.Constants.Task.NONE;
-import static com.lfgit.utilites.Constants.InnerState.GET_REMOTE_GIT;
-import static com.lfgit.utilites.Constants.Task.PULL;
-import static com.lfgit.utilites.Constants.InnerState.FOR_APP;
-import static com.lfgit.utilites.Constants.Task.PUSH;
-import static com.lfgit.utilites.Constants.Task.STATUS;
+import static com.lfgit.utilites.Constants.InnerState.*;
+import static com.lfgit.utilites.Constants.Task.*;
 
 public class RepoTasksViewModel extends ExecViewModel implements
         CredentialsDialog.CredentialsDialogListener,
         RemoteDialog.AddRemoteDialogListener,
-        CommitDialog.CommitDialogListener
+        CommitDialog.CommitDialogListener,
+        CheckoutDialog.CheckoutDialogListener
 {
 
     private Repo mRepo;
@@ -40,6 +30,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
     private SingleLiveEvent<Boolean> mPromptCredentials = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptRemote = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptCommit = new SingleLiveEvent<>();
+    private SingleLiveEvent<Boolean> mPromptCheckout = new SingleLiveEvent<>();
     private String mTempRemoteURL;
 
     public RepoTasksViewModel(@NonNull Application application) {
@@ -62,8 +53,10 @@ public class RepoTasksViewModel extends ExecViewModel implements
         } else if (drawerPosition == 6) {
             gitSetRemote();
         } else if (drawerPosition == 7) {
-            gitListBranches();
+            gitBranch();
         }else if (drawerPosition == 8) {
+            gitCheckout();
+        }else if (drawerPosition == 9) {
             setPromptCredentials(true);
         }
     }
@@ -84,8 +77,8 @@ public class RepoTasksViewModel extends ExecViewModel implements
     }
 
     private void gitPull() {
-        mState.newState(FOR_APP, PULL);
-        get_remote_git();
+        mState.newState(FOR_USER, PULL);
+        mGitExec.pull(mRepo);
     }
 
     private void gitStatus() {
@@ -99,13 +92,18 @@ public class RepoTasksViewModel extends ExecViewModel implements
     }
 
     private void gitSetRemote() {
-        mState.newState(FOR_APP, EDIT_REMOTE);
+        mState.newState(FOR_APP, SET_REMOTE);
         setPromptRemote(true);
     }
 
-    private void gitListBranches() {
-        mState.newState(FOR_USER, LIST_BRANCHES);
+    private void gitBranch() {
+        mState.newState(FOR_USER, BRANCH);
+        mGitExec.branch(getRepoPath());
+    }
 
+    private void gitCheckout() {
+        mState.newState(FOR_USER, CHECKOUT);
+        setPromptCheckout(true);
     }
 
     private void get_remote_git() {
@@ -124,34 +122,21 @@ public class RepoTasksViewModel extends ExecViewModel implements
             mRepo.setUsername(username);
             mRepo.setPassword(password);
             mRepository.updateCredentials(mRepo);
-            pushOrPullAndFinish();
+            pushPendingAndFinish();
         } else {
             setShowToast("Please enter username and password");
         }
     }
-
-    private void pushOrPullAndFinish() {
-        if (mState.getPendingTask() == PULL) {
-            pullAndFinish();
-        } else if (mState.getPendingTask() == PUSH) {
-            pushAndFinish();
-        }
-    }
-
-    private void pushAndFinish() {
-        mState.newState(FOR_USER, PUSH);
-        mGitExec.push(mRepo);
-    }
-
-    private void pullAndFinish() {
-        mState.newState(FOR_USER, PULL);
-        mGitExec.pull(mRepo);
-    }
-
     @Override
     public void onCancelCredentialsDialog() {
-        // FINISHED
-        mState.newState(FOR_APP, NONE);
+        startState();
+    }
+
+    private void pushPendingAndFinish() {
+        if (mState.getPendingTask() == PUSH) {
+            mState.newState(FOR_USER, PUSH);
+            mGitExec.push(mRepo);
+        }
     }
 
     @Override
@@ -164,7 +149,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
             if (task == ADD_REMOTE) {
                 mState.setInnerState(ADD_ORIGIN_REMOTE);
                 mGitExec.addOriginRemote(mRepo, remoteURL);
-            } else if (task == EDIT_REMOTE){
+            } else if (task == SET_REMOTE){
                 mState.setInnerState(SET_ORIGIN_REMOTE);
                 mGitExec.editOriginRemote(mRepo, remoteURL);
             }
@@ -176,8 +161,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
 
     @Override
     public void onCancelAddRemoteDialog() {
-        // FINISHED
-        mState.newState(FOR_APP, NONE);
+        startState();
     }
 
     @Override
@@ -190,10 +174,28 @@ public class RepoTasksViewModel extends ExecViewModel implements
             setShowToast("Please enter commit message");
         }
     }
-
     @Override
     public void onCancelCommitDialog() {
-        // FINISHED
+        startState();
+    }
+
+    @Override
+    public void handleCheckoutBranch(String branch) {
+        if (!StringUtils.isBlank(branch)) {
+            setPromptCheckout(false);
+            mState.setInnerState(FOR_USER);
+            mGitExec.checkout(getRepoPath(), branch);
+        } else {
+            setShowToast("Please enter branch");
+        }
+    }
+
+    @Override
+    public void onCancelCheckoutDialog() {
+        startState();
+    }
+
+    private void startState() {
         mState.newState(FOR_APP, NONE);
     }
 
@@ -232,7 +234,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
                 if (!credentialsSetDB()) {
                     postPromptCredentials(true);
                 } else {
-                    pushOrPullAndFinish();
+                    pushPendingAndFinish();
                 }
             }
         } else if (innerState == ADD_ORIGIN_REMOTE || innerState == SET_ORIGIN_REMOTE) {
@@ -291,5 +293,12 @@ public class RepoTasksViewModel extends ExecViewModel implements
     }
     public void setPromptCommit(Boolean prompt) {
         mPromptCommit.setValue(prompt);
+    }
+
+    public SingleLiveEvent<Boolean> getPromptCheckout() {
+        return mPromptCheckout;
+    }
+    public void setPromptCheckout(Boolean prompt) {
+        mPromptCheckout.setValue(prompt);
     }
 }

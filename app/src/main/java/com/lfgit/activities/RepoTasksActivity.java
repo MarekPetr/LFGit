@@ -11,12 +11,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter;
 import com.lfgit.database.model.Repo;
 import com.lfgit.databinding.ActivityRepoDetailBinding;
+import com.lfgit.fragments.dialogs.CheckoutDialog;
 import com.lfgit.fragments.dialogs.CommitDialog;
 import com.lfgit.fragments.dialogs.RemoteDialog;
 import com.lfgit.fragments.dialogs.CredentialsDialog;
@@ -30,6 +32,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
     private CredentialsDialog mCredsDialog;
     private RemoteDialog mRemoteDialog;
     private CommitDialog mCommitDialog;
+    private CheckoutDialog mCheckoutDialog;
     private RepoTasksViewModel mRepoTasksViewModel;
 
     @Override
@@ -62,6 +65,14 @@ public class RepoTasksActivity extends BasicAbstractActivity {
             toggleDialog(promptCommit, mCommitDialog, "commit_dialog");
         });
 
+        mRepoTasksViewModel.getPromptCommit().observe(this, promptCommit -> {
+            toggleDialog(promptCommit, mCommitDialog, "commit_dialog");
+        });
+
+        mRepoTasksViewModel.getPromptCheckout().observe(this, promptCheckout -> {
+            toggleDialog(promptCheckout, mCheckoutDialog, "checkout_dialog");
+        });
+
         mRepoTasksViewModel.getShowToast().observe(this, this::showToastMsg);
     }
 
@@ -88,6 +99,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         mCommitDialog = CommitDialog.newInstance(mRepoTasksViewModel);
         mCredsDialog = CredentialsDialog.newInstance(mRepoTasksViewModel);
         mRemoteDialog = RemoteDialog.newInstance(mRepoTasksViewModel);
+        mCheckoutDialog = CheckoutDialog.newInstance(mRepoTasksViewModel);
     }
 
     private FragmentTransaction getFragmentTransaction(String tag) {

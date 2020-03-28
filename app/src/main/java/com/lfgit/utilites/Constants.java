@@ -30,8 +30,9 @@ public class Constants {
         PULL,
         STATUS,
         ADD_REMOTE,
-        EDIT_REMOTE,
-        LIST_BRANCHES,
+        SET_REMOTE,
+        BRANCH,
+        CHECKOUT,
         CONFIG,
         NONE,
     }

@@ -10,11 +10,9 @@ import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
-import static com.lfgit.utilites.Constants.AddRepo.ALREADY_ADDED;
-import static com.lfgit.utilites.Constants.AddRepo.OK;
-import static com.lfgit.utilites.Constants.Task.CLONE;
-import static com.lfgit.utilites.Constants.Task.INIT;
-import static com.lfgit.utilites.Constants.InnerState.FOR_USER;
+import static com.lfgit.utilites.Constants.AddRepo.*;
+import static com.lfgit.utilites.Constants.Task.*;
+import static com.lfgit.utilites.Constants.InnerState.*;
 
 public class AddRepoViewModel extends ExecViewModel {
     // data binding
