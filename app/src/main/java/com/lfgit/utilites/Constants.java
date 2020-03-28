@@ -1,4 +1,6 @@
 package com.lfgit.utilites;
+import android.os.Environment;
+
 import org.jetbrains.annotations.NotNull;
 
 public class Constants {
@@ -10,6 +12,7 @@ public class Constants {
     public static final String BIN_DIR = USR_DIR + "/bin";
     public static final String REPOS_DIR = APP_DIR + "/repos";
     public static final String GIT_CORE_DIR = FILES_DIR + "/libexec/git-core";
+    public static String EXT_STORAGE = Environment.getExternalStorageDirectory().toString() + "/";
 
     public enum AddRepo {
         OK(0),

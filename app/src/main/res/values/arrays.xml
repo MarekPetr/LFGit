@@ -6,6 +6,7 @@
         <item>Push</item>
         <item>Pull</item>
         <item>Status</item>
+        <item>Log</item>
         <item>Add Origin Remote</item>
         <item>Set Origin Remote</item>
         <item>List branches</item>
