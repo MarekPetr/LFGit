@@ -219,9 +219,9 @@ public class RepoTasksViewModel extends ExecViewModel implements
             hidePendingOnRemoteUserTask(mState);
             if (result.isEmpty()) {
                 if (errCode == 0) {
-                    postShowToast("Operation successful");
+                    postTaskResult("Operation successful");
                 } else {
-                    postShowToast("Operation failed");
+                    postTaskResult("Operation failed");
                 }
             } else {
                 postTaskResult(result);

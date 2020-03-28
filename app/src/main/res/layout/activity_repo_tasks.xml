@@ -1,0 +1,64 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="RepoTasksViewModel"
+            type="com.lfgit.view_models.RepoTasksViewModel" />
+    </data>
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/smallMargin"
+            android:layout_marginVertical="@dimen/smallMargin">
+
+            <TextView
+                android:id="@+id/resultTitle"
+                android:layout_width="0sp"
+                android:layout_height="wrap_content"
+                android:text="Task result"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+            </TextView>
+
+            <RelativeLayout
+                android:id="@+id/resultLayout"
+                android:layout_width="match_parent"
+                android:layout_height="150sp"
+                android:background="@drawable/border"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/resultTitle">
+                <TextView
+                    android:id="@+id/taskResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/smallMargin"
+                    android:layout_marginVertical="@dimen/smallMargin"
+                    android:scrollbars="vertical"
+                    android:text="@={RepoTasksViewModel.taskResult}">
+                </TextView>
+            </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <RelativeLayout
+            android:id="@+id/rightDrawer"
+            android:layout_width="240sp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:background="@color/white">
+
+            <ListView
+                android:id="@+id/repoOperationList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:dividerHeight="0sp" >
+            </ListView>
+        </RelativeLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
+</layout>

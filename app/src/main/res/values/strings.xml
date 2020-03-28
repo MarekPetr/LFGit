@@ -7,6 +7,8 @@
     <string name="menu_init_repo">Init/Clone repository</string>
     <string name="menu_add_repo">Add repository</string>
 
+    <string name="local_repository">Local repository</string>
+
     <!-- git actions -->
     <string name="path_text_edit">Directory in internal storage</string>
     <string name="init_text">Initialize repository</string>

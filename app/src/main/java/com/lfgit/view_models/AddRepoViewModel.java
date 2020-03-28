@@ -6,6 +6,7 @@ import android.os.Environment;
 import com.lfgit.database.model.Repo;
 import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.TaskState;
+import com.lfgit.utilites.UriHelper;
 import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
@@ -82,10 +83,8 @@ public class AddRepoViewModel extends ExecViewModel {
     // background thread
     private void insertClonedRepo(int errCode) {
         if (errCode == 0) {
-            Uri uri = Uri.parse(cloneURLPath);
-            // get directory from URL
-            String lastPathSegment = uri.getLastPathSegment();
-            String fullRepoPath = cloneRepoPath + "/" + lastPathSegment;
+            // clone to directory of clone URL
+            String fullRepoPath = cloneRepoPath + "/" + UriHelper.getDirectory(cloneURLPath);
             Repo repo = new Repo(fullRepoPath, cloneURLPath);
             mRepository.insertRepo(repo);
             mCloneResult.postValue("Clone successful");

@@ -12,6 +12,13 @@ import android.provider.MediaStore;
 
 public class UriHelper {
 
+    public static String getDirectory(String path) {
+        Uri uri = Uri.parse(path);
+        // get directory from URI
+        String lastPathSegment = uri.getLastPathSegment();
+        return lastPathSegment;
+    }
+
     public static String getDirPath(final Context context, final Uri uri) {
         Uri DocUri = DocumentsContract.buildDocumentUriUsingTree(uri,
                 DocumentsContract.getTreeDocumentId(uri));

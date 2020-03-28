@@ -71,7 +71,9 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.repo_list_item, parent, false);
         RepoListItemHolder holder = new RepoListItemHolder();
-        holder.repoTitle = view.findViewById(R.id.repoTitle);
+        holder.title = view.findViewById(R.id.title);
+        holder.remoteURL = view.findViewById(R.id.remoteURL);
+        holder.localPath = view.findViewById(R.id.localPath);
         view.setTag(holder);
         return view;
     }
@@ -80,7 +82,11 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         RepoListItemHolder holder = (RepoListItemHolder) view.getTag();
         final Repo repo = getItem(position);
         if (repo != null) {
-            holder.repoTitle.setText(repo.getDisplayName());
+            holder.title.setText(repo.getDisplayName());
+            holder.localPath.setText(repo.getLocalPath());
+            if (repo.getRemoteURL() != null) {
+                holder.remoteURL.setText(repo.getRemoteURL());
+            }
         }
         // TODO delete repo from DB if it doesn't exist
     }
@@ -100,6 +106,8 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
     }
 
     private class RepoListItemHolder {
-        TextView repoTitle;
+        TextView title;
+        TextView localPath;
+        TextView remoteURL;
     }
 }

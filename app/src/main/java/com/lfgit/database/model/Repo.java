@@ -5,6 +5,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.lfgit.utilites.UriHelper;
+
 import java.io.Serializable;
 
 @Entity(tableName = "repo")
@@ -44,7 +46,7 @@ public class Repo implements Serializable {
     }
 
     public String getDisplayName() {
-        return localPath;
+        return UriHelper.getDirectory(localPath);
     }
 
     public int getId() {

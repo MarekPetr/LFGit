@@ -11,24 +11,25 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter;
 import com.lfgit.database.model.Repo;
-import com.lfgit.databinding.ActivityRepoDetailBinding;
+import com.lfgit.databinding.ActivityRepoTasksBinding;
 import com.lfgit.fragments.dialogs.CheckoutDialog;
 import com.lfgit.fragments.dialogs.CommitDialog;
 import com.lfgit.fragments.dialogs.RemoteDialog;
 import com.lfgit.fragments.dialogs.CredentialsDialog;
 import com.lfgit.view_models.RepoTasksViewModel;
 
+import java.util.Objects;
+
 
 public class RepoTasksActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;
-    private ActivityRepoDetailBinding mBinding;
+    private ActivityRepoTasksBinding mBinding;
     private CredentialsDialog mCredsDialog;
     private RemoteDialog mRemoteDialog;
     private CommitDialog mCommitDialog;
@@ -38,8 +39,9 @@ public class RepoTasksActivity extends BasicAbstractActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_repo_detail);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_detail);
+        setContentView(R.layout.activity_repo_tasks);
+
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_tasks);
         mRepoTasksViewModel = new ViewModelProvider(this).get(RepoTasksViewModel.class);
         mBinding.setRepoTasksViewModel(mRepoTasksViewModel);
         mBinding.setLifecycleOwner(this);
@@ -50,6 +52,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
 
         Repo repo = (Repo) getIntent().getSerializableExtra(Repo.TAG);
         mRepoTasksViewModel.setRepo(repo);
+        if (repo != null) {setTitle(repo.getDisplayName());}
 
         mRepoTasksViewModel.getExecPending().observe(this, this::toggleProgressDialog);
 
