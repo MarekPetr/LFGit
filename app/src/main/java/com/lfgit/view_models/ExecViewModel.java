@@ -4,7 +4,6 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
@@ -72,7 +71,7 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     // background thread
     Boolean isRemoteTask(Constants.Task task) {
         return task == CLONE || task == PUSH || task == PULL ||
-                task == CHECKOUT;
+                task == CHECKOUT_LOCAL;
     }
     
     // background thread
