@@ -80,12 +80,12 @@ public class RepoTasksViewModel extends ExecViewModel implements
 
     private void gitPush() {
         mState.newState(FOR_APP, PUSH);
-        checkRepo();
+        get_remote_git();
     }
 
     private void gitPull() {
         mState.newState(FOR_APP, PULL);
-        checkRepo();
+        get_remote_git();
     }
 
     private void gitStatus() {
@@ -108,24 +108,12 @@ public class RepoTasksViewModel extends ExecViewModel implements
 
     }
 
-    private void checkRepo() {
-        //CHECK_REMOTE_DB
-        if (mRepo.getRemoteURL() != null) {
-            //CHECK_CREDS_DB
-            if(checkCredentialsDB()) {
-                pushOrPullAndFinish();
-            } else {
-                setPromptCredentials(true);
-            }
-        } else {
-            // GET_REMOTE_GIT
-            mState.setInnerState(GET_REMOTE_GIT);
-            // Is a config command, so continues in processTaskResult.
-            mGitExec.getRemoteURL(mRepo);
-        }
+    private void get_remote_git() {
+        mState.setInnerState(GET_REMOTE_GIT);
+        mGitExec.getRemoteURL(mRepo);
     }
 
-    private Boolean checkCredentialsDB() {
+    private Boolean credentialsSetDB() {
         return mRepo.getPassword() != null && mRepo.getUsername() != null;
     }
 
@@ -241,8 +229,10 @@ public class RepoTasksViewModel extends ExecViewModel implements
             } else {
                 mRepo.setRemoteURL(resultLines[0]);
                 mRepository.updateRemoteURL(mRepo);
-                if (!checkCredentialsDB()) {
+                if (!credentialsSetDB()) {
                     postPromptCredentials(true);
+                } else {
+                    pushOrPullAndFinish();
                 }
             }
         } else if (innerState == ADD_ORIGIN_REMOTE || innerState == SET_ORIGIN_REMOTE) {
