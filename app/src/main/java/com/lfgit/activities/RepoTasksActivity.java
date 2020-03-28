@@ -1,7 +1,5 @@
 package com.lfgit.activities;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
@@ -14,9 +12,6 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.aditya.filebrowser.Constants;
-import com.aditya.filebrowser.FileBrowser;
 import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter;
 import com.lfgit.database.model.Repo;
@@ -26,10 +21,6 @@ import com.lfgit.fragments.dialogs.CommitDialog;
 import com.lfgit.fragments.dialogs.RemoteDialog;
 import com.lfgit.fragments.dialogs.CredentialsDialog;
 import com.lfgit.view_models.RepoTasksViewModel;
-
-import java.io.File;
-
-import static com.lfgit.utilites.Logger.LogMsg;
 
 public class RepoTasksActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
@@ -82,21 +73,6 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         });
 
         mRepoTasksViewModel.getShowToast().observe(this, this::showToastMsg);
-        mRepoTasksViewModel.getStartFileManager().observe(this, this::startFileManager);
-    }
-
-    private void startFileManager(String path) {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        Uri uri = Uri.parse(path); // a directory
-        intent.setDataAndType(uri, "*/*");
-        startActivity(Intent.createChooser(intent, "Open folder"));
-
-    }
-
-    private void fileBrowser(String path) {
-        Intent i = new Intent(this, FileBrowser.class);
-        i.putExtra(Constants.INITIAL_DIRECTORY, path);
-        startActivity(i);
     }
 
     private void hideDialog(DialogFragment dialog) {

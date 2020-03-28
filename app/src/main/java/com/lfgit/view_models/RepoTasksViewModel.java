@@ -33,7 +33,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
     private SingleLiveEvent<Boolean> mPromptRemote = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptCommit = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptCheckout = new SingleLiveEvent<>();
-    private SingleLiveEvent<String> mStartFileManager = new SingleLiveEvent<>();
     private String mTempRemoteURL;
 
     public RepoTasksViewModel(@NonNull Application application) {
@@ -215,10 +214,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
         mState.newState(FOR_APP, NONE);
     }
 
-    public void fileManagerBtnHandler() {
-        setStartFileManager(mRepo.getLocalPath());
-    }
-
     // background thread
     @Override
     public void onExecFinished(String result, int errCode) {
@@ -321,13 +316,4 @@ public class RepoTasksViewModel extends ExecViewModel implements
     public void setPromptCheckout(Boolean prompt) {
         mPromptCheckout.setValue(prompt);
     }
-
-    public SingleLiveEvent<String> getStartFileManager() {
-        return mStartFileManager;
-    }
-
-    public void setStartFileManager(String path) {
-        mStartFileManager.setValue(path);
-    }
-
 }

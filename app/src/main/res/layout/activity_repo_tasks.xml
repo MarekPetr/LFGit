@@ -16,18 +16,6 @@
             android:layout_marginHorizontal="@dimen/smallMargin"
             android:layout_marginVertical="@dimen/smallMargin">
 
-            <Button
-                android:id="@+id/filesButton"
-                android:layout_width="150sp"
-                android:layout_height="wrap_content"
-                android:text="File Manager"
-                android:onClick="@{() -> RepoTasksViewModel.fileManagerBtnHandler()}"
-                android:layout_marginTop="@dimen/smallMargin"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-            </Button>
-
             <TextView
                 android:id="@+id/resultTitle"
                 android:layout_width="0sp"
@@ -37,7 +25,7 @@
                 android:textStyle="bold"
                 android:layout_marginTop="@dimen/smallMargin"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/filesButton">
+                app:layout_constraintTop_toTopOf="parent">
             </TextView>
 
             <LinearLayout
