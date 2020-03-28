@@ -2,4 +2,6 @@
 <resources>
     <dimen name="marginStart">24sp</dimen>
     <dimen name="smallMargin">10sp</dimen>
+    <dimen name="itemTitleTxtSize">18sp</dimen>
+    <dimen name="itemTxtSize">15sp</dimen>
 </resources>

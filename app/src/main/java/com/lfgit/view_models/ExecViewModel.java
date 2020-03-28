@@ -4,7 +4,6 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
@@ -12,23 +11,20 @@ import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
 import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.TaskState;
+import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import java.util.List;
 
-import static com.lfgit.utilites.Constants.InnerState.FOR_USER;
-import static com.lfgit.utilites.Constants.InnerState.FOR_APP;
-import static com.lfgit.utilites.Constants.Task.CLONE;
-import static com.lfgit.utilites.Constants.Task.NONE;
-import static com.lfgit.utilites.Constants.Task.PULL;
-import static com.lfgit.utilites.Constants.Task.PUSH;
+import static com.lfgit.utilites.Constants.InnerState.*;
+import static com.lfgit.utilites.Constants.Task.*;
 
 public abstract class ExecViewModel extends AndroidViewModel implements ExecListener {
     GitExec mGitExec;
     RepoRepository mRepository;
     List<Repo> mAllRepos;
     TaskState mState = new TaskState(FOR_APP, NONE);
-
-    MutableLiveData<Boolean> mExecPending = new MutableLiveData<>();
+    SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
+    SingleLiveEvent<Boolean> mExecPending = new SingleLiveEvent<>();
 
     ExecViewModel(@NonNull Application application) {
         super(application);
@@ -62,9 +58,20 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
         mExecPending.postValue(false);
     }
 
+    public SingleLiveEvent<String> getShowToast() {
+        return mShowToast;
+    }
+    void setShowToast(String message) {
+        mShowToast.setValue(message);
+    }
+    void postShowToast(String message) {
+        mShowToast.postValue(message);
+    }
+
     // background thread
-    Boolean isRemoteTask(Constants.Task currentTask) {
-        return currentTask == CLONE || currentTask == PUSH || currentTask == PULL;
+    Boolean isRemoteTask(Constants.Task task) {
+        return task == CLONE || task == PUSH || task == PULL ||
+                task == CHECKOUT_LOCAL;
     }
     
     // background thread
@@ -87,7 +94,7 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
         if (remoteTaskFinished(state)) postHidePending();
     }
 
-    public MutableLiveData<Boolean> getExecPending() {
+    public SingleLiveEvent<Boolean> getExecPending() {
         return mExecPending;
     }
 }

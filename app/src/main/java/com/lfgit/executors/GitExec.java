@@ -55,9 +55,17 @@ public class GitExec extends AbstractExecutor {
         String gitOperation = "add";
         executeBinary(gitPath, dest, gitOperation, ".");
     }
-    
-    public void listBranches(Repo repo) {
-        
+
+    public void branch(String dest) {
+        executeBinary(gitPath, dest, "branch", "-a");
+    }
+
+    public void checkoutLocal(String dest, String branch) {
+        executeBinary(gitPath, dest, "checkout", branch);
+    }
+
+    public void checkoutRemote(String dest, String branch) {
+        executeBinary(gitPath, dest, "checkout", "--track", branch);
     }
 
     public void push(Repo repo) {
@@ -65,7 +73,8 @@ public class GitExec extends AbstractExecutor {
     }
 
     public void pull(Repo repo) {
-        pushOrPull("pull", repo);
+        //pushOrPull("pull", repo);
+        executeBinary(gitPath, repo.getLocalPath(), "pull");
     }
 
     private void pushOrPull(String gitOperation, Repo repo) {

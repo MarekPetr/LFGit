@@ -16,27 +16,32 @@ import androidx.lifecycle.ViewModelProvider;
 import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter;
 import com.lfgit.database.model.Repo;
-import com.lfgit.databinding.ActivityRepoDetailBinding;
+import com.lfgit.databinding.ActivityRepoTasksBinding;
+import com.lfgit.fragments.dialogs.CheckoutDialog;
 import com.lfgit.fragments.dialogs.CommitDialog;
 import com.lfgit.fragments.dialogs.RemoteDialog;
 import com.lfgit.fragments.dialogs.CredentialsDialog;
 import com.lfgit.view_models.RepoTasksViewModel;
 
+import java.util.Objects;
+
 
 public class RepoTasksActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;
-    private ActivityRepoDetailBinding mBinding;
+    private ActivityRepoTasksBinding mBinding;
     private CredentialsDialog mCredsDialog;
     private RemoteDialog mRemoteDialog;
     private CommitDialog mCommitDialog;
+    private CheckoutDialog mCheckoutDialog;
     private RepoTasksViewModel mRepoTasksViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_repo_detail);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_detail);
+        setContentView(R.layout.activity_repo_tasks);
+
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_tasks);
         mRepoTasksViewModel = new ViewModelProvider(this).get(RepoTasksViewModel.class);
         mBinding.setRepoTasksViewModel(mRepoTasksViewModel);
         mBinding.setLifecycleOwner(this);
@@ -47,6 +52,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
 
         Repo repo = (Repo) getIntent().getSerializableExtra(Repo.TAG);
         mRepoTasksViewModel.setRepo(repo);
+        if (repo != null) {setTitle(repo.getDisplayName());}
 
         mRepoTasksViewModel.getExecPending().observe(this, this::toggleProgressDialog);
 
@@ -60,6 +66,14 @@ public class RepoTasksActivity extends BasicAbstractActivity {
 
         mRepoTasksViewModel.getPromptCommit().observe(this, promptCommit -> {
             toggleDialog(promptCommit, mCommitDialog, "commit_dialog");
+        });
+
+        mRepoTasksViewModel.getPromptCommit().observe(this, promptCommit -> {
+            toggleDialog(promptCommit, mCommitDialog, "commit_dialog");
+        });
+
+        mRepoTasksViewModel.getPromptCheckout().observe(this, promptCheckout -> {
+            toggleDialog(promptCheckout, mCheckoutDialog, "checkout_dialog");
         });
 
         mRepoTasksViewModel.getShowToast().observe(this, this::showToastMsg);
@@ -88,6 +102,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         mCommitDialog = CommitDialog.newInstance(mRepoTasksViewModel);
         mCredsDialog = CredentialsDialog.newInstance(mRepoTasksViewModel);
         mRemoteDialog = RemoteDialog.newInstance(mRepoTasksViewModel);
+        mCheckoutDialog = CheckoutDialog.newInstance(mRepoTasksViewModel);
     }
 
     private FragmentTransaction getFragmentTransaction(String tag) {

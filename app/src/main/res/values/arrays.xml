@@ -9,6 +9,8 @@
         <item>Add Origin Remote</item>
         <item>Set Origin Remote</item>
         <item>List branches</item>
+        <item>Checkout Local Branch</item>
+        <item>Checkout Remote Branch</item>
         <item>Change Credentials</item>
     </string-array>
 

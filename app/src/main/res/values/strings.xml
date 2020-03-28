@@ -7,6 +7,8 @@
     <string name="menu_init_repo">Init/Clone repository</string>
     <string name="menu_add_repo">Add repository</string>
 
+    <string name="local_repository">Local repository</string>
+
     <!-- git actions -->
     <string name="path_text_edit">Directory in internal storage</string>
     <string name="init_text">Initialize repository</string>
@@ -18,7 +20,8 @@
     <string name="set_path_button">Set path</string>
     <string name="browse_button">Browse</string>
 
-    <string name="browse_only_primary">Only primary volume is supported</string>
+    <string name="internal_storage_only">Only internal storage is supported</string>
+    <string name="enter_internal_storage">Please enter internal storage directory</string>
 
     <string name="title_activity_settings">Settings</string>
 
@@ -46,4 +49,9 @@
     <!-- commit_dialog_layout -->
     <string name="commit_msg">Commit Message</string>
     <string name="commit_title">Enter commit message</string>
+
+    <!-- checkout_dialog_layout -->
+    <string name="branch_name">Branch</string>
+    <string name="checkout_title">Enter branch to checkout</string>
+
 </resources>

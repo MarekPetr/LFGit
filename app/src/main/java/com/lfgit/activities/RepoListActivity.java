@@ -125,7 +125,7 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
                         showToastMsg("Repository already added");
                     }
                 } else {
-                    showToastMsg(getString (R. string. browse_only_primary));
+                    showToastMsg(getString (R. string.internal_storage_only));
                 }
             }
         }
