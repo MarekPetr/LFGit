@@ -39,6 +39,11 @@ public class Constants {
         BRANCH,
         CHECKOUT_LOCAL,
         CHECKOUT_REMOTE,
+        LFS_INSTALL,
+        LFS_TRACK,
+        LFS_UNTRACK,
+        LFS_LIST_PATTERNS,
+        LFS_LIST_FILES,
         CONFIG,
         NONE,
     }

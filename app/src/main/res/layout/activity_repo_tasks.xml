@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0sp"
                 android:background="@drawable/border"
-                app:layout_constrainedHeight="true"
+                android:layout_marginBottom="@dimen/smallMargin"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -46,6 +46,7 @@
                     android:layout_marginHorizontal="@dimen/smallMargin"
                     android:layout_marginVertical="@dimen/smallMargin"
                     android:scrollbars="vertical"
+                    android:textIsSelectable="true"
                     android:text="@={RepoTasksViewModel.taskResult}">
                 </TextView>
             </LinearLayout>

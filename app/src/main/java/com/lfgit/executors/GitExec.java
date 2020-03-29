@@ -124,4 +124,22 @@ public class GitExec {
     public void lfsInstall(String localPath) {
         executor.run(lfsPath, localPath, "install");
     }
+
+    public void lfsTrackPattern(String localPath, String pattern) {
+        executor.run(lfsPath, localPath, "track", pattern);
+    }
+
+    public void lfsUntrackPattern(String localPath, String pattern) {
+        executor.run(lfsPath, localPath, "untrack", pattern);
+    }
+
+    public void lfsListPatterns(String localPath) {
+        executor.run(lfsPath, localPath, "track");
+    }
+
+    public void lfsListFiles(String localPath) {
+        executor.run(lfsPath, localPath, "ls-files");
+    }
+
+
 }

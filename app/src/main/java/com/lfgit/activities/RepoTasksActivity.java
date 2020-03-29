@@ -1,11 +1,16 @@
 package com.lfgit.activities;
 
+import android.content.ClipboardManager;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
@@ -18,6 +23,7 @@ import com.lfgit.database.model.Repo;
 import com.lfgit.databinding.ActivityRepoTasksBinding;
 import com.lfgit.fragments.dialogs.CheckoutDialog;
 import com.lfgit.fragments.dialogs.CommitDialog;
+import com.lfgit.fragments.dialogs.PatternDialog;
 import com.lfgit.fragments.dialogs.RemoteDialog;
 import com.lfgit.fragments.dialogs.CredentialsDialog;
 import com.lfgit.view_models.RepoTasksViewModel;
@@ -30,6 +36,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
     private RemoteDialog mRemoteDialog;
     private CommitDialog mCommitDialog;
     private CheckoutDialog mCheckoutDialog;
+    private PatternDialog mPatternDialog;
     private RepoTasksViewModel mRepoTasksViewModel;
 
     @Override
@@ -71,6 +78,9 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         mRepoTasksViewModel.getPromptCheckout().observe(this, promptCheckout -> {
             toggleDialog(promptCheckout, mCheckoutDialog, "checkout_dialog");
         });
+        mRepoTasksViewModel.getPromptPattern().observe(this, promptPattern -> {
+            toggleDialog(promptPattern, mPatternDialog, "prompt_dialog");
+        });
 
         mRepoTasksViewModel.getShowToast().observe(this, this::showToastMsg);
     }
@@ -99,6 +109,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         mCredsDialog = CredentialsDialog.newInstance(mRepoTasksViewModel);
         mRemoteDialog = RemoteDialog.newInstance(mRepoTasksViewModel);
         mCheckoutDialog = CheckoutDialog.newInstance(mRepoTasksViewModel);
+        mPatternDialog = PatternDialog.newInstance(mRepoTasksViewModel);
     }
 
     private FragmentTransaction getFragmentTransaction(String tag) {

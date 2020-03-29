@@ -13,6 +13,11 @@
         <item>List branches</item>
         <item>Checkout Local Branch</item>
         <item>Checkout Remote Branch</item>
+        <item>LFS Install</item>
+        <item>LFS Track</item>
+        <item>LFS Untrack</item>
+        <item>LFS List Tracked</item>
+        <item>LFS List Files</item>
         <item>Change Credentials</item>
     </string-array>
 
