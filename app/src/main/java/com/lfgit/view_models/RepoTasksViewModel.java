@@ -44,18 +44,19 @@ public class RepoTasksViewModel extends ExecViewModel implements
     }
 
     private GitAction[] tasks = new GitAction[] {
-        this::gitAddAllToStage,
-        this::gitCommit,
-        this::gitPush,
-        this::gitPull,
-        this::gitStatus,
-        this::gitLog,
-        this::gitAddRemote,
-        this::gitSetRemote,
-        this::gitBranch,
-        this::gitCheckoutLocal,
-        this::gitCheckoutRemote,
-        () -> setPromptCheckout(true),
+            this::gitAddAllToStage,
+            this::gitCommit,
+            this::gitPush,
+            this::gitPull,
+            this::gitStatus,
+            this::gitLog,
+            this::gitResetHard,
+            this::gitAddRemote,
+            this::gitSetRemote,
+            this::gitBranch,
+            this::gitCheckoutLocal,
+            this::gitCheckoutRemote,
+            () -> setPromptCheckout(true),
     };
 
     public void execGitTask(int drawerPosition) {
@@ -88,8 +89,13 @@ public class RepoTasksViewModel extends ExecViewModel implements
     }
 
     private void gitLog() {
-        mState.newState(FOR_USER, STATUS);
+        mState.newState(FOR_USER, LOG);
         mGitExec.log(getRepoPath());
+    }
+
+    private void gitResetHard() {
+        mState.newState(FOR_USER, RESET_HARD);
+        mGitExec.resetHard(getRepoPath());
     }
 
     private void gitAddRemote() {
