@@ -16,6 +16,7 @@ import com.lfgit.activities.RepoTasksActivity;
 import com.lfgit.database.model.Repo;
 import com.lfgit.view_models.RepoListViewModel;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -84,13 +85,14 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         if (repo != null) {
             holder.title.setText(repo.getDisplayName());
             holder.localPath.setText(repo.getLocalPath());
-            if (repo.getRemoteURL() != null) {
+            if (!StringUtils.isBlank(repo.getRemoteURL())) {
                 holder.remoteURL.setText(repo.getRemoteURL());
+            } else {
+                holder.remoteURL.setText(mContext.getResources().getString(R.string.unknown_remote));
             }
         }
-        // TODO delete repo from DB if it doesn't exist
     }
-
+    // TODO delete repo from DB if it doesn't exist
     public void setRepos(List<Repo> repos) {
         clear();
         addAll(repos);

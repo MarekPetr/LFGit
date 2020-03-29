@@ -27,6 +27,7 @@ public class Repo implements Serializable {
 
     public Repo(String localPath) {
         this.localPath = localPath;
+        this.remoteURL = "";
     }
 
     @Ignore

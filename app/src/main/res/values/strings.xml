@@ -8,7 +8,7 @@
     <string name="menu_add_repo">Add repository</string>
 
     <!-- repo_list_item -->
-    <string name="local_repository">Local repository</string>
+    <string name="unknown_remote">Pull to update remote</string>
 
     <!-- activity_repo_tasks -->
     <string name="task_result_title">Task result</string>

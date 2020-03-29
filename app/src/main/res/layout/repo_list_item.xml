@@ -14,7 +14,6 @@
     <TextView
         android:id="@+id/remoteURL"
         android:textStyle="italic"
-        android:text="@string/local_repository"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/itemTxtSize">

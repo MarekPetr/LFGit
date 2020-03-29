@@ -78,8 +78,8 @@ public class RepoTasksViewModel extends ExecViewModel implements
     }
 
     private void gitPull() {
-        mState.newState(FOR_USER, PULL);
-        mGitExec.pull(mRepo);
+        mState.newState(FOR_APP, PULL);
+        getRemoteGit();
     }
 
     private void gitStatus() {
@@ -211,7 +211,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
     }
 
     private void startState() {
-        mState.newState(FOR_APP, NONE);
+        mState.newState(FOR_USER, NONE);
     }
 
     // background thread
@@ -230,7 +230,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
             } else {
                 postTaskResult(result);
             }
-            mState.newState(FOR_APP, NONE);
+            mState.newState(FOR_USER, NONE);
         }
     }
 
@@ -241,15 +241,22 @@ public class RepoTasksViewModel extends ExecViewModel implements
 
         Constants.InnerState innerState = mState.getInnerState();
         if (innerState == GET_REMOTE_GIT) {
-            if (resultLines.length == 0) {
+            if (resultLines.length == 0 || errCode != 0) {
+                mRepo.setRemoteURL("Local Repository");
+                mRepository.updateRemoteURL(mRepo);
                 postShowToast("Please add a remote");
             } else {
                 mRepo.setRemoteURL(resultLines[0]);
                 mRepository.updateRemoteURL(mRepo);
-                if (!credentialsSetDB()) {
-                    postPromptCredentials(true);
+                if (mState.getPendingTask() == PULL) {
+                    mState.newState(FOR_USER, NONE);
+                    mGitExec.pull(mRepo);
                 } else {
-                    pushPendingAndFinish();
+                    if (!credentialsSetDB()) {
+                        postPromptCredentials(true);
+                    } else {
+                        pushPendingAndFinish();
+                    }
                 }
             }
         } else if (innerState == ADD_ORIGIN_REMOTE || innerState == SET_ORIGIN_REMOTE) {
