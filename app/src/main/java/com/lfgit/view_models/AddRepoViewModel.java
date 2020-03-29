@@ -11,7 +11,10 @@ import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+
 import static com.lfgit.utilites.Constants.AddRepo.*;
+import static com.lfgit.utilites.Constants.EXT_STORAGE;
 import static com.lfgit.utilites.Constants.Task.*;
 import static com.lfgit.utilites.Constants.InnerState.*;
 
@@ -27,16 +30,6 @@ public class AddRepoViewModel extends ExecViewModel {
 
     public AddRepoViewModel(Application application) {
         super(application);
-    }
-
-    public Constants.AddRepo addLocalRepo(String path) {
-        for (Repo repo : mAllRepos) {
-            if (path.equals(repo.getLocalPath())) {
-                return ALREADY_ADDED;
-            }
-        }
-        mRepository.insertRepo(new Repo(path));
-        return OK;
     }
 
     public void cloneRepoHandler() {
@@ -60,8 +53,7 @@ public class AddRepoViewModel extends ExecViewModel {
     }
 
     private Boolean isInternalStorage(String path) {
-        String mExtStorage = Environment.getExternalStorageDirectory().toString() + "/";
-        if (!path.startsWith(mExtStorage)) {
+        if (!path.startsWith(EXT_STORAGE)) {
             setShowToast("Please enter internal storage directory");
             return false;
         }

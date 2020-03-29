@@ -27,7 +27,7 @@ import com.lfgit.view_models.RepoListViewModel;
 
 public class RepoListActivity extends BasicAbstractActivity implements InstallFragment.FragmentCallback {
     private ActivityRepoListBinding mBinding;
-    private AddRepoViewModel mAddRepoViewModel;
+    private RepoListViewModel mRepoListViewModel;
     private RepoListAdapter mRepoListAdapter;
     private InstallPreference mInstallPref = new InstallPreference();
     FragmentManager mManager = getSupportFragmentManager();
@@ -45,21 +45,22 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
             runInstallFragment();
         }
 
-        RepoListViewModel repoListViewModel = new ViewModelProvider(this).get(RepoListViewModel.class);
-        mAddRepoViewModel = new ViewModelProvider(this).get(AddRepoViewModel.class);
+        mRepoListViewModel = new ViewModelProvider(this).get(RepoListViewModel.class);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_list);
         mBinding.setLifecycleOwner(this);
-        mBinding.setRepoListViewModel(repoListViewModel);
+        mBinding.setRepoListViewModel(mRepoListViewModel);
 
-        mRepoListAdapter = new RepoListAdapter(this, repoListViewModel);
+        mRepoListAdapter = new RepoListAdapter(this, mRepoListViewModel);
         mBinding.repoList.setAdapter(mRepoListAdapter);
         mBinding.repoList.setOnItemClickListener(mRepoListAdapter);
         mBinding.repoList.setOnItemLongClickListener(mRepoListAdapter);
 
-        repoListViewModel.getAllRepos().observe(this, repoList -> {
+        mRepoListViewModel.getShowToast().observe(this, this::showToastMsg);
+
+        mRepoListViewModel.getAllRepos().observe(this, repoList -> {
             mRepoListAdapter.setRepos(repoList);
-            mAddRepoViewModel.setAllRepos(repoList);
+            mRepoListViewModel.setAllRepos(repoList);
         });
     }
 
@@ -120,10 +121,7 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
                 Uri uri = intent.getData();
                 String path = UriHelper.getDirPath(this, uri);
                 if (path != null) {
-                    if (mAddRepoViewModel.addLocalRepo(path)
-                            == Constants.AddRepo.ALREADY_ADDED) {
-                        showToastMsg("Repository already added");
-                    }
+                    mRepoListViewModel.addLocalRepo(path);
                 } else {
                     showToastMsg(getString (R. string.internal_storage_only));
                 }

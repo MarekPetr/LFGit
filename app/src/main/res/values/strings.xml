@@ -2,12 +2,18 @@
     <string name="app_name">LfGit</string>
     <string name="dialog_choose_option">Choose option</string>
 
-    <!-- menu items -->
+    <!-- menu_repo_list -->
     <string name="menu_settings">Settings</string>
     <string name="menu_init_repo">Init/Clone repository</string>
     <string name="menu_add_repo">Add repository</string>
 
-    <string name="local_repository">Local repository</string>
+    <!-- repo_list_item -->
+    <string name="unknown_remote">Pull to update remote</string>
+
+    <string name="repo_not_found">"Repository not found"</string>
+
+    <!-- activity_repo_tasks -->
+    <string name="task_result_title">Task result</string>
 
     <!-- git actions -->
     <string name="path_text_edit">Directory in internal storage</string>

@@ -15,19 +15,19 @@ import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Constants.LIB_DIR;
 import static com.lfgit.utilites.Logger.LogMsg;
 
-abstract class AbstractExecutor {
+class BinaryExecutor {
 
     private Process mProcess = null;
-    String mExeDir;
+    private String mExeDir;
     private static final String EOL = System.getProperty("line.separator");
     private ExecListener mCallback;
 
-    AbstractExecutor(ExecListener callback) {
+    BinaryExecutor(ExecListener callback) {
         mExeDir = BIN_DIR;
         mCallback = callback;
     }
 
-    void executeBinary(String binary, String destDir, String... strings) {
+    void run(String binary, String destDir, String... strings) {
         String exeBin = mExeDir + "/" + binary;
         File f = new File(destDir);
         if (binary.equals("git") &&
