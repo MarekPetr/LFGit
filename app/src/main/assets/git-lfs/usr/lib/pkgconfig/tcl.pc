@@ -1,0 +1,15 @@
+# tcl pkg-config source file
+
+prefix=/data/data/com.lfgit/files/usr
+exec_prefix=/data/data/com.lfgit/files/usr
+libdir=/data/data/com.lfgit/files/usr/lib
+includedir=${prefix}/include
+
+Name: Tool Command Language
+Description: Tcl is a powerful, easy-to-learn dynamic programming language, suitable for a wide range of uses.
+URL: http://www.tcl.tk/
+Version: 8.6.10
+Requires.private: zlib >= 1.2.3
+Libs: -L${libdir} -ltcl8.6 -ltclstub8.6
+Libs.private: -ldl -lz  -lm
+Cflags: -I${includedir}

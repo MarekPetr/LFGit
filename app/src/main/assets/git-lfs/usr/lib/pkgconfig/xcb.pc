@@ -1,0 +1,13 @@
+prefix=/data/data/com.lfgit/files/usr
+exec_prefix=${prefix}
+libdir=/data/data/com.lfgit/files/usr/lib
+includedir=${prefix}/include
+xcbproto_version=1.14
+
+Name: XCB
+Description: X-protocol C Binding
+Version: 1.14
+Requires.private: xau >= 0.99.2 xdmcp
+Libs: -L${libdir} -lxcb
+Libs.private: 
+Cflags: -I${includedir}
