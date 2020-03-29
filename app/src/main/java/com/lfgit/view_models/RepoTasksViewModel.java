@@ -140,13 +140,11 @@ public class RepoTasksViewModel extends ExecViewModel implements
     private void lfsTrackPattern() {
         mState.newState(FOR_USER, LFS_TRACK);
         setPromptPattern(true);
-        //mGitExec.lfsTrackPattern(getRepoPath(), pattern);
     }
 
     private void lfsUntrackPattern() {
         mState.newState(FOR_USER, LFS_UNTRACK);
         setPromptPattern(true);
-        //mGitExec.lfsUntrackPattern(getRepoPath(), pattern);
     }
 
     private void lfsListPatterns() {

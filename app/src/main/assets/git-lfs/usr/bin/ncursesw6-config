@@ -1,7 +1,8 @@
 #!/data/data/com.lfgit/files/usr/bin/sh
-# $Id: ncurses-config.in,v 1.39 2019/09/28 12:54:17 tom Exp $
+# $Id: ncurses-config.in,v 1.43 2020/02/02 23:34:34 tom Exp $
 ##############################################################################
-# Copyright (c) 2006-2018,2019 Free Software Foundation, Inc.                #
+# Copyright 2018-2019,2020 Thomas E. Dickey                                  #
+# Copyright 2006-2015,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -86,7 +87,7 @@ if [ xyes = xno ]; then
 	esac
 fi
 
-LIBS=" "
+LIBS=""
 if [ "ncurses" = "ncurses" ]; then
 	LIBS="-l${THIS} $LIBS"
 else
@@ -100,9 +101,15 @@ fi
 # There is no portable way to find the list of standard library directories. 
 # Require a POSIX shell anyway, to keep this simple.
 lib_flags=
-for opt in -L$libdir -L/data/data/com.lfgit/files/usr/lib -Wl,-rpath=/data/data/com.lfgit/files/usr/lib,--enable-new-dtags -Wl,--as-needed -Wl,-z,relro,-z,now  $LIBS
+for opt in -L$libdir -L/data/data/com.lfgit/files/usr/lib -Wl,-rpath=/data/data/com.lfgit/files/usr/lib -march=armv7-a -Wl,--enable-new-dtags -Wl,--as-needed -Wl,-z,relro,-z,now  $LIBS
 do
 	case $opt in
+	-specs*) # ignore linker specs-files which were used to build library
+		continue
+		;;
+	-Wl,-z,*) # ignore flags used to manipulate shared image
+		continue
+		;;
 	-L*)
 		[ -d ${opt##-L} ] || continue
 		case ${opt##-L} in
@@ -203,7 +210,7 @@ ENDECHO
 		;;
 	# identification
 	--version)
-		echo "6.1.20190928"
+		echo "6.2.20200222"
 		;;
 	--abi-version)
 		echo "6"

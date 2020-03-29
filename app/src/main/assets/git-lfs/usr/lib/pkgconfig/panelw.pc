@@ -7,13 +7,13 @@ libdir=/data/data/com.lfgit/files/usr/lib
 includedir=${prefix}/include
 abi_version=6
 major_version=6
-version=6.1.20190928
+version=6.2.20200222
 
 Name: panelw
-Description: ncurses 6.1 add-on library
+Description: ncurses 6.2 add-on library
 Version: ${version}
 URL: https://invisible-island.net/ncurses
 Requires.private: ncursesw
-Libs:  -L${libdir} -lpanelw
+Libs:  -L/data/data/com.lfgit/files/usr/lib -Wl,-rpath=/data/data/com.lfgit/files/usr/lib -march=armv7-a -Wl,--enable-new-dtags -Wl,--as-needed -lpanelw
 Libs.private:  
 Cflags:  -D_XOPEN_SOURCE=600 -I${includedir}

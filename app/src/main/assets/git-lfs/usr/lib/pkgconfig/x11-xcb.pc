@@ -1,0 +1,11 @@
+prefix=/data/data/com.lfgit/files/usr
+exec_prefix=${prefix}
+libdir=/data/data/com.lfgit/files/usr/lib
+includedir=${prefix}/include
+
+Name: X11 XCB
+Description: X Library XCB interface
+Version: 1.6.9
+Requires: x11 xcb
+Cflags: -I${includedir}
+Libs: -L${libdir} -lX11-xcb

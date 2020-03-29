@@ -1,0 +1,11 @@
+prefix=/data/data/com.lfgit/files/usr
+exec_prefix=${prefix}
+libdir=/data/data/com.lfgit/files/usr/lib
+includedir=${prefix}/include
+
+Name: XCB GLX
+Description: XCB GLX Extension
+Version: 1.14
+Requires.private: xcb
+Libs: -L${libdir} -lxcb-glx
+Cflags: -I${includedir}
