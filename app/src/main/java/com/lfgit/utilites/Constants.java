@@ -32,6 +32,8 @@ public class Constants {
         PUSH,
         PULL,
         STATUS,
+        LOG,
+        RESET_HARD,
         ADD_REMOTE,
         SET_REMOTE,
         BRANCH,

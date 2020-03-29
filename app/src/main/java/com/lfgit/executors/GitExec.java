@@ -117,6 +117,10 @@ public class GitExec {
         executor.run(gitPath, localPath, "log");
     }
 
+    public void resetHard(String localPath) {
+        executor.run(gitPath, localPath, "reset", "--hard");
+    }
+
     public void lfsInstall(String localPath) {
         executor.run(lfsPath, localPath, "install");
     }
