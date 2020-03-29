@@ -21,7 +21,7 @@ import static com.lfgit.utilites.Constants.Task.*;
 public abstract class ExecViewModel extends AndroidViewModel implements ExecListener {
     GitExec mGitExec;
     RepoRepository mRepository;
-    List<Repo> mAllRepos;
+
     TaskState mState = new TaskState(FOR_APP, NONE);
     SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
     SingleLiveEvent<Boolean> mExecPending = new SingleLiveEvent<>();
@@ -30,10 +30,6 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
         super(application);
         mRepository = new RepoRepository(application);
         mGitExec = new GitExec(this);
-    }
-
-    public void setAllRepos(List<Repo> repoList) {
-        mAllRepos = repoList;
     }
 
     // background thread
