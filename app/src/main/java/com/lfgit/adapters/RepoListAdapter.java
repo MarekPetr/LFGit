@@ -19,6 +19,8 @@ import com.lfgit.view_models.RepoListViewModel;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.OnItemClickListener,
@@ -26,6 +28,7 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
 
     private BasicAbstractActivity mContext;
     private RepoListViewModel mRepoListViewModel;
+    private List<Repo> mLastRepoList;
 
     public RepoListAdapter(@NonNull BasicAbstractActivity context, RepoListViewModel viewModel) {
         super(context, 0);
@@ -37,8 +40,16 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Intent intent = new Intent(mContext, RepoTasksActivity.class);
         Repo repo = getItem(position);
-        intent.putExtra(Repo.TAG, repo);
-        mContext.startActivity(intent);
+        if (repoExists(repo)) {
+            intent.putExtra(Repo.TAG, repo);
+            mContext.startActivity(intent);
+        } else {
+            mContext.showToastMsg(mContext.getResources().getString(R.string.repo_not_found));
+            List<Repo> repoList = mLastRepoList;
+            repoList.remove(repo);
+            setRepos(repoList);
+            removeRepoDB(repo);
+        }
     }
 
     @Override
@@ -94,14 +105,34 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
     }
     // TODO delete repo from DB if it doesn't exist
     public void setRepos(List<Repo> repos) {
+        mLastRepoList = repos;
+        List<Repo> validRepos = new ArrayList<>();
+
+        for (Repo repo:repos) {
+            if (repoExists(repo)) {
+                validRepos.add(repo);
+            } else {
+                removeRepoDB(repo);
+            }
+        }
         clear();
-        addAll(repos);
+        addAll(validRepos);
         notifyDataSetChanged();
+    }
+
+    private Boolean repoExists(Repo repo) {
+        String path = repo.getLocalPath();
+        File file = new File(path);
+        return file.exists();
     }
 
     private void deleteRepo(int position) {
         final Repo repo = getItem(position);
         assert repo != null;
+        removeRepoDB(repo);
+    }
+
+    private void removeRepoDB(Repo repo) {
         remove(repo);
         notifyDataSetChanged();
         mRepoListViewModel.deleteRepoById(repo.getId());
