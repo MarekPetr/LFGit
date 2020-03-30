@@ -56,7 +56,7 @@ public class GitExec {
         executor.run(gitPath, localPath, gitOperation, ".");
     }
 
-    public void branch(String localPath) {
+    public void listBranches(String localPath) {
         executor.run(gitPath, localPath, "branch", "-a");
     }
 

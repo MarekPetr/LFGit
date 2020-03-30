@@ -36,7 +36,7 @@ public class Constants {
         RESET_HARD,
         ADD_REMOTE,
         SET_REMOTE,
-        BRANCH,
+        LIST_BRANCHES,
         CHECKOUT_LOCAL,
         CHECKOUT_REMOTE,
         CONFIG,
