@@ -141,5 +141,8 @@ public class GitExec {
         executor.run(lfsPath, localPath, "ls-files");
     }
 
+    public void lfsEnv(String localPath) {
+        executor.run(lfsPath, localPath, "env");
+    }
 
 }

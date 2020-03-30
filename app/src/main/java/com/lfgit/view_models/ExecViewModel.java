@@ -20,8 +20,8 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     RepoRepository mRepository;
 
     TaskState mState = new TaskState(FOR_APP, NONE);
-    SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
-    SingleLiveEvent<Boolean> mExecPending = new SingleLiveEvent<>();
+    private SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
+    private SingleLiveEvent<Boolean> mExecPending = new SingleLiveEvent<>();
 
     ExecViewModel(@NonNull Application application) {
         super(application);

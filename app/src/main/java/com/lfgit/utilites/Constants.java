@@ -44,6 +44,7 @@ public class Constants {
         LFS_UNTRACK,
         LFS_LIST_PATTERNS,
         LFS_LIST_FILES,
+        LFS_ENV,
         CONFIG,
         NONE,
     }

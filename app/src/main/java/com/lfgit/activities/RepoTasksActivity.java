@@ -26,7 +26,10 @@ import com.lfgit.fragments.dialogs.CommitDialog;
 import com.lfgit.fragments.dialogs.PatternDialog;
 import com.lfgit.fragments.dialogs.RemoteDialog;
 import com.lfgit.fragments.dialogs.CredentialsDialog;
+import com.lfgit.utilites.Logger;
 import com.lfgit.view_models.RepoTasksViewModel;
+
+import static com.lfgit.utilites.Logger.LogMsg;
 
 public class RepoTasksActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
@@ -65,10 +68,6 @@ public class RepoTasksActivity extends BasicAbstractActivity {
 
         mRepoTasksViewModel.getPromptAddRemote().observe(this, promptRemote -> {
             toggleDialog(promptRemote, mRemoteDialog, "remote_dialog");
-        });
-
-        mRepoTasksViewModel.getPromptCommit().observe(this, promptCommit -> {
-            toggleDialog(promptCommit, mCommitDialog, "commit_dialog");
         });
 
         mRepoTasksViewModel.getPromptCommit().observe(this, promptCommit -> {

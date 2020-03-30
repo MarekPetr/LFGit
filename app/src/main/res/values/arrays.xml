@@ -18,6 +18,7 @@
         <item>LFS Untrack</item>
         <item>LFS List Tracked</item>
         <item>LFS List Files</item>
+        <item>LFS Env</item>
         <item>Change Credentials</item>
     </string-array>
 
