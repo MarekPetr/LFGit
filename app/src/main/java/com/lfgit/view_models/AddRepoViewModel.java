@@ -1,19 +1,13 @@
 package com.lfgit.view_models;
 import android.app.Application;
-import android.net.Uri;
-import android.os.Environment;
 
 import com.lfgit.database.model.Repo;
-import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.TaskState;
 import com.lfgit.utilites.UriHelper;
 import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
-
-import static com.lfgit.utilites.Constants.AddRepo.*;
 import static com.lfgit.utilites.Constants.EXT_STORAGE;
 import static com.lfgit.utilites.Constants.Task.*;
 import static com.lfgit.utilites.Constants.InnerState.*;
@@ -63,7 +57,7 @@ public class AddRepoViewModel extends ExecViewModel {
     // background thread
     @Override
     public void onExecFinished(String result, int errCode) {
-        hidePendingOnRemoteUserTask(mState);
+        hidePendingIfNeeded(mState);
 
         if (mState.getPendingTask() == CLONE) {
             insertClonedRepo(errCode);

@@ -54,7 +54,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
             this::gitResetHard,
             this::gitAddRemote,
             this::gitSetRemote,
-            this::gitBranch,
+            this::gitListBranches,
             this::gitCheckoutLocal,
             this::gitCheckoutRemote,
             this::lfsInstall,
@@ -117,9 +117,9 @@ public class RepoTasksViewModel extends ExecViewModel implements
         setPromptRemote(true);
     }
 
-    private void gitBranch() {
-        mState.newState(FOR_USER, BRANCH);
-        mGitExec.branch(getRepoPath());
+    private void gitListBranches() {
+        mState.newState(FOR_USER, LIST_BRANCHES);
+        mGitExec.listBranches(getRepoPath());
     }
 
     private void gitCheckoutLocal() {
@@ -282,7 +282,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
         if (mState.getInnerState() != FOR_USER) {
             processTaskResult(result, errCode);
         } else {
-            hidePendingOnRemoteUserTask(mState);
+            hidePendingIfNeeded(mState);
             if (result.isEmpty()) {
                 if (errCode == 0) {
                     postTaskResult("Operation successful");
