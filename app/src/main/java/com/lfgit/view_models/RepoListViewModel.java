@@ -27,7 +27,7 @@ public class RepoListViewModel extends AndroidViewModel {
         return mRepository.getAllRepos();
     }
 
-    public void setAllRepos(List<Repo> repoList) {
+    public void setRepos(List<Repo> repoList) {
         mAllRepos = repoList;
     }
 

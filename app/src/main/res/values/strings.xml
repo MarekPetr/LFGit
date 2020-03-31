@@ -6,6 +6,7 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_init_repo">Init/Clone repository</string>
     <string name="menu_add_repo">Add repository</string>
+    <string name="menu_refresh">Refresh</string>
 
     <!-- repo_list_item -->
     <string name="unknown_remote">Pull to update remote</string>
