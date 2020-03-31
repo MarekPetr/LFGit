@@ -1,10 +1,15 @@
 package com.lfgit.executors;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,23 +69,24 @@ class BinaryExecutor {
             @Override
             public void run() {
                 StringBuilder mOutBuffer = new StringBuilder();
-                String result;
+                String result = "";
                 int errCode;
                 mCallback.onExecStarted();
                 String line;
                 try {
                     InputStream stdout = mProcess.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
+                    /*BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
                     while((line = reader.readLine()) != null) {
                         mOutBuffer.append(line).append(EOL);
-                    }
+                    }*/
+                    inputStreamToFile(stdout);
                 } catch(IOException e) {
                     // ignore
                 }
 
                 try {
                     errCode = mProcess.waitFor();
-                    result = mOutBuffer.toString();
+                    //result = mOutBuffer.toString();
                     mCallback.onExecFinished(result, errCode);
                 } catch (InterruptedException e) {
                     // ignore
@@ -88,5 +94,21 @@ class BinaryExecutor {
             }
         }.start();
     }
+
+    public void inputStreamToFile(InputStream inputStream)
+            throws IOException {
+
+        File targetFile = new File("/storage/emulated/0/LfGit/strace_log.txt");
+        OutputStream outStream = new FileOutputStream(targetFile);
+
+        byte[] buffer = new byte[8 * 1024];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outStream.write(buffer, 0, bytesRead);
+        }
+        IOUtils.closeQuietly(outStream);
+    }
 }
+
+
 

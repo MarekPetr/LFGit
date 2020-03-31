@@ -75,7 +75,9 @@ public class RepoTasksViewModel extends ExecViewModel implements
 
     private void gitAddAllToStage() {
         mState.newState(FOR_USER, ADD);
-        mGitExec.addAllToStage(getRepoPath());
+        //mGitExec.addAllToStage(getRepoPath());
+        mGitExec.straceAdd(getRepoPath());
+
     }
 
     private void gitCommit() {

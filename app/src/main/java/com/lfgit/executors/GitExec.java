@@ -6,6 +6,7 @@ import com.lfgit.utilites.TaskState;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import static com.lfgit.utilites.Constants.BIN_DIR;
 import static com.lfgit.utilites.Logger.LogMsg;
 
 public class GitExec {
@@ -54,6 +55,10 @@ public class GitExec {
     public void addAllToStage(String localPath) {
         String gitOperation = "add";
         executor.run(gitPath, localPath, gitOperation, ".");
+    }
+
+    public void straceAdd(String localPath) {
+        executor.run("strace", localPath, BIN_DIR+"/git", "add", ".");
     }
 
     public void listBranches(String localPath) {
