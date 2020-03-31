@@ -75,11 +75,20 @@ class BinaryExecutor {
                 String line;
                 try {
                     InputStream stdout = mProcess.getInputStream();
-                    /*BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
-                    while((line = reader.readLine()) != null) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
+                    /*while((line = reader.readLine()) != null) {
                         mOutBuffer.append(line).append(EOL);
                     }*/
-                    inputStreamToFile(stdout);
+
+                    File targetFile = new File("/storage/emulated/0/LfGit/strace_log.txt");
+                    OutputStream outStream = new FileOutputStream(targetFile);
+
+                    byte[] buffer = new byte[8 * 1024];
+                    int bytesRead;
+                    while ((bytesRead = stdout.read(buffer)) != -1) {
+                        outStream.write(buffer, 0, bytesRead);
+                    }
+
                 } catch(IOException e) {
                     // ignore
                 }
@@ -93,20 +102,6 @@ class BinaryExecutor {
                 }
             }
         }.start();
-    }
-
-    public void inputStreamToFile(InputStream inputStream)
-            throws IOException {
-
-        File targetFile = new File("/storage/emulated/0/LfGit/strace_log.txt");
-        OutputStream outStream = new FileOutputStream(targetFile);
-
-        byte[] buffer = new byte[8 * 1024];
-        int bytesRead;
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outStream.write(buffer, 0, bytesRead);
-        }
-        IOUtils.closeQuietly(outStream);
     }
 }
 
