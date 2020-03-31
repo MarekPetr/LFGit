@@ -103,7 +103,7 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
             }
         }
     }
-    // TODO delete repo from DB if it doesn't exist
+
     public void setRepos(List<Repo> repos) {
         mLastRepoList = repos;
         setExistingRepos(repos);

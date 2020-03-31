@@ -17,7 +17,6 @@
             android:id="@+id/repoList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/smallMargin"
             />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

@@ -10,7 +10,7 @@
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/smallMargin"
+            android:layout_marginHorizontal="@dimen/smallSpace"
             android:text="@string/pattern_title"
             bind:layout_constraintStart_toStartOf="parent"
             bind:layout_constraintTop_toTopOf="parent">
@@ -31,7 +31,7 @@
             android:id="@+id/enterButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/smallMargin"
+            android:layout_marginStart="@dimen/smallSpace"
             android:text="@string/enter_button"
             bind:layout_constraintStart_toStartOf="@+id/patternEditText"
             bind:layout_constraintTop_toBottomOf="@+id/patternEditText">
