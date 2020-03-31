@@ -292,9 +292,9 @@ public class RepoTasksViewModel extends ExecViewModel implements
             hidePendingIfNeeded(mState);
             if (result.isEmpty()) {
                 if (errCode == 0) {
-                    postTaskResult("Operation successful");
+                    postShowToast("Operation successful");
                 } else {
-                    postTaskResult("Operation failed");
+                    postShowToast("Operation failed");
                 }
             } else {
                 postTaskResult(result);
