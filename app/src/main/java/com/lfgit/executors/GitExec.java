@@ -1,7 +1,6 @@
 package com.lfgit.executors;
 
 import com.lfgit.database.model.Repo;
-import com.lfgit.utilites.TaskState;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -69,15 +68,14 @@ public class GitExec {
     }
 
     public void push(Repo repo) {
-        pushOrPull("push", repo);
+        ExecWithCredentials(gitPath, repo,"push");
     }
 
     public void pull(Repo repo) {
-        //pushOrPull("pull", repo);
         executor.run(gitPath, repo.getLocalPath(), "pull");
     }
 
-    private void pushOrPull(String gitOperation, Repo repo) {
+    private void ExecWithCredentials(String binary, Repo repo, String... gitOperation) {
         String username = repo.getUsername();
         String password = repo.getPassword();
         try {
@@ -85,7 +83,7 @@ public class GitExec {
             password = URLEncoder.encode(repo.getPassword(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             // try it without encoding
-            LogMsg("PushOrPull encoding failed");
+            LogMsg("Encoding failed");
         }
         String localPath = repo.getLocalPath();
         String remoteURL = repo.getRemoteURL();
@@ -95,7 +93,7 @@ public class GitExec {
         String scheme = parts[0]+"://";
         String domain = parts[1];
         String url = scheme + username + ":" + password + "@" + domain;
-        executor.run(gitPath, localPath, gitOperation, url);
+        executor.run(gitPath, localPath, gitOperation[0], url);
     }
 
     public void getRemoteURL(Repo repo) {
@@ -119,6 +117,14 @@ public class GitExec {
 
     public void resetHard(String localPath) {
         executor.run(gitPath, localPath, "reset", "--hard");
+    }
+
+    public void lfsPush(Repo repo) {
+        ExecWithCredentials("git", repo, "push", "--all");
+    }
+
+    public void lfsPull(Repo repo) {
+        executor.run(lfsPath, repo.getLocalPath(), "pull");
     }
 
     public void lfsInstall(String localPath) {

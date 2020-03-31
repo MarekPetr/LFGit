@@ -2,6 +2,7 @@ package com.lfgit.installer;
 
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
+import android.system.ErrnoException;
 import android.system.Os;
 import android.util.Log;
 
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import static com.lfgit.utilites.Constants.APP_DIR;
+import static com.lfgit.utilites.Constants.BIN_DIR;
 import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Logger.LogMsg;
 
@@ -50,6 +52,11 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> {
         File dir = new File(APP_DIR + "/repos");
         if (!dir.exists()) {
             dir.mkdir();
+        }
+        try {
+            Os.symlink("/system/bin/sh", BIN_DIR+"/sh");
+        } catch (ErrnoException e) {
+            e.printStackTrace();
         }
         return true;
     }

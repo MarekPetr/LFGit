@@ -40,6 +40,8 @@ public class Constants {
         CHECKOUT_LOCAL,
         CHECKOUT_REMOTE,
         LFS_INSTALL,
+        LFS_PUSH,
+        LFS_PULL,
         LFS_TRACK,
         LFS_UNTRACK,
         LFS_LIST_PATTERNS,

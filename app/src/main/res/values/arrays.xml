@@ -14,6 +14,8 @@
         <item>Checkout Local Branch</item>
         <item>Checkout Remote Branch</item>
         <item>LFS Install</item>
+        <item>LFS Push</item>
+        <item>LFS Pull</item>
         <item>LFS Track</item>
         <item>LFS Untrack</item>
         <item>LFS List Patterns</item>
