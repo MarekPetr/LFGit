@@ -145,4 +145,8 @@ public class GitExec {
         executor.run(lfsPath, localPath, "env");
     }
 
+    public void lfsStatus(String localPath) {
+        executor.run(lfsPath, localPath, "status");
+    }
+
 }

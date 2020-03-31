@@ -62,6 +62,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
             this::lfsUntrackPattern,
             this::lfsListPatterns,
             this::lfsListFiles,
+            this::lfsStatus,
             this::lfsEnv,
             () -> {
                 mState.newState(FOR_USER, NONE);
@@ -156,6 +157,11 @@ public class RepoTasksViewModel extends ExecViewModel implements
     private void lfsListFiles() {
         mState.newState(FOR_USER, LFS_LIST_FILES);
         mGitExec.lfsListFiles(getRepoPath());
+    }
+
+    private void lfsStatus() {
+        mState.newState(FOR_USER, LFS_STATUS);
+        mGitExec.lfsStatus(getRepoPath());
     }
 
     private void lfsEnv() {

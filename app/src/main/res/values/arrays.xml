@@ -16,8 +16,9 @@
         <item>LFS Install</item>
         <item>LFS Track</item>
         <item>LFS Untrack</item>
-        <item>LFS List Tracked</item>
+        <item>LFS List Patterns</item>
         <item>LFS List Files</item>
+        <item>LFS Status</item>
         <item>LFS Env</item>
         <item>Change Credentials</item>
     </string-array>
