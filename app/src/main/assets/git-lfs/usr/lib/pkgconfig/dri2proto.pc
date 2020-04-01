@@ -1,8 +1,0 @@
-prefix=/data/data/com.lfgit/files/usr
-libdir=${prefix}/lib
-includedir=${prefix}/include
-
-Name: dri2proto
-Description: dri2proto headers
-Version: 2.8
-Cflags: -I${includedir}

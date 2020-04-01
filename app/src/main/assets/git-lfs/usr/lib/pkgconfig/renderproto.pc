@@ -1,8 +1,0 @@
-prefix=/data/data/com.lfgit/files/usr
-libdir=${prefix}/lib
-includedir=${prefix}/include
-
-Name: renderproto
-Description: renderproto headers
-Version: 0.11.1
-Cflags: -I${includedir}

@@ -1,8 +1,0 @@
-prefix=/data/data/com.lfgit/files/usr
-libdir=${prefix}/lib
-includedir=${prefix}/include
-
-Name: xcalibrateproto
-Description: xcalibrateproto headers
-Version: 0.1.0
-Cflags: -I${includedir}
