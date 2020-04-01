@@ -58,8 +58,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
             this::gitCheckoutLocal,
             this::gitCheckoutRemote,
             this::lfsInstall,
-            this::lfsPush,
-            this::lfsPull,
             this::lfsTrackPattern,
             this::lfsUntrackPattern,
             this::lfsListPatterns,
@@ -141,16 +139,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
         mGitExec.lfsInstall(getRepoPath());
     }
 
-    private void lfsPush() {
-        mState.newState(FOR_USER, LFS_PUSH);
-        getRemoteGit();
-    }
-
-    private void lfsPull() {
-        mState.newState(FOR_USER, LFS_PULL);
-        getRemoteGit();
-    }
-
     private void lfsTrackPattern() {
         mState.newState(FOR_USER, LFS_TRACK);
         setPromptPattern(true);
@@ -214,9 +202,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
         if (mState.getPendingTask() == PUSH) {
             mState.newState(FOR_USER, PUSH);
             mGitExec.push(mRepo);
-        } else if (mState.getPendingTask() == LFS_PUSH) {
-            mState.newState(FOR_USER, LFS_PUSH);
-            mGitExec.lfsPush(mRepo);
         }
     }
 
@@ -341,9 +326,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
                 if (mState.getPendingTask() == PULL) {
                     mState.newState(FOR_USER, NONE);
                     mGitExec.pull(mRepo);
-                } else if (mState.getPendingTask() == LFS_PULL)  {
-                    mState.newState(FOR_USER, NONE);
-                    mGitExec.lfsPull(mRepo);
                 } else {
                     if (!credentialsSetDB()) {
                         postPromptCredentials(true);

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -63,8 +62,6 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
             mRepoListAdapter.setRepos(repoList);
             mRepoListViewModel.setRepos(repoList);
         });
-
-        Handler handler;
 
         pullToRefresh = findViewById(R.id.repoListLayout);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

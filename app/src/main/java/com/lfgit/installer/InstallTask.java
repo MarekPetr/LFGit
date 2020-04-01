@@ -6,6 +6,9 @@ import android.system.ErrnoException;
 import android.system.Os;
 import android.util.Log;
 
+import com.lfgit.executors.ExecListener;
+import com.lfgit.executors.GitExec;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,9 +20,18 @@ import java.util.Objects;
 import static com.lfgit.utilites.Constants.APP_DIR;
 import static com.lfgit.utilites.Constants.BIN_DIR;
 import static com.lfgit.utilites.Constants.FILES_DIR;
+import static com.lfgit.utilites.Constants.HOOKS_DIR;
 import static com.lfgit.utilites.Logger.LogMsg;
 
-public class InstallTask extends AsyncTask<Boolean, Void, Boolean> {
+public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements ExecListener {
+    @Override
+    public void onExecStarted() {
+    }
+
+    @Override
+    public void onExecFinished(String result, int errCode) {
+    }
+
     private enum Arch {
         x86(0),
         arm64_v8a(1);
@@ -49,7 +61,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> {
             }
             copyFileOrDir(assetDir);
         }
-        File dir = new File(APP_DIR + "/repos");
+        File dir = new File(HOOKS_DIR);
         if (!dir.exists()) {
             dir.mkdir();
         }
@@ -58,6 +70,9 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> {
         } catch (ErrnoException e) {
             e.printStackTrace();
         }
+
+        GitExec exec = new GitExec(this);
+        exec.configHooks();
         return true;
     }
 

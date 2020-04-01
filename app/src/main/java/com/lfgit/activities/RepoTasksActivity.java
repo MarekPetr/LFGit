@@ -1,15 +1,11 @@
 package com.lfgit.activities;
 
-import android.content.ClipboardManager;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -21,15 +17,8 @@ import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter;
 import com.lfgit.database.model.Repo;
 import com.lfgit.databinding.ActivityRepoTasksBinding;
-import com.lfgit.fragments.dialogs.CheckoutDialog;
-import com.lfgit.fragments.dialogs.CommitDialog;
-import com.lfgit.fragments.dialogs.PatternDialog;
-import com.lfgit.fragments.dialogs.RemoteDialog;
-import com.lfgit.fragments.dialogs.CredentialsDialog;
-import com.lfgit.utilites.Logger;
+import com.lfgit.fragments.dialogs.*;
 import com.lfgit.view_models.RepoTasksViewModel;
-
-import static com.lfgit.utilites.Logger.LogMsg;
 
 public class RepoTasksActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;

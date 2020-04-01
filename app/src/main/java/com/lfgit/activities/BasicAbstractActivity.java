@@ -1,6 +1,5 @@
 package com.lfgit.activities;
 import android.app.ProgressDialog;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -9,8 +8,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import com.lfgit.BuildConfig;
 
 import org.jetbrains.annotations.NotNull;
 

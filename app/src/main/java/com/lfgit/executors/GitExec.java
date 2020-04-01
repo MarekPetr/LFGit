@@ -5,6 +5,8 @@ import com.lfgit.database.model.Repo;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import static com.lfgit.utilites.Constants.FILES_DIR;
+import static com.lfgit.utilites.Constants.HOOKS_DIR;
 import static com.lfgit.utilites.Logger.LogMsg;
 
 public class GitExec {
@@ -17,7 +19,7 @@ public class GitExec {
         executor = new BinaryExecutor(callback);
     }
 
-    public void config(String email, String username) {
+    public void configCreds(String email, String username) {
         executor.run(gitPath, ".","config", "--global", "user.name", username);
         executor.run(gitPath, ".","config", "--global", "user.email", email);
     }
@@ -28,6 +30,10 @@ public class GitExec {
 
     public void setUsername(String username) {
         executor.run(gitPath, ".","config", "--global", "user.name", username);
+    }
+
+    public void configHooks() {
+        executor.run(gitPath, ".", "config", "--global", "core.hooksPath", HOOKS_DIR);
     }
 
     public void init(String localPath) {
