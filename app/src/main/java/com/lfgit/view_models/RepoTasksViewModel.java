@@ -1,7 +1,5 @@
 package com.lfgit.view_models;
 import android.app.Application;
-import android.telecom.Call;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -9,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.lfgit.database.model.Repo;
 import com.lfgit.fragments.dialogs.CheckoutDialog;
 import com.lfgit.fragments.dialogs.CommitDialog;
+import com.lfgit.fragments.dialogs.PatternDialog;
 import com.lfgit.fragments.dialogs.RemoteDialog;
 import com.lfgit.fragments.dialogs.CredentialsDialog;
 import com.lfgit.utilites.Constants;
@@ -24,7 +23,8 @@ public class RepoTasksViewModel extends ExecViewModel implements
         CredentialsDialog.CredentialsDialogListener,
         RemoteDialog.AddRemoteDialogListener,
         CommitDialog.CommitDialogListener,
-        CheckoutDialog.CheckoutDialogListener
+        CheckoutDialog.CheckoutDialogListener,
+        PatternDialog.PatternDialogListener
 {
 
     private Repo mRepo;
@@ -33,6 +33,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
     private SingleLiveEvent<Boolean> mPromptRemote = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptCommit = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptCheckout = new SingleLiveEvent<>();
+    private SingleLiveEvent<Boolean> mPromptPattern = new SingleLiveEvent<>();
     private String mTempRemoteURL;
 
     public RepoTasksViewModel(@NonNull Application application) {
@@ -53,10 +54,20 @@ public class RepoTasksViewModel extends ExecViewModel implements
             this::gitResetHard,
             this::gitAddRemote,
             this::gitSetRemote,
-            this::gitBranch,
+            this::gitListBranches,
             this::gitCheckoutLocal,
             this::gitCheckoutRemote,
-            () -> setPromptCheckout(true),
+            this::lfsInstall,
+            this::lfsTrackPattern,
+            this::lfsUntrackPattern,
+            this::lfsListPatterns,
+            this::lfsListFiles,
+            this::lfsStatus,
+            this::lfsEnv,
+            () -> {
+                mState.newState(FOR_USER, NONE);
+                setPromptCheckout(true);
+            },
     };
 
     public void execGitTask(int drawerPosition) {
@@ -108,9 +119,9 @@ public class RepoTasksViewModel extends ExecViewModel implements
         setPromptRemote(true);
     }
 
-    private void gitBranch() {
-        mState.newState(FOR_USER, BRANCH);
-        mGitExec.branch(getRepoPath());
+    private void gitListBranches() {
+        mState.newState(FOR_USER, LIST_BRANCHES);
+        mGitExec.listBranches(getRepoPath());
     }
 
     private void gitCheckoutLocal() {
@@ -122,6 +133,44 @@ public class RepoTasksViewModel extends ExecViewModel implements
         mState.newState(FOR_USER, CHECKOUT_REMOTE);
         setPromptCheckout(true);
     }
+
+    private void lfsInstall() {
+        mState.newState(FOR_USER, LFS_INSTALL);
+        mGitExec.lfsInstall(getRepoPath());
+    }
+
+    private void lfsTrackPattern() {
+        mState.newState(FOR_USER, LFS_TRACK);
+        setPromptPattern(true);
+    }
+
+    private void lfsUntrackPattern() {
+        mState.newState(FOR_USER, LFS_UNTRACK);
+        setPromptPattern(true);
+    }
+
+    private void lfsListPatterns() {
+        mState.newState(FOR_USER, LFS_LIST_PATTERNS);
+        mGitExec.lfsListPatterns(getRepoPath());
+    }
+
+    private void lfsListFiles() {
+        mState.newState(FOR_USER, LFS_LIST_FILES);
+        mGitExec.lfsListFiles(getRepoPath());
+    }
+
+    private void lfsStatus() {
+        mState.newState(FOR_USER, LFS_STATUS);
+        mGitExec.lfsStatus(getRepoPath());
+    }
+
+    private void lfsEnv() {
+        mState.newState(FOR_USER, LFS_ENV);
+        mGitExec.lfsEnv(getRepoPath());
+    }
+
+
+    /*********************************************************************/
 
     private void getRemoteGit() {
         mState.setInnerState(GET_REMOTE_GIT);
@@ -220,18 +269,38 @@ public class RepoTasksViewModel extends ExecViewModel implements
         mState.newState(FOR_USER, NONE);
     }
 
+    @Override
+    public void handlePattern(String pattern) {
+        if (!StringUtils.isBlank(pattern)) {
+            setPromptPattern(false);
+            mState.setInnerState(FOR_USER);
+            if (mState.getPendingTask() == LFS_TRACK) {
+                mGitExec.lfsTrackPattern(getRepoPath(), pattern);
+            } else {
+                mGitExec.lfsUntrackPattern(getRepoPath(), pattern);
+            }
+        } else {
+            setShowToast("Please enter pattern");
+        }
+    }
+
+    @Override
+    public void onCancelPatternDialog() {
+        startState();
+    }
+
     // background thread
     @Override
     public void onExecFinished(String result, int errCode) {
         if (mState.getInnerState() != FOR_USER) {
             processTaskResult(result, errCode);
         } else {
-            hidePendingOnRemoteUserTask(mState);
+            hidePendingIfNeeded(mState);
             if (result.isEmpty()) {
                 if (errCode == 0) {
-                    postTaskResult("Operation successful");
+                    postShowToast("Operation successful");
                 } else {
-                    postTaskResult("Operation failed");
+                    postShowToast("Operation failed");
                 }
             } else {
                 postTaskResult(result);
@@ -328,5 +397,11 @@ public class RepoTasksViewModel extends ExecViewModel implements
     }
     public void setPromptCheckout(Boolean prompt) {
         mPromptCheckout.setValue(prompt);
+    }
+    public SingleLiveEvent<Boolean> getPromptPattern() {
+        return mPromptPattern;
+    }
+    public void setPromptPattern(Boolean prompt) {
+        mPromptPattern.setValue(prompt);
     }
 }

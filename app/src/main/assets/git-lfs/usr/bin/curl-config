@@ -76,7 +76,7 @@ while test $# -gt 0; do
         ;;
 
     --cc)
-        echo "aarch64-linux-android-clang"
+        echo "arm-linux-androideabi-clang"
         ;;
 
     --prefix)
@@ -96,7 +96,7 @@ while test $# -gt 0; do
         ;;
 
     --version)
-        echo libcurl 7.68.0
+        echo libcurl 7.69.1
         exit 0
         ;;
 
@@ -108,11 +108,11 @@ while test $# -gt 0; do
         # dash as that's used for things like version 1.2.3-CVS
         cpatch=`echo $checkfor | cut -d. -f3 | cut -d- -f1`
 
-        vmajor=`echo 7.68.0 | cut -d. -f1`
-        vminor=`echo 7.68.0 | cut -d. -f2`
+        vmajor=`echo 7.69.1 | cut -d. -f1`
+        vminor=`echo 7.69.1 | cut -d. -f2`
         # when extracting the patch part we strip off everything after a
         # dash as that's used for things like version 1.2.3-CVS
-        vpatch=`echo 7.68.0 | cut -d. -f3 | cut -d- -f1`
+        vpatch=`echo 7.69.1 | cut -d. -f3 | cut -d- -f1`
 
         if test "$vmajor" -gt "$cmajor"; then
             exit 0;
@@ -128,12 +128,12 @@ while test $# -gt 0; do
             fi
         fi
 
-        echo "requested version $checkfor is newer than existing 7.68.0"
+        echo "requested version $checkfor is newer than existing 7.69.1"
         exit 1
         ;;
 
     --vernum)
-        echo 074400
+        echo 074501
         exit 0
         ;;
 
@@ -172,7 +172,7 @@ while test $# -gt 0; do
 
     --static-libs)
         if test "Xyes" != "Xno" ; then
-          echo /data/data/com.lfgit/files/usr/lib/libcurl.a -L/data/data/com.lfgit/files/usr/lib -Wl,-rpath=/data/data/com.lfgit/files/usr/lib,--enable-new-dtags -Wl,--as-needed -Wl,-z,relro,-z,now -L/data/data/com.lfgit/files/usr/lib -L/data/data/com.lfgit/files/usr/lib -lnghttp2 -lssl -lcrypto -lz
+          echo /data/data/com.lfgit/files/usr/lib/libcurl.a -L/data/data/com.lfgit/files/usr/lib -Wl,-rpath=/data/data/com.lfgit/files/usr/lib -march=armv7-a -Wl,--enable-new-dtags -Wl,--as-needed -Wl,-z,relro,-z,now -L/data/data/com.lfgit/files/usr/lib -L/data/data/com.lfgit/files/usr/lib -lnghttp2 -lssl -lcrypto -lz
         else
           echo "curl was built with static libraries disabled" >&2
           exit 1
@@ -180,7 +180,7 @@ while test $# -gt 0; do
         ;;
 
     --configure)
-        echo " '--disable-dependency-tracking' '--prefix=/data/data/com.lfgit/files/usr' '--libdir=/data/data/com.lfgit/files/usr/lib' '--disable-rpath' '--disable-rpath-hack' '--host=aarch64-linux-android' '--enable-ntlm-wb=/data/data/com.lfgit/files/usr/bin/ntlm_auth' '--with-ca-bundle=/data/data/com.lfgit/files/usr/etc/tls/cert.pem' '--with-ca-path=/data/data/com.lfgit/files/usr/etc/tls/certs' '--with-nghttp2' '--without-libidn' '--without-libidn2' '--without-librtmp' '--without-brotli' '--with-ssl' '--disable-nls' '--enable-shared' '--enable-static' '--libexecdir=/data/data/com.lfgit/files/usr/libexec' 'host_alias=aarch64-linux-android' 'CC=aarch64-linux-android-clang' 'CFLAGS= -fstack-protector-strong -Oz' 'LDFLAGS=-L/data/data/com.lfgit/files/usr/lib -Wl,-rpath=/data/data/com.lfgit/files/usr/lib,--enable-new-dtags -Wl,--as-needed -Wl,-z,relro,-z,now' 'CPPFLAGS=-I/data/data/com.lfgit/files/usr/include' 'CPP=aarch64-linux-android-cpp'"
+        echo " '--disable-dependency-tracking' '--prefix=/data/data/com.lfgit/files/usr' '--libdir=/data/data/com.lfgit/files/usr/lib' '--disable-rpath' '--disable-rpath-hack' '--host=arm-linux-androideabi' '--enable-ntlm-wb=/data/data/com.lfgit/files/usr/bin/ntlm_auth' '--with-ca-bundle=/data/data/com.lfgit/files/usr/etc/tls/cert.pem' '--with-ca-path=/data/data/com.lfgit/files/usr/etc/tls/certs' '--with-nghttp2' '--without-libidn' '--without-libidn2' '--without-librtmp' '--without-brotli' '--with-ssl' '--disable-nls' '--enable-shared' '--enable-static' '--libexecdir=/data/data/com.lfgit/files/usr/libexec' 'host_alias=arm-linux-androideabi' 'CC=arm-linux-androideabi-clang' 'CFLAGS= -march=armv7-a -mfpu=neon -mfloat-abi=softfp -mthumb -fstack-protector-strong -Oz' 'LDFLAGS=-L/data/data/com.lfgit/files/usr/lib -Wl,-rpath=/data/data/com.lfgit/files/usr/lib -march=armv7-a -Wl,--enable-new-dtags -Wl,--as-needed -Wl,-z,relro,-z,now' 'CPPFLAGS=-I/data/data/com.lfgit/files/usr/include' 'CPP=arm-linux-androideabi-cpp'"
         ;;
 
     *)

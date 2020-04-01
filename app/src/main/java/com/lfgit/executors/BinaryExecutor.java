@@ -46,7 +46,7 @@ class BinaryExecutor {
         pb.redirectErrorStream(true); // redirect error stream to input stream
         pb.directory(new File(destDir));
         Map<String, String> env = pb.environment();
-        env.put("LD_LIBRARY_PATH", LIB_DIR);
+        env.put("LD_LIBRARY_PATH", LIB_DIR + ":" + BIN_DIR);
         env.put("PATH", BIN_DIR);
         env.put("HOME", FILES_DIR);
         env.put("XDG_CONFIG_HOME",FILES_DIR);

@@ -1,0 +1,8 @@
+prefix=/data/data/com.lfgit/files/usr
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: fontsproto
+Description: fontsproto headers
+Version: 2.1.3
+Cflags: -I${includedir}

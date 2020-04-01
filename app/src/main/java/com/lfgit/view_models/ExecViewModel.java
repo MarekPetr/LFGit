@@ -6,14 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.lfgit.database.RepoRepository;
-import com.lfgit.database.model.Repo;
 import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
 import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.TaskState;
 import com.lfgit.view_models.Events.SingleLiveEvent;
-
-import java.util.List;
 
 import static com.lfgit.utilites.Constants.InnerState.*;
 import static com.lfgit.utilites.Constants.Task.*;
@@ -23,8 +20,8 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     RepoRepository mRepository;
 
     TaskState mState = new TaskState(FOR_APP, NONE);
-    SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
-    SingleLiveEvent<Boolean> mExecPending = new SingleLiveEvent<>();
+    private SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
+    private SingleLiveEvent<Boolean> mExecPending = new SingleLiveEvent<>();
 
     ExecViewModel(@NonNull Application application) {
         super(application);
@@ -35,13 +32,13 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     // background thread
     @Override
     public void onExecStarted() {
-        showPendingOnRemoteUserTask(mState);
+        showPendingIfNeeded(mState);
     }
 
     // background thread
     @Override
     public void onExecFinished(String result, int errCode) {
-        hidePendingOnRemoteUserTask(mState);
+        hidePendingIfNeeded(mState);
     }
 
     // background thread
@@ -65,29 +62,29 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     }
 
     // background thread
-    Boolean isRemoteTask(Constants.Task task) {
-        return task == CLONE || task == PUSH || task == PULL ||
-                task == CHECKOUT_LOCAL;
+    Boolean isLongTask(Constants.Task task) {
+        return task == PUSH || task == PULL || task == CLONE ||
+                task == CHECKOUT_REMOTE || task == CHECKOUT_LOCAL;
     }
     
     // background thread
-    Boolean remoteTaskFinished(TaskState state) {
+    Boolean longTaskFinished(TaskState state) {
         Constants.Task currentTask = state.getPendingTask();
-        if (isRemoteTask(currentTask)) {
+        if (isLongTask(currentTask)) {
             return state.getInnerState() == FOR_USER;
         }
         return false;
     }
     
     // background thread
-    void showPendingOnRemoteUserTask(TaskState state) {
-        if (remoteTaskFinished(state)) postShowPending();
+    void showPendingIfNeeded(TaskState state) {
+        if (longTaskFinished(state)) postShowPending();
     }
 
     // background thread
     // hides pending when task state is FINISH
-    void hidePendingOnRemoteUserTask(TaskState state) {
-        if (remoteTaskFinished(state)) postHidePending();
+    void hidePendingIfNeeded(TaskState state) {
+        if (longTaskFinished(state)) postHidePending();
     }
 
     public SingleLiveEvent<Boolean> getExecPending() {

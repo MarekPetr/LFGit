@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/smallSpace"
+            android:text="@string/pattern_title"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toTopOf="parent">
+        </TextView>
+
+        <EditText
+            android:id="@+id/patternEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:autofillHints="Directory"
+            android:hint="@string/pattern_hint"
+            android:inputType="text"
+            bind:layout_constraintStart_toStartOf="@+id/titleTextView"
+            bind:layout_constraintTop_toBottomOf="@+id/titleTextView"
+            bind:layout_constraintEnd_toEndOf="parent">
+        </EditText>
+        <Button
+            android:id="@+id/enterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/smallSpace"
+            android:text="@string/enter_button"
+            bind:layout_constraintStart_toStartOf="@+id/patternEditText"
+            bind:layout_constraintTop_toBottomOf="@+id/patternEditText">
+        </Button>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

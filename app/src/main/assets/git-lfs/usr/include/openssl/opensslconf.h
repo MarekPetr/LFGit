@@ -42,6 +42,9 @@ extern "C" {
 #ifndef OPENSSL_RAND_SEED_OS
 # define OPENSSL_RAND_SEED_OS
 #endif
+#ifndef OPENSSL_NO_AFALGENG
+# define OPENSSL_NO_AFALGENG
+#endif
 #ifndef OPENSSL_NO_ASAN
 # define OPENSSL_NO_ASAN
 #endif
@@ -53,6 +56,9 @@ extern "C" {
 #endif
 #ifndef OPENSSL_NO_DEVCRYPTOENG
 # define OPENSSL_NO_DEVCRYPTOENG
+#endif
+#ifndef OPENSSL_NO_DSO
+# define OPENSSL_NO_DSO
 #endif
 #ifndef OPENSSL_NO_EC_NISTP_64_GCC_128
 # define OPENSSL_NO_EC_NISTP_64_GCC_128
@@ -102,11 +108,8 @@ extern "C" {
 #ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
 # define OPENSSL_NO_WEAK_SSL_CIPHERS
 #endif
-#ifndef OPENSSL_NO_STATIC_ENGINE
-# define OPENSSL_NO_STATIC_ENGINE
-#endif
-#ifndef OPENSSL_NO_AFALGENG
-# define OPENSSL_NO_AFALGENG
+#ifndef OPENSSL_NO_DYNAMIC_ENGINE
+# define OPENSSL_NO_DYNAMIC_ENGINE
 #endif
 
 
@@ -193,11 +196,11 @@ extern "C" {
  * The following are cipher-specific, but are part of the public API.
  */
 #if !defined(OPENSSL_SYS_UEFI)
-# undef BN_LLONG
+# define BN_LLONG
 /* Only one for the following should be defined */
-# define SIXTY_FOUR_BIT_LONG
+# undef SIXTY_FOUR_BIT_LONG
 # undef SIXTY_FOUR_BIT
-# undef THIRTY_TWO_BIT
+# define THIRTY_TWO_BIT
 #endif
 
 #define RC4_INT unsigned char

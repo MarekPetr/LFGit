@@ -14,21 +14,21 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.lfgit.BuildConfig;
 import com.lfgit.R;
 import com.lfgit.adapters.RepoListAdapter;
 import com.lfgit.databinding.ActivityRepoListBinding;
 import com.lfgit.fragments.InstallFragment;
-import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.UriHelper;
-import com.lfgit.view_models.AddRepoViewModel;
 import com.lfgit.view_models.RepoListViewModel;
 
 public class RepoListActivity extends BasicAbstractActivity implements InstallFragment.FragmentCallback {
     private ActivityRepoListBinding mBinding;
     private RepoListViewModel mRepoListViewModel;
     private RepoListAdapter mRepoListAdapter;
+    private SwipeRefreshLayout pullToRefresh;
     private InstallPreference mInstallPref = new InstallPreference();
     FragmentManager mManager = getSupportFragmentManager();
     private String mInstallTag = "install";
@@ -60,7 +60,16 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
 
         mRepoListViewModel.getAllRepos().observe(this, repoList -> {
             mRepoListAdapter.setRepos(repoList);
-            mRepoListViewModel.setAllRepos(repoList);
+            mRepoListViewModel.setRepos(repoList);
+        });
+
+        pullToRefresh = findViewById(R.id.repoListLayout);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mRepoListAdapter.refreshRepos();
+                pullToRefresh.setRefreshing(false);
+            }
         });
     }
 
@@ -94,6 +103,9 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
             case R.id.menu_add_repo:
                 intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
                 startActivityForResult(intent, ADD_REPO_REQUEST_CODE);
+                break;
+            case R.id.menu_refresh:
+                mRepoListAdapter.refreshRepos();
                 break;
             default:
                 return super.onOptionsItemSelected(item);

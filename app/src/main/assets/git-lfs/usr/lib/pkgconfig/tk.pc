@@ -1,0 +1,15 @@
+# tk pkg-config source file
+
+prefix=/data/data/com.lfgit/files/usr
+exec_prefix=/data/data/com.lfgit/files/usr
+libdir=/data/data/com.lfgit/files/usr/lib
+includedir=${prefix}/include
+
+Name: The Tk Toolkit
+Description: Tk is a cross-platform graphical user interface toolkit, the standard GUI not only for Tcl, but for many other dynamic languages as well.
+URL: https://www.tcl-lang.org/
+Version: 8.6.10
+Requires: tcl >= 8.6
+Libs: -L${libdir} -ltk8.6 -ltkstub8.6
+Libs.private: -L/data/data/com.lfgit/files/usr/lib -lXft -lfontconfig -lfreetype -lfontconfig -lX11 -lXss -lXext
+Cflags: -I${includedir}

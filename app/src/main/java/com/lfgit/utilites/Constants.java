@@ -12,6 +12,7 @@ public class Constants {
     public static final String BIN_DIR = USR_DIR + "/bin";
     public static final String REPOS_DIR = APP_DIR + "/repos";
     public static final String GIT_CORE_DIR = FILES_DIR + "/libexec/git-core";
+    public static final String HOOKS_DIR = FILES_DIR + "/hooks";
     public static String EXT_STORAGE = Environment.getExternalStorageDirectory().toString() + "/";
 
     public enum AddRepo {
@@ -36,9 +37,16 @@ public class Constants {
         RESET_HARD,
         ADD_REMOTE,
         SET_REMOTE,
-        BRANCH,
+        LIST_BRANCHES,
         CHECKOUT_LOCAL,
         CHECKOUT_REMOTE,
+        LFS_INSTALL,
+        LFS_TRACK,
+        LFS_UNTRACK,
+        LFS_LIST_PATTERNS,
+        LFS_LIST_FILES,
+        LFS_STATUS,
+        LFS_ENV,
         CONFIG,
         NONE,
     }

@@ -1,0 +1,11 @@
+prefix=/data/data/com.lfgit/files/usr
+exec_prefix=${prefix}
+libdir=/data/data/com.lfgit/files/usr/lib
+includedir=${prefix}/include
+
+Name: uuid
+Description: Universally unique id library
+Version: 1.0.3
+Requires:
+Cflags: -I${includedir}/uuid
+Libs: -L${libdir} -luuid
