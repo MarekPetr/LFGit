@@ -1,11 +1,12 @@
 package com.lfgit.executors;
 
 import com.lfgit.database.model.Repo;
-import com.lfgit.utilites.TaskState;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import static com.lfgit.utilites.Constants.FILES_DIR;
+import static com.lfgit.utilites.Constants.HOOKS_DIR;
 import static com.lfgit.utilites.Logger.LogMsg;
 
 public class GitExec {
@@ -18,7 +19,7 @@ public class GitExec {
         executor = new BinaryExecutor(callback);
     }
 
-    public void config(String email, String username) {
+    public void configCreds(String email, String username) {
         executor.run(gitPath, ".","config", "--global", "user.name", username);
         executor.run(gitPath, ".","config", "--global", "user.email", email);
     }
@@ -29,6 +30,10 @@ public class GitExec {
 
     public void setUsername(String username) {
         executor.run(gitPath, ".","config", "--global", "user.name", username);
+    }
+
+    public void configHooks() {
+        executor.run(gitPath, ".", "config", "--global", "core.hooksPath", HOOKS_DIR);
     }
 
     public void init(String localPath) {
@@ -69,15 +74,14 @@ public class GitExec {
     }
 
     public void push(Repo repo) {
-        pushOrPull("push", repo);
+        ExecWithCredentials(gitPath, repo,"push");
     }
 
     public void pull(Repo repo) {
-        //pushOrPull("pull", repo);
         executor.run(gitPath, repo.getLocalPath(), "pull");
     }
 
-    private void pushOrPull(String gitOperation, Repo repo) {
+    private void ExecWithCredentials(String binary, Repo repo, String... gitOperation) {
         String username = repo.getUsername();
         String password = repo.getPassword();
         try {
@@ -85,7 +89,7 @@ public class GitExec {
             password = URLEncoder.encode(repo.getPassword(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             // try it without encoding
-            LogMsg("PushOrPull encoding failed");
+            LogMsg("Encoding failed");
         }
         String localPath = repo.getLocalPath();
         String remoteURL = repo.getRemoteURL();
@@ -95,7 +99,7 @@ public class GitExec {
         String scheme = parts[0]+"://";
         String domain = parts[1];
         String url = scheme + username + ":" + password + "@" + domain;
-        executor.run(gitPath, localPath, gitOperation, url);
+        executor.run(gitPath, localPath, gitOperation[0], url);
     }
 
     public void getRemoteURL(Repo repo) {
@@ -121,7 +125,40 @@ public class GitExec {
         executor.run(gitPath, localPath, "reset", "--hard");
     }
 
+    public void lfsPush(Repo repo) {
+        ExecWithCredentials("git", repo, "push", "--all");
+    }
+
+    public void lfsPull(Repo repo) {
+        executor.run(lfsPath, repo.getLocalPath(), "pull");
+    }
+
     public void lfsInstall(String localPath) {
         executor.run(lfsPath, localPath, "install");
     }
+
+    public void lfsTrackPattern(String localPath, String pattern) {
+        executor.run(lfsPath, localPath, "track", pattern);
+    }
+
+    public void lfsUntrackPattern(String localPath, String pattern) {
+        executor.run(lfsPath, localPath, "untrack", pattern);
+    }
+
+    public void lfsListPatterns(String localPath) {
+        executor.run(lfsPath, localPath, "track");
+    }
+
+    public void lfsListFiles(String localPath) {
+        executor.run(lfsPath, localPath, "ls-files");
+    }
+
+    public void lfsEnv(String localPath) {
+        executor.run(lfsPath, localPath, "env");
+    }
+
+    public void lfsStatus(String localPath) {
+        executor.run(lfsPath, localPath, "status");
+    }
+
 }

@@ -8,11 +8,7 @@ import androidx.lifecycle.LiveData;
 
 import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
-import com.lfgit.utilites.Constants;
 import com.lfgit.view_models.Events.SingleLiveEvent;
-
-import static com.lfgit.utilites.Constants.AddRepo.ALREADY_ADDED;
-import static com.lfgit.utilites.Constants.AddRepo.OK;
 
 public class RepoListViewModel extends AndroidViewModel {
     private RepoRepository mRepository;
@@ -27,7 +23,7 @@ public class RepoListViewModel extends AndroidViewModel {
         return mRepository.getAllRepos();
     }
 
-    public void setAllRepos(List<Repo> repoList) {
+    public void setRepos(List<Repo> repoList) {
         mAllRepos = repoList;
     }
 

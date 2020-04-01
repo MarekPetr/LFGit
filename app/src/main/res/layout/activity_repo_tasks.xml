@@ -13,8 +13,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="@dimen/smallMargin"
-            android:layout_marginVertical="@dimen/smallMargin">
+            android:layout_marginHorizontal="@dimen/smallSpace"
+            android:layout_marginVertical="@dimen/smallSpace">
 
             <TextView
                 android:id="@+id/resultTitle"
@@ -23,7 +23,7 @@
                 android:text="@string/task_result_title"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:layout_marginTop="@dimen/smallMargin"
+                android:layout_marginTop="@dimen/smallSpace"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
             </TextView>
@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0sp"
                 android:background="@drawable/border"
-                android:layout_marginBottom="@dimen/smallMargin"
+                android:layout_marginBottom="@dimen/smallSpace"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -43,9 +43,10 @@
                     android:id="@+id/taskResult"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginHorizontal="@dimen/smallMargin"
-                    android:layout_marginVertical="@dimen/smallMargin"
+                    android:layout_marginHorizontal="@dimen/smallSpace"
+                    android:layout_marginVertical="@dimen/smallSpace"
                     android:scrollbars="vertical"
+                    android:textIsSelectable="true"
                     android:text="@={RepoTasksViewModel.taskResult}">
                 </TextView>
             </LinearLayout>

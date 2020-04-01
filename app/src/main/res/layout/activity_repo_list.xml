@@ -5,7 +5,7 @@
             name="repoListViewModel"
             type="com.lfgit.view_models.RepoListViewModel"/>
     </data>
-    <LinearLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/repoListLayout"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -17,8 +17,7 @@
             android:id="@+id/repoList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/smallMargin"
             />
-    </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>
 
