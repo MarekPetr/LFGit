@@ -82,7 +82,9 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
         super.onDetach();
     }
     private void showProgressDialog() {
-        mProgressDialog = ProgressDialog.show(getActivity(), "Installing", "Please wait a moment!");
+        String title = mContext.getResources().getString(R.string.install_progress_title);
+        String msg = mContext.getResources().getString(R.string.install_progress_msg);
+        mProgressDialog = ProgressDialog.show(getActivity(), title, msg);
     }
 
     public void setCallback(FragmentCallback callback) {
