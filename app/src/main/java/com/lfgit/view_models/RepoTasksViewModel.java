@@ -66,7 +66,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
             this::lfsEnv,
             () -> {
                 mState.newState(FOR_USER, NONE);
-                setPromptCheckout(true);
+                setPromptCredentials(true);
             },
     };
 
@@ -274,9 +274,10 @@ public class RepoTasksViewModel extends ExecViewModel implements
         if (!StringUtils.isBlank(pattern)) {
             setPromptPattern(false);
             mState.setInnerState(FOR_USER);
-            if (mState.getPendingTask() == LFS_TRACK) {
+            Constants.Task pending = mState.getPendingTask();
+            if (pending == LFS_TRACK) {
                 mGitExec.lfsTrackPattern(getRepoPath(), pattern);
-            } else {
+            } else if (pending == LFS_UNTRACK) {
                 mGitExec.lfsUntrackPattern(getRepoPath(), pattern);
             }
         } else {
@@ -324,7 +325,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
                 mRepo.setRemoteURL(resultLines[0]);
                 mRepository.updateRemoteURL(mRepo);
                 if (mState.getPendingTask() == PULL) {
-                    mState.newState(FOR_USER, NONE);
+                    mState.newState(FOR_USER, PULL);
                     mGitExec.pull(mRepo);
                 } else {
                     if (!credentialsSetDB()) {

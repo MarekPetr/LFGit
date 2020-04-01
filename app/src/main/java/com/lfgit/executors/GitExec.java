@@ -43,7 +43,7 @@ public class GitExec {
 
     public void commit(String localPath, String message) {
         String gitOperation = "commit";
-        executor.run(gitPath, localPath, gitOperation, "-m", "\"" + message + "\"");
+        executor.run(gitPath, localPath, gitOperation, "-m", message);
     }
 
     public void clone(String localPath, String remoteURL) {
