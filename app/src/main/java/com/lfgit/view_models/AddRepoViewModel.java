@@ -1,12 +1,16 @@
 package com.lfgit.view_models;
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import com.lfgit.database.model.Repo;
 import com.lfgit.utilites.TaskState;
 import com.lfgit.utilites.UriHelper;
 import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 import static com.lfgit.utilites.Constants.EXT_STORAGE;
 import static com.lfgit.utilites.Constants.Task.*;
@@ -18,6 +22,7 @@ public class AddRepoViewModel extends ExecViewModel {
     private String cloneRepoPath;
     private String cloneURLPath;
 
+    private List<Repo> mAllRepos;
     private SingleLiveEvent<String> mCloneResult = new SingleLiveEvent<>();
     private SingleLiveEvent<String> mInitResult = new SingleLiveEvent<>();
 
@@ -26,11 +31,31 @@ public class AddRepoViewModel extends ExecViewModel {
         super(application);
     }
 
+    public LiveData<List<Repo>> getAllRepos() {
+        return mRepository.getAllRepos();
+    }
+
+    public void setRepos(List<Repo> repoList) {
+        mAllRepos = repoList;
+    }
+
+    private Boolean repoExists(String path) {
+        for (Repo repo : mAllRepos) {
+            if (path.equals(repo.getLocalPath())) {
+                setShowToast("Repository already added");
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void cloneRepoHandler() {
         if (!StringUtils.isBlank(cloneRepoPath) && !StringUtils.isBlank(cloneURLPath) ) {
             if (!isInternalStorage(cloneRepoPath)) return;
-            mState = new TaskState(FOR_USER, CLONE);
-            mGitExec.clone(cloneRepoPath, cloneURLPath);
+            if (!repoExists(cloneRepoPath)) {
+                mState = new TaskState(FOR_USER, CLONE);
+                mGitExec.clone(cloneRepoPath, cloneURLPath);
+            }
         } else {
             setShowToast("Please enter remote URL and directory");
         }
@@ -39,8 +64,10 @@ public class AddRepoViewModel extends ExecViewModel {
     public void initRepoHandler() {
         if (!StringUtils.isBlank(initRepoPath)) {
             if (!isInternalStorage(initRepoPath)) return;
-            mState = new TaskState(FOR_USER, INIT);
-            mGitExec.init(initRepoPath);
+            if (!repoExists(initRepoPath)) {
+                mState = new TaskState(FOR_USER, INIT);
+                mGitExec.init(initRepoPath);
+            }
         } else {
             setShowToast("Please enter directory");
         }
