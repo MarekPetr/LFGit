@@ -12,7 +12,7 @@
     <string name="menu_refresh">Refresh</string>
 
     <!-- repo_list_item -->
-    <string name="unknown_remote">Pull to update remote</string>
+    <string name="unknown_remote">Push or Pull to update remote</string>
 
     <string name="repo_not_found">"Repository not found"</string>
 
