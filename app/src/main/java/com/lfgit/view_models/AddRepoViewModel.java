@@ -60,14 +60,14 @@ public class AddRepoViewModel extends ExecViewModel {
         hidePendingIfNeeded(mState);
 
         if (mState.getPendingTask() == CLONE) {
-            insertClonedRepo(errCode);
+            insertClonedRepo(result, errCode);
         } else if (mState.getPendingTask() == INIT) {
             insertInitRepo(errCode);
         }
     }
 
     // background thread
-    private void insertClonedRepo(int errCode) {
+    private void insertClonedRepo(String result, int errCode) {
         if (errCode == 0) {
             // clone to directory of clone URL
             String fullRepoPath = cloneRepoPath + "/" + UriHelper.getDirectory(cloneURLPath);
@@ -75,7 +75,7 @@ public class AddRepoViewModel extends ExecViewModel {
             mRepository.insertRepo(repo);
             mCloneResult.postValue("Clone successful");
         } else {
-            mCloneResult.postValue("Clone failed");
+            mCloneResult.postValue(result);
         }
     }
 

@@ -16,6 +16,12 @@ public class UriHelper {
         Uri uri = Uri.parse(path);
         // get directory from URI
         String lastPathSegment = uri.getLastPathSegment();
+        if (lastPathSegment != null) {
+            int index = lastPathSegment.lastIndexOf(".git");
+            if (index > 0) {
+                lastPathSegment = lastPathSegment.substring(0, index);
+            }
+        }
         return lastPathSegment;
     }
 
