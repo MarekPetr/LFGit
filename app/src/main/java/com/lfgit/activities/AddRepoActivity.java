@@ -16,6 +16,7 @@ import com.lfgit.view_models.AddRepoViewModel;
 
 public class AddRepoActivity extends BasicAbstractActivity {
     private ActivityInitRepoBinding mBinding;
+    private AddRepoViewModel mAddRepoViewModel;
     private static final int INIT_BROWSE_REQUEST_CODE = 1;
     private static final int CLONE_BROWSE_REQUEST_CODE = 2;
 
@@ -23,26 +24,30 @@ public class AddRepoActivity extends BasicAbstractActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_init_repo);
-        AddRepoViewModel addRepoViewModel = new ViewModelProvider(this).get(AddRepoViewModel.class);
-        mBinding.setAddRepoViewModel(addRepoViewModel);
+        mAddRepoViewModel= new ViewModelProvider(this).get(AddRepoViewModel.class);
+        mBinding.setAddRepoViewModel(mAddRepoViewModel);
         mBinding.setLifecycleOwner(this);
 
-        addRepoViewModel.getCloneResult().observe(this, cloneResult -> {
+        mAddRepoViewModel.getAllRepos().observe(this, repoList -> {
+            mAddRepoViewModel.setRepos(repoList);
+        });
+
+        mAddRepoViewModel.getCloneResult().observe(this, cloneResult -> {
             showToastMsg(cloneResult);
             finish();
         });
 
-        addRepoViewModel.getInitResult().observe(this, initResult -> {
+        mAddRepoViewModel.getInitResult().observe(this, initResult -> {
             showToastMsg(initResult);
             finish();
         });
 
-        addRepoViewModel.getExecPending().observe(this, isPending -> {
+        mAddRepoViewModel.getExecPending().observe(this, isPending -> {
             if (isPending) showProgressDialog();
             else hideProgressDialog();
         });
 
-        addRepoViewModel.getShowToast().observe(this, this::showToastMsg);
+        mAddRepoViewModel.getShowToast().observe(this, this::showToastMsg);
 
     }
 
