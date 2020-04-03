@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Constants.HOOKS_DIR;
 import static com.lfgit.utilites.Logger.LogMsg;
+import static java.lang.String.valueOf;
 
 public class GitExec {
 
@@ -49,6 +50,11 @@ public class GitExec {
     public void clone(String localPath, String remoteURL) {
         String gitOperation = "clone";
         executor.run(gitPath, localPath, gitOperation, remoteURL);
+    }
+
+    public void shallowClone(String localPath, String remoteURL, String depth) {
+        String gitOperation = "clone";
+        executor.run(gitPath, localPath, gitOperation, "--depth", depth, remoteURL);
     }
 
     public void status(String localPath) {
