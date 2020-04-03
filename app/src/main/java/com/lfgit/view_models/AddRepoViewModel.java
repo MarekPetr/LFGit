@@ -24,15 +24,25 @@ public class AddRepoViewModel extends ExecViewModel {
     private String cloneRepoPath;
     private String cloneURLPath;
 
-    private List<Repo> mAllRepos;
-    private Boolean mIsShallowClone = false;
+    public MutableLiveData<Boolean> getIsShallowClone() {
+        return isShallowClone;
+    }
+
+    public void setIsShallowClone(MutableLiveData<Boolean> value) {
+        isShallowClone = value;
+    }
+
+    private MutableLiveData<Boolean> isShallowClone = new MutableLiveData<>();
     private String depth;
+
+    private List<Repo> mAllRepos;
     private SingleLiveEvent<String> mCloneResult = new SingleLiveEvent<>();
     private SingleLiveEvent<String> mInitResult = new SingleLiveEvent<>();
 
 
     public AddRepoViewModel(Application application) {
         super(application);
+        isShallowClone.setValue(false);
     }
 
     public LiveData<List<Repo>> getAllRepos() {
@@ -44,9 +54,7 @@ public class AddRepoViewModel extends ExecViewModel {
     }
 
     private Boolean repoExists(String path) {
-        String repoPaths = "";
         for (Repo repo : mAllRepos) {
-
             if (path.equals(repo.getLocalPath())) {
                 setShowToast("Repository already added");
                 return true;
@@ -68,7 +76,8 @@ public class AddRepoViewModel extends ExecViewModel {
         if (!isInternalStorage(fullRepoPath)) return;
         if (repoExists(fullRepoPath)) return;
 
-        if (mIsShallowClone) {
+        Boolean isShallow = isShallowClone.getValue();
+        if (isShallow != null && isShallow) {
             String depth = getDepth();
             if (StringUtils.isBlank(depth)) {
                 setShowToast("Please enter depth");
@@ -166,13 +175,6 @@ public class AddRepoViewModel extends ExecViewModel {
         this.cloneURLPath = cloneURLPath;
     }
 
-    public void setIsShallowClone(Boolean value) {
-        mIsShallowClone = value;
-    }
-
-    public Boolean getIsShallowClone() {
-        return mIsShallowClone;
-    }
 
     public void setDepth(String value) {
         depth = value;
