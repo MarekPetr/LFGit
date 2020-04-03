@@ -119,6 +119,7 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
                 removeRepoDB(repo);
             }
         }
+
         clear();
         addAll(validRepos);
         notifyDataSetChanged();
