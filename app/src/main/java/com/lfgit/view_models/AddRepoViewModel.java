@@ -44,7 +44,9 @@ public class AddRepoViewModel extends ExecViewModel {
     }
 
     private Boolean repoExists(String path) {
+        String repoPaths = "";
         for (Repo repo : mAllRepos) {
+
             if (path.equals(repo.getLocalPath())) {
                 setShowToast("Repository already added");
                 return true;
@@ -62,12 +64,13 @@ public class AddRepoViewModel extends ExecViewModel {
             setShowToast("Enter http/https Remote URL");
             return;
         }
-        if (!isInternalStorage(cloneRepoPath)) return;
-        if (repoExists(cloneRepoPath)) return;
+        String fullRepoPath = getFullCloneRepoPath();
+        if (!isInternalStorage(fullRepoPath)) return;
+        if (repoExists(fullRepoPath)) return;
 
         if (mIsShallowClone) {
             String depth = getDepth();
-            if (depth == null) {
+            if (StringUtils.isBlank(depth)) {
                 setShowToast("Please enter depth");
                 return;
             }
@@ -115,7 +118,7 @@ public class AddRepoViewModel extends ExecViewModel {
     private void insertClonedRepo(String result, int errCode) {
         if (errCode == 0) {
             // clone to directory of clone URL
-            String fullRepoPath = cloneRepoPath + "/" + UriHelper.getDirectory(cloneURLPath);
+            String fullRepoPath = getFullCloneRepoPath();
             Repo repo = new Repo(fullRepoPath, cloneURLPath);
             mRepository.insertRepo(repo);
             mCloneResult.postValue("Clone successful");
@@ -152,6 +155,10 @@ public class AddRepoViewModel extends ExecViewModel {
     public void setCloneRepoPath(String cloneRepoPath) {
         this.cloneRepoPath = cloneRepoPath;
     }
+
+    private String getFullCloneRepoPath() {
+        return (cloneRepoPath + "/" + UriHelper.getDirectory(cloneURLPath));
+    }
     public String getCloneURLPath() {
         return cloneURLPath;
     }
@@ -174,5 +181,4 @@ public class AddRepoViewModel extends ExecViewModel {
     public String getDepth() {
         return depth;
     }
-
 }
