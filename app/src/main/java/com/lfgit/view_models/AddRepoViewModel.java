@@ -85,11 +85,10 @@ public class AddRepoViewModel extends ExecViewModel {
     @Override
     public void onExecFinished(String result, int errCode) {
         hidePendingIfNeeded(mState);
-
         if (mState.getPendingTask() == CLONE) {
             insertClonedRepo(result, errCode);
         } else if (mState.getPendingTask() == INIT) {
-            insertInitRepo(errCode);
+            insertInitRepo(result, errCode);
         }
     }
 
@@ -102,17 +101,17 @@ public class AddRepoViewModel extends ExecViewModel {
             mRepository.insertRepo(repo);
             mCloneResult.postValue("Clone successful");
         } else {
-            mCloneResult.postValue(result);
+            postShowToast(result);
         }
     }
 
     // background thread
-    private void insertInitRepo(int errCode) {
+    private void insertInitRepo(String result, int errCode) {
         if (errCode == 0) {
             mRepository.insertRepo(new Repo(initRepoPath));
-            mInitResult.postValue("New repo " + initRepoPath + " initialized");
+            mInitResult.postValue("Repository initialized");
         } else {
-            mInitResult.postValue("Init failed");
+            postShowToast(result);
         }
     }
 

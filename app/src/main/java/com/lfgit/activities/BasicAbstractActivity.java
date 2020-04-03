@@ -46,7 +46,7 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(BasicAbstractActivity.this, msg, Toast.LENGTH_LONG).show();
+                Toast.makeText(BasicAbstractActivity.this, msg, Toast.LENGTH_SHORT).show();
             }
         });
     }
