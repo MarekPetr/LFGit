@@ -27,6 +27,7 @@ public class Constants {
 
     public enum Task {
         CLONE,
+        SHALLOW_CLONE,
         INIT,
         COMMIT,
         ADD,

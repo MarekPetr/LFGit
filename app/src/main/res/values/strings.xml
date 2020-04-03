@@ -23,12 +23,14 @@
     <string name="path_text_edit">Directory in internal storage</string>
     <string name="init_text">Initialize repository</string>
     <string name="clone_text">Clone repository</string>
-    <string name="remote_url">Remote URL</string>
+    <string name="remote_url">Remote http/https URL</string>
     <string name="init_directory">Directory</string>
     <string name="init_button">Initialize</string>
     <string name="clone_button">Clone</string>
     <string name="set_path_button">Set path</string>
     <string name="browse_button">Browse</string>
+    <string name="shallow_clone">Shallow clone</string>
+    <string name="depth">Depth</string>
 
     <string name="internal_storage_only">Only internal storage is supported</string>
     <string name="enter_internal_storage">Please enter internal storage directory</string>

@@ -2,8 +2,10 @@ package com.lfgit.view_models;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.model.Repo;
+import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.TaskState;
 import com.lfgit.utilites.UriHelper;
 import com.lfgit.view_models.Events.SingleLiveEvent;
@@ -23,6 +25,8 @@ public class AddRepoViewModel extends ExecViewModel {
     private String cloneURLPath;
 
     private List<Repo> mAllRepos;
+    private Boolean mIsShallowClone = false;
+    private String depth;
     private SingleLiveEvent<String> mCloneResult = new SingleLiveEvent<>();
     private SingleLiveEvent<String> mInitResult = new SingleLiveEvent<>();
 
@@ -50,27 +54,41 @@ public class AddRepoViewModel extends ExecViewModel {
     }
 
     public void cloneRepoHandler() {
-        if (!StringUtils.isBlank(cloneRepoPath) && !StringUtils.isBlank(cloneURLPath) ) {
-            if (!isInternalStorage(cloneRepoPath)) return;
-            if (!repoExists(cloneRepoPath)) {
-                mState = new TaskState(FOR_USER, CLONE);
-                mGitExec.clone(cloneRepoPath, cloneURLPath);
-            }
-        } else {
+        if (StringUtils.isBlank(cloneRepoPath) || StringUtils.isBlank(cloneURLPath)) {
             setShowToast("Please enter remote URL and directory");
+            return;
+        }
+        if (!cloneURLPath.startsWith("https://") && !cloneURLPath.startsWith("http://")) {
+            setShowToast("Enter http/https Remote URL");
+            return;
+        }
+        if (!isInternalStorage(cloneRepoPath)) return;
+        if (repoExists(cloneRepoPath)) return;
+
+        if (mIsShallowClone) {
+            String depth = getDepth();
+            if (depth == null) {
+                setShowToast("Please enter depth");
+                return;
+            }
+            mState = new TaskState(FOR_USER, SHALLOW_CLONE);
+            mGitExec.shallowClone(cloneRepoPath, cloneURLPath, depth);
+        } else {
+            mState = new TaskState(FOR_USER, CLONE);
+            mGitExec.clone(cloneRepoPath, cloneURLPath);
         }
     }
 
     public void initRepoHandler() {
-        if (!StringUtils.isBlank(initRepoPath)) {
-            if (!isInternalStorage(initRepoPath)) return;
-            if (!repoExists(initRepoPath)) {
-                mState = new TaskState(FOR_USER, INIT);
-                mGitExec.init(initRepoPath);
-            }
-        } else {
+        if (StringUtils.isBlank(initRepoPath)) {
             setShowToast("Please enter directory");
+            return;
         }
+        if (!isInternalStorage(initRepoPath)) return;
+        if (repoExists(initRepoPath)) return;
+
+        mState = new TaskState(FOR_USER, INIT);
+        mGitExec.init(initRepoPath);
     }
 
     private Boolean isInternalStorage(String path) {
@@ -85,9 +103,10 @@ public class AddRepoViewModel extends ExecViewModel {
     @Override
     public void onExecFinished(String result, int errCode) {
         hidePendingIfNeeded(mState);
-        if (mState.getPendingTask() == CLONE) {
+        Constants.Task pendingTask = mState.getPendingTask();
+        if (pendingTask == CLONE || pendingTask == SHALLOW_CLONE) {
             insertClonedRepo(result, errCode);
-        } else if (mState.getPendingTask() == INIT) {
+        } else if (pendingTask == INIT) {
             insertInitRepo(result, errCode);
         }
     }
@@ -139,4 +158,21 @@ public class AddRepoViewModel extends ExecViewModel {
     public void setCloneURLPath(String cloneURLPath) {
         this.cloneURLPath = cloneURLPath;
     }
+
+    public void setIsShallowClone(Boolean value) {
+        mIsShallowClone = value;
+    }
+
+    public Boolean getIsShallowClone() {
+        return mIsShallowClone;
+    }
+
+    public void setDepth(String value) {
+        depth = value;
+    }
+
+    public String getDepth() {
+        return depth;
+    }
+
 }
