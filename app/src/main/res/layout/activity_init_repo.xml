@@ -137,6 +137,7 @@
             android:inputType="number"
             android:digits="0123456789"
             android:text="@={addRepoViewModel.depth}"
+            android:visibility="@{addRepoViewModel.isShallowClone? View.VISIBLE : View.INVISIBLE}"
             bind:layout_constraintStart_toEndOf="@+id/shallowTextView"
             bind:layout_constraintTop_toBottomOf="@+id/cloneLocalPathEditText"/>
 
