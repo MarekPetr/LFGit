@@ -24,14 +24,6 @@ public class AddRepoViewModel extends ExecViewModel {
     private String cloneRepoPath;
     private String cloneURLPath;
 
-    public MutableLiveData<Boolean> getIsShallowClone() {
-        return isShallowClone;
-    }
-
-    public void setIsShallowClone(MutableLiveData<Boolean> value) {
-        isShallowClone = value;
-    }
-
     private MutableLiveData<Boolean> isShallowClone = new MutableLiveData<>();
     private String depth;
 
@@ -164,7 +156,6 @@ public class AddRepoViewModel extends ExecViewModel {
     public void setCloneRepoPath(String cloneRepoPath) {
         this.cloneRepoPath = cloneRepoPath;
     }
-
     private String getFullCloneRepoPath() {
         return (cloneRepoPath + "/" + UriHelper.getDirectory(cloneURLPath));
     }
@@ -174,12 +165,15 @@ public class AddRepoViewModel extends ExecViewModel {
     public void setCloneURLPath(String cloneURLPath) {
         this.cloneURLPath = cloneURLPath;
     }
-
-
+    public MutableLiveData<Boolean> getIsShallowClone() {
+        return isShallowClone;
+    }
+    public void setIsShallowClone(MutableLiveData<Boolean> value) {
+        isShallowClone = value;
+    }
     public void setDepth(String value) {
         depth = value;
     }
-
     public String getDepth() {
         return depth;
     }
