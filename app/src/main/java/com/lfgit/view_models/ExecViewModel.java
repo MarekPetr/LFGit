@@ -39,6 +39,12 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     @Override
     public void onExecFinished(String result, int errCode) {
         hidePendingIfNeeded(mState);
+        doAfterExec(result, errCode);
+    }
+
+    // background thread
+    // after Exec behavior
+    public void doAfterExec(String result, int errCode) {
     }
 
     // background thread
@@ -68,23 +74,20 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     }
     
     // background thread
-    Boolean longTaskFinished(TaskState state) {
+    Boolean longUserTaskFinished(TaskState state) {
         Constants.Task currentTask = state.getPendingTask();
-        if (isLongTask(currentTask)) {
-            return state.getInnerState() == FOR_USER;
-        }
-        return false;
+        return (state.getInnerState() == FOR_USER && isLongTask(currentTask));
     }
     
     // background thread
     void showPendingIfNeeded(TaskState state) {
-        if (longTaskFinished(state)) postShowPending();
+        if (longUserTaskFinished(state)) postShowPending();
     }
 
     // background thread
     // hides pending when task state is FINISH
     void hidePendingIfNeeded(TaskState state) {
-        if (longTaskFinished(state)) postHidePending();
+        if (longUserTaskFinished(state)) postHidePending();
     }
 
     public SingleLiveEvent<Boolean> getExecPending() {
