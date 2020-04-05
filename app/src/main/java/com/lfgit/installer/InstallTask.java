@@ -115,7 +115,6 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
         for (Pair<String, String> symlink : symlinks) {
             try {
                 Os.symlink(symlink.first, symlink.second);
-                LogMsg(symlink.second + "->" + symlink.first);
             } catch (ErrnoException e) {
                 e.printStackTrace();
             }
