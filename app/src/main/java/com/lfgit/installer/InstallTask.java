@@ -43,37 +43,17 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
     public void onExecFinished(String result, int errCode) {
     }
 
-    private enum Arch {
-        x86(0),
-        arm64_v8a(1);
-        int value;
-
-        Arch(int value) {
-            this.value = value;
-        }
-    }
-
-    private AssetManager assetManager;
     private AsyncTaskListener listener;
 
     public InstallTask(AssetManager assets, AsyncTaskListener listener)  {
-        this.assetManager = assets;
         this.listener = listener;
     }
 
     private Boolean installAssets(final Boolean copyAssets) {
-        Arch targetDev = Arch.arm64_v8a;//
-        String assetDir = "git-lfs";
-
-        /*if(copyAssets) {
-            if (assetsEmpty(assetDir)) {
-                LogMsg("empty");
-                return false;
-            }
-            copyFileOrDir(assetDir);
-        }*/
-
         final File PREFIX_FILE = new File(USR_DIR);
+        if (PREFIX_FILE.isDirectory()) {
+            return true;
+        }
 
         final String STAGING_PREFIX_PATH = USR_STAGING_DIR;
         final File STAGING_PREFIX_FILE = new File(STAGING_PREFIX_PATH);
@@ -82,7 +62,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
             try {
                 deleteFolder(STAGING_PREFIX_FILE);
             } catch (IOException e) {
-                // no error
+                e.printStackTrace();
             }
         }
 
@@ -94,18 +74,18 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
             ZipEntry zipEntry;
             while ((zipEntry = zipInput.getNextEntry()) != null) {
                 if (zipEntry.getName().equals("SYMLINKS.txt")) {
-                    /*BufferedReader symlinksReader = new BufferedReader(new InputStreamReader(zipInput));
+                    BufferedReader symlinksReader = new BufferedReader(new InputStreamReader(zipInput));
                     String line;
                     while ((line = symlinksReader.readLine()) != null) {
-                        String[] parts = line.split("←");
+                        String[] parts = line.split("→");
                         if (parts.length != 2)
                             throw new RuntimeException("Malformed symlink line: " + line);
-                        String oldPath = parts[0];
-                        String newPath = STAGING_PREFIX_PATH + "/" + parts[1];
+                        String oldPath = parts[1];
+                        String newPath = STAGING_PREFIX_PATH + "/" + parts[0];
                         symlinks.add(Pair.create(oldPath, newPath));
 
                         ensureDirectoryExists(new File(newPath).getParentFile());
-                    }*/
+                    }
                 } else {
                     String zipEntryName = zipEntry.getName();
                     File targetFile = new File(STAGING_PREFIX_PATH, zipEntryName);
@@ -127,14 +107,19 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
                 }
             }
         } catch (IOException | ErrnoException e) {
-            // nothing
+            e.printStackTrace();
         }
 
-        /*if (symlinks.isEmpty())
+        if (symlinks.isEmpty())
             throw new RuntimeException("No SYMLINKS.txt encountered");
         for (Pair<String, String> symlink : symlinks) {
-            Os.symlink(symlink.first, symlink.second);
-        }*/
+            try {
+                Os.symlink(symlink.first, symlink.second);
+                LogMsg(symlink.second + "->" + symlink.first);
+            } catch (ErrnoException e) {
+                e.printStackTrace();
+            }
+        }
 
         if (!STAGING_PREFIX_FILE.renameTo(PREFIX_FILE)) {
             throw new RuntimeException("Unable to rename staging folder");
@@ -146,12 +131,6 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
         }
         try {
             Os.symlink("/system/bin/sh", BIN_DIR+"/sh");
-            File git = new File(BIN_DIR+"/git");
-            git.delete();
-            File libz = new File(LIB_DIR+"/libz.so.1");
-            libz.delete();
-            Os.symlink("../libexec/git-core/git", BIN_DIR+"/git");
-            Os.symlink(LIB_DIR+"/libz.so.1.2.11", LIB_DIR+"/libz.so.1");
         } catch (ErrnoException e) {
             e.printStackTrace();
         }
@@ -189,74 +168,6 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
 
         if (!fileOrDirectory.delete()) {
             throw new RuntimeException("Unable to delete " + (fileOrDirectory.isDirectory() ? "directory " : "file ") + fileOrDirectory.getAbsolutePath());
-        }
-    }
-
-    private Boolean assetsEmpty(String path) {
-        String[] assets;
-        try {
-            assets = assetManager.list(path);
-            assert assets != null;
-            LogMsg(Arrays.toString(assets));
-            if (assets.length == 0)
-                return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private void copyFileOrDir(String path) {
-        String[] assets;
-        try {
-            assets = assetManager.list(path);
-            assert assets != null;
-
-            // copy only content of architecture directory
-            String noArchDir = (path.substring(path.indexOf("/")+1).trim());
-            if (noArchDir.equals(path)) noArchDir = "";
-
-
-            String pathNoArch = FILES_DIR + "/" + noArchDir;
-            if (assets.length == 0) {
-                copyFile(path, pathNoArch);
-            } else {
-                File dir = new File(pathNoArch);
-                if (!dir.exists())
-                    dir.mkdir();
-                for (String asset : assets) {
-                    copyFileOrDir(path + "/" + asset);
-                }
-            }
-        } catch (IOException ex) {
-            Log.e("tag", "I/O Exception", ex);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void copyFile(String filename, String pathNoArch) {
-
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            in = assetManager.open(filename);
-            File file = new File(pathNoArch);
-            out = new FileOutputStream(pathNoArch);
-
-            byte[] buffer = new byte[1024];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
-            }
-            in.close();
-            in = null;
-            out.flush();
-            out.close();
-            out = null;
-            Os.chmod(file.getAbsolutePath(), 0700);
-        } catch (Exception e) {
-            Log.e("tag", Objects.requireNonNull(e.getMessage()));
         }
     }
 
