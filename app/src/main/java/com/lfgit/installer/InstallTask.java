@@ -32,16 +32,6 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
     public void onExecFinished(String result, int errCode) {
     }
 
-    private enum Arch {
-        x86(0),
-        arm64_v8a(1);
-        int value;
-
-        Arch(int value) {
-            this.value = value;
-        }
-    }
-
     private AssetManager assetManager;
     private AsyncTaskListener listener;
 
@@ -51,12 +41,11 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
     }
 
     private Boolean installAssets(final Boolean copyAssets) {
-        Arch targetDev = Arch.arm64_v8a;//
         String assetDir = "git-lfs";
 
         if(copyAssets) {
             if (assetsEmpty(assetDir)) {
-                LogMsg("empty");
+                LogMsg("empty assets");
                 return false;
             }
             copyFileOrDir(assetDir);
