@@ -1,8 +1,0 @@
-prefix=/data/data/com.lfgit/files/usr
-libdir=${prefix}/lib
-includedir=${prefix}/include
-
-Name: videoproto
-Description: videoproto headers
-Version: 2.3.3
-Cflags: -I${includedir}
