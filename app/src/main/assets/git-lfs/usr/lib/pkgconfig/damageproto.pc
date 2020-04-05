@@ -1,8 +1,0 @@
-prefix=/data/data/com.lfgit/files/usr
-libdir=${prefix}/lib
-includedir=${prefix}/include
-
-Name: damageproto
-Description: damageproto headers
-Version: 1.2.1
-Cflags: -I${includedir}

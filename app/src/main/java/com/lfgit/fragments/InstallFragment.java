@@ -40,7 +40,7 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
             showProgressDialog();
         }
         if (isFirstRun) {
-            InstallTask installer  = new InstallTask(mContext.getAssets(),this);
+            InstallTask installer  = new InstallTask(this);
             installer.execute(true);
             isFirstRun = false;
         }

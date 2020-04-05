@@ -1,27 +1,27 @@
 package com.lfgit.installer;
-
-import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.system.ErrnoException;
 import android.system.Os;
-import android.util.Log;
+import android.util.Pair;
 
 import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Objects;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
-import static com.lfgit.utilites.Constants.APP_DIR;
 import static com.lfgit.utilites.Constants.BIN_DIR;
-import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Constants.HOOKS_DIR;
-import static com.lfgit.utilites.Logger.LogMsg;
+import static com.lfgit.utilites.Constants.USR_DIR;
+import static com.lfgit.utilites.Constants.USR_STAGING_DIR;
 
 public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements ExecListener {
     @Override
@@ -32,35 +32,89 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
     public void onExecFinished(String result, int errCode) {
     }
 
-    private enum Arch {
-        x86(0),
-        arm64_v8a(1);
-        int value;
-
-        Arch(int value) {
-            this.value = value;
-        }
-    }
-
-    private AssetManager assetManager;
     private AsyncTaskListener listener;
 
-    public InstallTask(AssetManager assets, AsyncTaskListener listener)  {
-        this.assetManager = assets;
+    public InstallTask(AsyncTaskListener listener)  {
         this.listener = listener;
     }
 
-    private Boolean installAssets(final Boolean copyAssets) {
-        Arch targetDev = Arch.arm64_v8a;//
-        String assetDir = "git-lfs";
 
-        if(copyAssets) {
-            if (assetsEmpty(assetDir)) {
-                LogMsg("empty");
-                return false;
-            }
-            copyFileOrDir(assetDir);
+    // source:https://github.com/termux/termux-app/blob/master/app/src/main/java/com/termux/app/TermuxInstaller.java
+    private Boolean installAssets() {
+        final File PREFIX_FILE = new File(USR_DIR);
+        if (PREFIX_FILE.isDirectory()) {
+            return true;
         }
+
+        final String STAGING_PREFIX_PATH = USR_STAGING_DIR;
+        final File STAGING_PREFIX_FILE = new File(STAGING_PREFIX_PATH);
+
+        if (STAGING_PREFIX_FILE.exists()) {
+            try {
+                deleteFolder(STAGING_PREFIX_FILE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        final byte[] buffer = new byte[8096];
+        final List<Pair<String, String>> symlinks = new ArrayList<>(50);
+
+        final byte[] zipBytes = loadZipBytes();
+        try (ZipInputStream zipInput = new ZipInputStream(new ByteArrayInputStream(zipBytes))) {
+            ZipEntry zipEntry;
+            while ((zipEntry = zipInput.getNextEntry()) != null) {
+                if (zipEntry.getName().equals("SYMLINKS.txt")) {
+                    BufferedReader symlinksReader = new BufferedReader(new InputStreamReader(zipInput));
+                    String line;
+                    while ((line = symlinksReader.readLine()) != null) {
+                        String[] parts = line.split("→");
+                        if (parts.length != 2)
+                            throw new RuntimeException("Malformed symlink line: " + line);
+                        String oldPath = parts[1];
+                        String newPath = STAGING_PREFIX_PATH + "/" + parts[0];
+                        symlinks.add(Pair.create(oldPath, newPath));
+
+                        ensureDirectoryExists(new File(newPath).getParentFile());
+                    }
+                } else {
+                    String zipEntryName = zipEntry.getName();
+                    File targetFile = new File(STAGING_PREFIX_PATH, zipEntryName);
+                    boolean isDirectory = zipEntry.isDirectory();
+
+                    ensureDirectoryExists(isDirectory ? targetFile : targetFile.getParentFile());
+
+                    if (!isDirectory) {
+                        try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
+                            int readBytes;
+                            while ((readBytes = zipInput.read(buffer)) != -1)
+                                outStream.write(buffer, 0, readBytes);
+                        }
+                        if (zipEntryName.startsWith("bin/") || zipEntryName.startsWith("libexec") || zipEntryName.startsWith("lib/apt/methods")) {
+                            //noinspection OctalInteger
+                            Os.chmod(targetFile.getAbsolutePath(), 0700);
+                        }
+                    }
+                }
+            }
+        } catch (IOException | ErrnoException e) {
+            e.printStackTrace();
+        }
+
+        if (symlinks.isEmpty())
+            throw new RuntimeException("No SYMLINKS.txt encountered");
+        for (Pair<String, String> symlink : symlinks) {
+            try {
+                Os.symlink(symlink.first, symlink.second);
+            } catch (ErrnoException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (!STAGING_PREFIX_FILE.renameTo(PREFIX_FILE)) {
+            throw new RuntimeException("Unable to rename staging folder");
+        }
+
         File dir = new File(HOOKS_DIR);
         if (!dir.exists()) {
             dir.mkdir();
@@ -76,77 +130,40 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
         return true;
     }
 
-    private Boolean assetsEmpty(String path) {
-        String[] assets;
-        try {
-            assets = assetManager.list(path);
-            assert assets != null;
-            LogMsg(Arrays.toString(assets));
-            if (assets.length == 0)
-                return true;
-        } catch (IOException e) {
-            e.printStackTrace();
+    private static void ensureDirectoryExists(File directory) {
+        if (!directory.isDirectory() && !directory.mkdirs()) {
+            throw new RuntimeException("Unable to create directory: " + directory.getAbsolutePath());
         }
-        return false;
     }
 
-    private void copyFileOrDir(String path) {
-        String[] assets;
-        try {
-            assets = assetManager.list(path);
-            assert assets != null;
+    private static byte[] loadZipBytes() {
+        // Only load the shared library when necessary to save memory usage.
+        System.loadLibrary("termux-bootstrap");
+        return getZip();
+    }
 
-            // copy only content of architecture directory
-            String noArchDir = (path.substring(path.indexOf("/")+1).trim());
-            if (noArchDir.equals(path)) noArchDir = "";
+    public static native byte[] getZip();
 
+    /** Delete a folder and all its content or throw. Don't follow symlinks. */
+    static void deleteFolder(File fileOrDirectory) throws IOException {
+        if (fileOrDirectory.getCanonicalPath().equals(fileOrDirectory.getAbsolutePath()) && fileOrDirectory.isDirectory()) {
+            File[] children = fileOrDirectory.listFiles();
 
-            String pathNoArch = FILES_DIR + "/" + noArchDir;
-            if (assets.length == 0) {
-                copyFile(path, pathNoArch);
-            } else {
-                File dir = new File(pathNoArch);
-                if (!dir.exists())
-                    dir.mkdir();
-                for (String asset : assets) {
-                    copyFileOrDir(path + "/" + asset);
+            if (children != null) {
+                for (File child : children) {
+                    deleteFolder(child);
                 }
             }
-        } catch (IOException ex) {
-            Log.e("tag", "I/O Exception", ex);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-    }
 
-    private void copyFile(String filename, String pathNoArch) {
-
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            in = assetManager.open(filename);
-            File file = new File(pathNoArch);
-            out = new FileOutputStream(pathNoArch);
-
-            byte[] buffer = new byte[1024];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
-            }
-            in.close();
-            in = null;
-            out.flush();
-            out.close();
-            out = null;
-            Os.chmod(file.getAbsolutePath(), 0700);
-        } catch (Exception e) {
-            Log.e("tag", Objects.requireNonNull(e.getMessage()));
+        if (!fileOrDirectory.delete()) {
+            throw new RuntimeException("Unable to delete " + (fileOrDirectory.isDirectory() ? "directory " : "file ") + fileOrDirectory.getAbsolutePath());
         }
     }
 
     @Override
     protected Boolean doInBackground(Boolean... params) {
-        return installAssets(params[0]);
+        return installAssets();
     }
 
     @Override

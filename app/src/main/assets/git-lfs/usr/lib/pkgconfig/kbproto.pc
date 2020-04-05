@@ -1,8 +1,0 @@
-prefix=/data/data/com.lfgit/files/usr
-libdir=${prefix}/lib
-includedir=${prefix}/include
-
-Name: kbproto
-Description: kbproto headers
-Version: 1.0.7
-Cflags: -I${includedir}
