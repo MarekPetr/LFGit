@@ -45,7 +45,7 @@ public class AddRepoViewModel extends ExecViewModel {
         mAllRepos = repoList;
     }
 
-    private Boolean repoExists(String path) {
+    private Boolean repoAlreadyAdded(String path) {
         for (Repo repo : mAllRepos) {
             if (path.equals(repo.getLocalPath())) {
                 setShowToast("Repository already added");
@@ -66,7 +66,7 @@ public class AddRepoViewModel extends ExecViewModel {
         }
         String fullRepoPath = getFullCloneRepoPath();
         if (!isInternalStorage(fullRepoPath)) return;
-        if (repoExists(fullRepoPath)) return;
+        if (repoAlreadyAdded(fullRepoPath)) return;
 
         Boolean isShallow = isShallowClone.getValue();
         if (isShallow != null && isShallow) {
@@ -89,7 +89,7 @@ public class AddRepoViewModel extends ExecViewModel {
             return;
         }
         if (!isInternalStorage(initRepoPath)) return;
-        if (repoExists(initRepoPath)) return;
+        if (repoAlreadyAdded(initRepoPath)) return;
 
         mState = new TaskState(FOR_USER, INIT);
         mGitExec.init(initRepoPath);
@@ -105,8 +105,7 @@ public class AddRepoViewModel extends ExecViewModel {
 
     // background thread
     @Override
-    public void onExecFinished(String result, int errCode) {
-        hidePendingIfNeeded(mState);
+    public void doAfterExec(String result, int errCode) {
         Constants.Task pendingTask = mState.getPendingTask();
         if (pendingTask == CLONE || pendingTask == SHALLOW_CLONE) {
             insertClonedRepo(result, errCode);

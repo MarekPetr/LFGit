@@ -292,11 +292,10 @@ public class RepoTasksViewModel extends ExecViewModel implements
 
     // background thread
     @Override
-    public void onExecFinished(String result, int errCode) {
+    public void doAfterExec(String result, int errCode) {
         if (mState.getInnerState() != FOR_USER) {
             processTaskResult(result, errCode);
         } else {
-            hidePendingIfNeeded(mState);
             if (result.isEmpty()) {
                 if (errCode == 0) {
                     postShowToast("Operation successful");
