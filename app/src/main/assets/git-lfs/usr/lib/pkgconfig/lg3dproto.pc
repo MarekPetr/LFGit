@@ -1,8 +1,0 @@
-prefix=/data/data/com.lfgit/files/usr
-libdir=${prefix}/lib
-includedir=${prefix}/include
-
-Name: lg3dproto
-Description: lg3dproto headers
-Version: 5.0
-Cflags: -I${includedir}

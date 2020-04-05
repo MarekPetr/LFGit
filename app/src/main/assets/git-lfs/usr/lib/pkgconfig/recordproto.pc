@@ -1,8 +1,0 @@
-prefix=/data/data/com.lfgit/files/usr
-libdir=${prefix}/lib
-includedir=${prefix}/include
-
-Name: recordproto
-Description: recordproto headers
-Version: 1.14.2
-Cflags: -I${includedir}
