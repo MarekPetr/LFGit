@@ -1,10 +1,7 @@
 package com.lfgit.installer;
-
-import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.system.ErrnoException;
 import android.system.Os;
-import android.util.Log;
 import android.util.Pair;
 
 import com.lfgit.executors.ExecListener;
@@ -15,24 +12,16 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static com.lfgit.utilites.Constants.APP_DIR;
 import static com.lfgit.utilites.Constants.BIN_DIR;
-import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Constants.HOOKS_DIR;
-import static com.lfgit.utilites.Constants.LIB_DIR;
 import static com.lfgit.utilites.Constants.USR_DIR;
 import static com.lfgit.utilites.Constants.USR_STAGING_DIR;
-import static com.lfgit.utilites.Logger.LogMsg;
 
 public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements ExecListener {
     @Override
@@ -45,11 +34,13 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
 
     private AsyncTaskListener listener;
 
-    public InstallTask(AssetManager assets, AsyncTaskListener listener)  {
+    public InstallTask(AsyncTaskListener listener)  {
         this.listener = listener;
     }
 
-    private Boolean installAssets(final Boolean copyAssets) {
+
+    // source:https://github.com/termux/termux-app/blob/master/app/src/main/java/com/termux/app/TermuxInstaller.java
+    private Boolean installAssets() {
         final File PREFIX_FILE = new File(USR_DIR);
         if (PREFIX_FILE.isDirectory()) {
             return true;
@@ -145,7 +136,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
         }
     }
 
-    public static byte[] loadZipBytes() {
+    private static byte[] loadZipBytes() {
         // Only load the shared library when necessary to save memory usage.
         System.loadLibrary("termux-bootstrap");
         return getZip();
@@ -172,7 +163,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
 
     @Override
     protected Boolean doInBackground(Boolean... params) {
-        return installAssets(params[0]);
+        return installAssets();
     }
 
     @Override
