@@ -1,0 +1,156 @@
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="addRepoViewModel"
+            type="com.lfgit.view_models.AddRepoViewModel"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/initTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:text="@string/init_text"
+            android:textSize="15sp"
+            bind:layout_constraintBottom_toTopOf="@+id/initPathEditText"
+            bind:layout_constraintStart_toStartOf="@+id/initPathEditText"
+            bind:layout_constraintTop_toTopOf="parent">
+        </TextView>
+
+        <EditText
+            android:id="@+id/initPathEditText"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10sp"
+            android:autofillHints="Directory"
+            android:hint="@string/init_directory"
+            android:inputType="text"
+            android:text="@={addRepoViewModel.initRepoPath}"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintEnd_toStartOf="@id/initBrowseButton"
+            bind:layout_constraintTop_toBottomOf="@+id/initTextView" />
+
+        <Button
+            android:id="@+id/initButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginStart"
+            android:onClick="@{() -> addRepoViewModel.initRepoHandler()}"
+            android:text="@string/init_button"
+            bind:layout_constraintStart_toStartOf="@+id/initPathEditText"
+            bind:layout_constraintTop_toBottomOf="@+id/initPathEditText" />
+
+        <Button
+            android:id="@+id/initBrowseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/marginStart"
+            android:onClick="initBrowseButtonHandler"
+            android:text="@string/browse_button"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintTop_toBottomOf="@+id/initTextView" />
+
+        <!-- CLONE -->
+        <TextView
+            android:id="@+id/cloneTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:text="@string/clone_text"
+            android:textSize="15sp"
+            bind:layout_constraintStart_toStartOf="@+id/remotePathEditText"
+            bind:layout_constraintTop_toBottomOf="@+id/initButton">
+        </TextView>
+
+        <EditText
+            android:id="@+id/remotePathEditText"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10sp"
+            android:autofillHints="remote URL"
+            android:hint="@string/remote_url"
+            android:inputType="text"
+            android:text="@={addRepoViewModel.cloneURLPath}"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toBottomOf="@+id/cloneTextView" />
+
+        <EditText
+            android:id="@+id/cloneLocalPathEditText"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10sp"
+            android:autofillHints="Directory"
+            android:hint="@string/init_directory"
+            android:inputType="text"
+            android:text="@={addRepoViewModel.cloneRepoPath}"
+            bind:layout_constraintEnd_toStartOf="@+id/cloneBrowseButton"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toBottomOf="@+id/remotePathEditText" />
+
+
+        <Button
+            android:id="@+id/cloneBrowseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/marginStart"
+            android:onClick="cloneBrowseButtonHandler"
+            android:text="@string/browse_button"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintTop_toBottomOf="@+id/remotePathEditText" />
+
+        <CheckBox
+            android:id="@+id/shallowCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@={addRepoViewModel.isShallowClone}"
+            bind:layout_constraintStart_toStartOf="@+id/cloneLocalPathEditText"
+            bind:layout_constraintTop_toTopOf="@+id/depthTextEdit"
+            bind:layout_constraintBottom_toBottomOf="@+id/depthTextEdit">
+        </CheckBox>
+
+        <TextView
+            android:id="@+id/shallowTextView"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10sp"
+            android:autofillHints="Directory"
+            android:text="@string/shallow_clone"
+            bind:layout_constraintBottom_toBottomOf="@+id/shallowCheckBox"
+            bind:layout_constraintStart_toEndOf="@+id/shallowCheckBox"
+            bind:layout_constraintTop_toTopOf="@+id/shallowCheckBox" />
+
+        <EditText
+            android:id="@+id/depthTextEdit"
+            android:layout_width="75sp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10sp"
+            android:autofillHints="Directory"
+            android:digits="0123456789"
+            android:hint="@string/depth"
+            android:inputType="number"
+            android:maxLength="5"
+            android:text="@={addRepoViewModel.depth}"
+            android:visibility="@{addRepoViewModel.isShallowClone? View.VISIBLE : View.INVISIBLE}"
+            bind:layout_constraintEnd_toStartOf="@+id/cloneButton"
+            bind:layout_constraintHorizontal_bias="0.0"
+            bind:layout_constraintStart_toEndOf="@+id/shallowTextView"
+            bind:layout_constraintTop_toBottomOf="@+id/cloneLocalPathEditText" />
+
+        <Button
+            android:id="@+id/cloneButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> addRepoViewModel.cloneRepoHandler()}"
+            android:text="@string/clone_button"
+            bind:layout_constraintEnd_toEndOf="@+id/cloneBrowseButton"
+            bind:layout_constraintTop_toBottomOf="@+id/cloneBrowseButton" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
