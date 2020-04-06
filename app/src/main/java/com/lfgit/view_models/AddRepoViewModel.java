@@ -103,9 +103,10 @@ public class AddRepoViewModel extends ExecViewModel {
         return true;
     }
 
-    // background thread
-    @Override
-    public void doAfterExec(String result, int errCode) {
+    public void processExecResult(ExecResult execResult) {
+        String result = execResult.getResult();
+        int errCode = execResult.getErrCode();
+
         Constants.Task pendingTask = mState.getPendingTask();
         if (pendingTask == CLONE || pendingTask == SHALLOW_CLONE) {
             insertClonedRepo(result, errCode);
@@ -114,26 +115,24 @@ public class AddRepoViewModel extends ExecViewModel {
         }
     }
 
-    // background thread
     private void insertClonedRepo(String result, int errCode) {
         if (errCode == 0) {
             // clone to directory of clone URL
             String fullRepoPath = getFullCloneRepoPath();
             Repo repo = new Repo(fullRepoPath, cloneURLPath);
             mRepository.insertRepo(repo);
-            mCloneResult.postValue("Clone successful");
+            mCloneResult.setValue("Clone successful");
         } else {
-            postShowToast(result);
+            setShowToast(result);
         }
     }
 
-    // background thread
     private void insertInitRepo(String result, int errCode) {
         if (errCode == 0) {
             mRepository.insertRepo(new Repo(initRepoPath));
-            mInitResult.postValue("Repository initialized");
+            mInitResult.setValue("Repository initialized");
         } else {
-            postShowToast(result);
+            setShowToast(result);
         }
     }
 

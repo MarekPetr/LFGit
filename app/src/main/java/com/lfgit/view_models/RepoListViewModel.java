@@ -13,7 +13,7 @@ import com.lfgit.view_models.Events.SingleLiveEvent;
 public class RepoListViewModel extends AndroidViewModel {
     private RepoRepository mRepository;
     private List<Repo> mAllRepos;
-    public SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
+    private SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
 
     public RepoListViewModel(Application application) {
         super(application);

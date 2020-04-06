@@ -290,26 +290,26 @@ public class RepoTasksViewModel extends ExecViewModel implements
         startState();
     }
 
-    // background thread
-    @Override
-    public void doAfterExec(String result, int errCode) {
+    public void processExecResult(ExecResult execResult) {
+        String result = execResult.getResult();
+        int errCode = execResult.getErrCode();
+
         if (mState.getInnerState() != FOR_USER) {
             processTaskResult(result, errCode);
         } else {
             if (result.isEmpty()) {
                 if (errCode == 0) {
-                    postShowToast("Operation successful");
+                    setShowToast("Operation successful");
                 } else {
-                    postShowToast("Operation failed");
+                    setShowToast("Operation failed");
                 }
             } else {
-                postTaskResult(result);
+                setTaskResult(result);
             }
             mState.newState(FOR_USER, NONE);
         }
     }
 
-    // background thread
     private void processTaskResult(String result, int errCode) {
         // get first remote URL from multiline result String
         String[] resultLines = result.split(Objects.requireNonNull(System.getProperty("line.separator")));
@@ -319,7 +319,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
             if (resultLines.length == 0 || errCode != 0) {
                 mRepo.setRemoteURL("Local Repository");
                 mRepository.updateRemoteURL(mRepo);
-                postShowToast("Please add a remote");
+                setShowToast("Please add a remote");
             } else {
                 mRepo.setRemoteURL(resultLines[0]);
                 mRepository.updateRemoteURL(mRepo);
@@ -328,7 +328,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
                     mGitExec.pull(mRepo);
                 } else {
                     if (!credentialsSetDB()) {
-                        postPromptCredentials(true);
+                        setPromptCredentials(true);
                     } else {
                         pushPendingAndFinish();
                     }
@@ -337,17 +337,17 @@ public class RepoTasksViewModel extends ExecViewModel implements
         } else if (innerState == ADD_ORIGIN_REMOTE || innerState == SET_ORIGIN_REMOTE) {
             if (errCode != 0) {
                 if (resultLines.length != 0) {
-                    postTaskResult(result);
+                    setTaskResult(result);
                 } else {
-                    postShowToast("Operation failed");
+                    setShowToast("Operation failed");
                 }
             } else {
                 mRepo.setRemoteURL(mTempRemoteURL);
                 mRepository.updateRemoteURL(mRepo);
                 if (innerState == ADD_ORIGIN_REMOTE) {
-                    postShowToast("Remote origin added");
+                    setShowToast("Remote origin added");
                 } else {
-                    postShowToast("Remote origin set");
+                    setShowToast("Remote origin set");
                 }
             }
             mState.newState(FOR_APP, NONE);
@@ -366,6 +366,9 @@ public class RepoTasksViewModel extends ExecViewModel implements
     }
     private void postTaskResult(String result) {
         mTaskResult.postValue(result);
+    }
+    private void setTaskResult(String result) {
+        mTaskResult.setValue(result);
     }
 
     public SingleLiveEvent<Boolean> getPromptCredentials() {

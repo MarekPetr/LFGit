@@ -12,6 +12,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.lfgit.R;
 import com.lfgit.adapters.RepoOperationsAdapter;
@@ -48,6 +49,8 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         Repo repo = (Repo) getIntent().getSerializableExtra(Repo.TAG);
         mRepoTasksViewModel.setRepo(repo);
         if (repo != null) {setTitle(repo.getDisplayName());}
+
+        mRepoTasksViewModel.getExecResult().observe(this, mRepoTasksViewModel::processExecResult);
 
         mRepoTasksViewModel.getExecPending().observe(this, this::toggleProgressDialog);
 
