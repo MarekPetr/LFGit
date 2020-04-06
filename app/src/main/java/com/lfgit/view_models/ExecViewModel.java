@@ -18,7 +18,7 @@ import static com.lfgit.utilites.Constants.Task.*;
 
 public abstract class ExecViewModel extends AndroidViewModel implements ExecListener {
 
-    static class ExecResult {
+    public static class ExecResult {
         private String result;
         private int errCode;
 
