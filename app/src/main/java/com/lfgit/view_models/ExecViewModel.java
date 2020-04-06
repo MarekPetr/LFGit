@@ -18,24 +18,24 @@ import static com.lfgit.utilites.Constants.Task.*;
 
 public abstract class ExecViewModel extends AndroidViewModel implements ExecListener {
 
-    static class ExecResult {
+    public static class ExecResult {
         private String result;
         private int errCode;
 
-        ExecResult(String result, int errCode) {
+        public ExecResult(String result, int errCode) {
             this.result = result;
             this.errCode = errCode;
         }
-        String getResult() {
+        public String getResult() {
             return result;
         }
-        void setResult(String result) {
+        public void setResult(String result) {
             this.result = result;
         }
-        int getErrCode() {
+        public int getErrCode() {
             return errCode;
         }
-        void setErrCode(int errCode) {
+        public void setErrCode(int errCode) {
             this.errCode = errCode;
         }
     }
