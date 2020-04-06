@@ -364,9 +364,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
     public MutableLiveData<String> getTaskResult() {
         return mTaskResult;
     }
-    private void postTaskResult(String result) {
-        mTaskResult.postValue(result);
-    }
     private void setTaskResult(String result) {
         mTaskResult.setValue(result);
     }
@@ -376,9 +373,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
     }
     private void setPromptCredentials(Boolean prompt) {
         mPromptCredentials.setValue(prompt);
-    }
-    private void postPromptCredentials(Boolean prompt) {
-        mPromptCredentials.postValue(prompt);
     }
 
     public SingleLiveEvent<Boolean> getPromptAddRemote() {
