@@ -1,5 +1,3 @@
-CI/CD pipelines on: https://gitlab.com/MarekPetr/LfGit/pipelines
-
 Debug guide:
 1) Install the app.
 2) Hit the INSTALL button to copy files to device
