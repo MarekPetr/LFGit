@@ -1,7 +1,8 @@
 name: APK
 
-on: push
-branches:
+on:
+  push
+    branches:
       - master
       - develop
 
