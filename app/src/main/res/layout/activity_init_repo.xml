@@ -136,6 +136,7 @@
             android:hint="@string/depth"
             android:inputType="number"
             android:digits="0123456789"
+            android:singleLine="true"
             android:text="@={addRepoViewModel.depth}"
             android:visibility="@{addRepoViewModel.isShallowClone? View.VISIBLE : View.INVISIBLE}"
             bind:layout_constraintStart_toEndOf="@+id/shallowTextView"
