@@ -28,6 +28,8 @@ public class AddRepoActivity extends BasicAbstractActivity {
         mBinding.setAddRepoViewModel(mAddRepoViewModel);
         mBinding.setLifecycleOwner(this);
 
+        mAddRepoViewModel.getExecResult().observe(this, mAddRepoViewModel::processExecResult);
+
         mAddRepoViewModel.getAllRepos().observe(this, repoList -> {
             mAddRepoViewModel.setRepos(repoList);
         });

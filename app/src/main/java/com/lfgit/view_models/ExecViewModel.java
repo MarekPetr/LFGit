@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.RepoRepository;
 import com.lfgit.executors.ExecListener;
@@ -16,10 +17,35 @@ import static com.lfgit.utilites.Constants.InnerState.*;
 import static com.lfgit.utilites.Constants.Task.*;
 
 public abstract class ExecViewModel extends AndroidViewModel implements ExecListener {
+
+    static class ExecResult {
+        private String result;
+        private int errCode;
+
+        ExecResult(String result, int errCode) {
+            this.result = result;
+            this.errCode = errCode;
+        }
+        String getResult() {
+            return result;
+        }
+        void setResult(String result) {
+            this.result = result;
+        }
+        int getErrCode() {
+            return errCode;
+        }
+        void setErrCode(int errCode) {
+            this.errCode = errCode;
+        }
+    }
+
     GitExec mGitExec;
     RepoRepository mRepository;
 
     TaskState mState = new TaskState(FOR_APP, NONE);
+    // observe result
+    private MutableLiveData<ExecResult> mExecResult = new MutableLiveData<>();
     private SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mExecPending = new SingleLiveEvent<>();
 
@@ -39,12 +65,7 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     @Override
     public void onExecFinished(String result, int errCode) {
         hidePendingIfNeeded(mState);
-        doAfterExec(result, errCode);
-    }
-
-    // background thread
-    // after Exec behavior
-    public void doAfterExec(String result, int errCode) {
+        postExecResult(new ExecResult(result, errCode));
     }
 
     // background thread
@@ -65,6 +86,13 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     }
     void postShowToast(String message) {
         mShowToast.postValue(message);
+    }
+
+    public MutableLiveData<ExecResult> getExecResult() {
+        return mExecResult;
+    }
+    public void postExecResult(ExecResult execResult) {
+        mExecResult.postValue(execResult);
     }
 
     // background thread
