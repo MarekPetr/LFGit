@@ -40,7 +40,7 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Intent intent = new Intent(mContext, RepoTasksActivity.class);
         Repo repo = getItem(position);
-        if (repoExists(repo)) {
+        if (mRepoListViewModel.repoDirExists(repo)) {
             intent.putExtra(Repo.TAG, repo);
             mContext.startActivity(intent);
         } else {
@@ -113,7 +113,7 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         List<Repo> validRepos = new ArrayList<>();
 
         for (Repo repo:repos) {
-            if (repoExists(repo)) {
+            if (mRepoListViewModel.repoDirExists(repo)) {
                 validRepos.add(repo);
             } else {
                 removeRepoDB(repo);
@@ -127,12 +127,6 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
 
     public void refreshRepos() {
         setExistingRepos(mLastRepoList);
-    }
-
-    private Boolean repoExists(Repo repo) {
-        String path = repo.getLocalPath();
-        File file = new File(path);
-        return file.exists();
     }
 
     private void deleteRepo(int position) {

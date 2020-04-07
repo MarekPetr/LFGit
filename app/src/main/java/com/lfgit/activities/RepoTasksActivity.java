@@ -50,6 +50,11 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         mRepoTasksViewModel.setRepo(repo);
         if (repo != null) {setTitle(repo.getDisplayName());}
 
+        mRepoTasksViewModel.getNoRepo().observe(this, message -> {
+            showToastMsg(message);
+            finish();
+        });
+
         mRepoTasksViewModel.getExecResult().observe(this, mRepoTasksViewModel::processExecResult);
 
         mRepoTasksViewModel.getExecPending().observe(this, this::toggleProgressDialog);

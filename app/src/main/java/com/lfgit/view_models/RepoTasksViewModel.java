@@ -14,6 +14,8 @@ import com.lfgit.utilites.Constants;
 import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
 import java.util.Objects;
 
 import static com.lfgit.utilites.Constants.InnerState.*;
@@ -29,6 +31,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
 
     private Repo mRepo;
     private MutableLiveData<String> mTaskResult = new MutableLiveData<>();
+    private SingleLiveEvent<String> mNoRepo = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptCredentials = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptRemote = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptCommit = new SingleLiveEvent<>();
@@ -70,7 +73,12 @@ public class RepoTasksViewModel extends ExecViewModel implements
     };
 
     public void execGitTask(int drawerPosition) {
-        tasks[drawerPosition].execute();
+        if (mRepository.repoDirExists(mRepo)) {
+            tasks[drawerPosition].execute();
+        } else {
+            mRepository.deleteByID(mRepo.getId());
+            mNoRepo.setValue("Repository no longer exists");
+        }
     }
 
     private void gitAddAllToStage() {
@@ -395,4 +403,8 @@ public class RepoTasksViewModel extends ExecViewModel implements
     public void setPromptPattern(Boolean prompt) {
         mPromptPattern.setValue(prompt);
     }
+    public SingleLiveEvent<String> getNoRepo() {
+        return mNoRepo;
+    }
+
 }
