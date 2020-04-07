@@ -47,4 +47,8 @@ public class RepoListViewModel extends AndroidViewModel {
     public SingleLiveEvent<String> getShowToast() {
         return mShowToast;
     }
+
+    public Boolean repoDirExists(Repo repo) {
+        return mRepository.repoDirExists(repo);
+    }
 }

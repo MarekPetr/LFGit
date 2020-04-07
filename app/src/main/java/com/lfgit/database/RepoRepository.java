@@ -2,6 +2,8 @@ package com.lfgit.database;
 import android.app.Application;
 import androidx.lifecycle.LiveData;
 import com.lfgit.database.model.Repo;
+
+import java.io.File;
 import java.util.List;
 
 public class RepoRepository {
@@ -41,5 +43,11 @@ public class RepoRepository {
         String remoteURL = repo.getRemoteURL();
         int id = repo.getId();
         RepoDatabase.databaseWriteExecutor.execute(() -> mRepoDao.updateRemoteURL(remoteURL, id));
+    }
+
+    public Boolean repoDirExists(Repo repo) {
+        String path = repo.getLocalPath();
+        File file = new File(path);
+        return file.exists();
     }
 }
