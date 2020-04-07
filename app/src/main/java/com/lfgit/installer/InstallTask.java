@@ -24,12 +24,18 @@ import static com.lfgit.utilites.Constants.USR_DIR;
 import static com.lfgit.utilites.Constants.USR_STAGING_DIR;
 
 public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements ExecListener {
+    private Boolean installed = false;
+    private GitExec exec = new GitExec(this);
     @Override
     public void onExecStarted() {
     }
 
     @Override
     public void onExecFinished(String result, int errCode) {
+        if (!installed) {
+            exec.lfsInstall();
+            installed = true;
+        }
     }
 
     private AsyncTaskListener listener;
@@ -125,7 +131,6 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
             e.printStackTrace();
         }
 
-        GitExec exec = new GitExec(this);
         exec.configHooks();
         return true;
     }
