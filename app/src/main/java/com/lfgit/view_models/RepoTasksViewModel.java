@@ -57,7 +57,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
             this::gitListBranches,
             this::gitCheckoutLocal,
             this::gitCheckoutRemote,
-            this::lfsInstall,
             this::lfsTrackPattern,
             this::lfsUntrackPattern,
             this::lfsListPatterns,
@@ -132,11 +131,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
     private void gitCheckoutRemote() {
         mState.newState(FOR_USER, CHECKOUT_REMOTE);
         setPromptCheckout(true);
-    }
-
-    private void lfsInstall() {
-        mState.newState(FOR_USER, LFS_INSTALL);
-        mGitExec.lfsInstall(getRepoPath());
     }
 
     private void lfsTrackPattern() {

@@ -139,8 +139,8 @@ public class GitExec {
         executor.run(lfsPath, repo.getLocalPath(), "pull");
     }
 
-    public void lfsInstall(String localPath) {
-        executor.run(lfsPath, localPath, "install");
+    public void lfsInstall() {
+        executor.run(lfsPath, ".", "install");
     }
 
     public void lfsTrackPattern(String localPath, String pattern) {

@@ -29,7 +29,7 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST) {// If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                showToastMsg("Write permission not granted");
+                showToastMsg("Permissions refused, exiting..");
                 finishAffinity();
             }
         }
