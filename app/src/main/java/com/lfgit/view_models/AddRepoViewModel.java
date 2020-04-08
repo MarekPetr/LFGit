@@ -116,12 +116,18 @@ public class AddRepoViewModel extends ExecViewModel {
     }
 
     private void insertClonedRepo(String result, int errCode) {
-        if (errCode == 0) {
+        boolean successErrors = result.contains("Clone succeeded");
+        if (errCode == 0 || successErrors) {
+            String toastMsg = "Clone successful";
+            if (successErrors) {
+                toastMsg = result;
+            };
+
             // clone to directory of clone URL
             String fullRepoPath = getFullCloneRepoPath();
             Repo repo = new Repo(fullRepoPath, cloneURLPath);
             mRepository.insertRepo(repo);
-            mCloneResult.setValue("Clone successful");
+            mCloneResult.setValue(toastMsg);
         } else {
             setShowToast(result);
         }
