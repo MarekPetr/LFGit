@@ -50,7 +50,7 @@
     <string name="path_text_edit">Directory in internal storage</string>
     <string name="init_text">Initialize repository</string>
     <string name="clone_text">Clone repository</string>
-    <string name="remote_url">Remote http/https URL</string>
+    <string name="remote_url">Remote http(s) URL</string>
     <string name="init_directory">Directory</string>
     <string name="init_button">Initialize</string>
     <string name="clone_button">Clone</string>
