@@ -106,7 +106,8 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     // background thread
     Boolean isLongTask(Constants.PendingTask pendingTask) {
         return pendingTask == PUSH || pendingTask == PULL || pendingTask == CLONE ||
-                pendingTask == CHECKOUT_REMOTE || pendingTask == CHECKOUT_LOCAL;
+                pendingTask == SHALLOW_CLONE ||  pendingTask == CHECKOUT_REMOTE ||
+                pendingTask == CHECKOUT_LOCAL;
     }
     
     // background thread
