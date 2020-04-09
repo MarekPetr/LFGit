@@ -11,9 +11,11 @@ import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
 import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.TaskState;
+import com.lfgit.utilites.UriHelper;
 
 import static com.lfgit.utilites.Constants.InnerState.*;
 import static com.lfgit.utilites.Constants.PendingTask.*;
+import static com.lfgit.utilites.Logger.LogMsg;
 
 public class RepoListViewModel extends ExecViewModel {
     private List<Repo> mAllRepos;
@@ -36,14 +38,21 @@ public class RepoListViewModel extends ExecViewModel {
     }
 
     public void addLocalRepo(String path) {
+        if (path.endsWith("/.git")) {
+            path = path.substring(0, path.length() - 5);
+        } else if (path.contains("/.git/")) {
+            setShowToast(getAppString(R.string.not_a_git_repo));
+            return;
+        }
+
         for (Repo repo : mAllRepos) {
             if (path.equals(repo.getLocalPath())) {
                 setShowToast(getAppString(R.string.repoAlreadyAdded));
                 return;
             }
         }
-        mState = new TaskState(IS_REPO, NONE);
         mLastRepo = new Repo(path);
+        mState = new TaskState(IS_REPO, NONE);
         mGitExec.isRepo(path);
     }
 

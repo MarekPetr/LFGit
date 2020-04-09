@@ -37,7 +37,7 @@ public class Repo implements Serializable {
     }
 
     public String getDisplayName() {
-        return UriHelper.getDirectory(localPath);
+        return UriHelper.getGitDir(localPath);
     }
 
     public int getId() {
