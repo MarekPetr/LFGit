@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LfGit</string>
+    <string name="app_name">LFGit</string>
     <string name="dialog_choose_option">Choose option</string>
 
     <string name="install_progress_title">Installing</string>
