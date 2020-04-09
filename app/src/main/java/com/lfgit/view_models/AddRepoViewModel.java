@@ -136,7 +136,7 @@ public class AddRepoViewModel extends ExecViewModel {
 
     private void insertInitRepo(String result, int errCode) {
         if (errCode == 0) {
-            mRepository.insertRepo(new Repo(initRepoPath));
+            mRepository.insertRepo(new Repo(initRepoPath, getAppString(R.string.local_repo)));
             mInitResult.setValue(getAppString(R.string.init_success));
         } else {
             setShowToast(result);
