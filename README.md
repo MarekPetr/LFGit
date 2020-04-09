@@ -9,7 +9,7 @@
 * Commit
 * Push to origin
 * Checkout local a remote branches
-* Track LFS pattern
+* Track LFS files
 * Username/Password authentication
 * HTTP/HTTPS supported
 
