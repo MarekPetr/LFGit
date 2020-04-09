@@ -8,7 +8,7 @@
 * Add to stage
 * Commit
 * Push to origin
-* Checkout local a remote branches
+* Checkout local and remote branches
 * Track LFS files
 * Username/Password authentication
 * HTTP/HTTPS supported
