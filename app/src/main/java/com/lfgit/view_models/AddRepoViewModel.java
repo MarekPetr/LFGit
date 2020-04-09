@@ -122,7 +122,7 @@ public class AddRepoViewModel extends ExecViewModel {
             String toastMsg = getAppString(R.string.clone_success);
             if (successErrors) {
                 toastMsg = result;
-            };
+            }
 
             // clone to directory of clone URL
             String fullRepoPath = getFullCloneRepoPath();
@@ -162,7 +162,7 @@ public class AddRepoViewModel extends ExecViewModel {
         this.cloneRepoPath = cloneRepoPath;
     }
     private String getFullCloneRepoPath() {
-        return (cloneRepoPath + "/" + UriHelper.getDirectory(cloneURLPath));
+        return (cloneRepoPath + "/" + UriHelper.getGitDir(cloneURLPath));
     }
     public String getCloneURLPath() {
         return cloneURLPath;

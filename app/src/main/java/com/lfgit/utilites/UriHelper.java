@@ -12,15 +12,15 @@ import android.provider.MediaStore;
 
 public class UriHelper {
 
-    public static String getDirectory(String path) {
+    public static String getGitDir(String path) {
         Uri uri = Uri.parse(path);
         // get directory from URI
         String lastPathSegment = uri.getLastPathSegment();
-        if (lastPathSegment != null) {
-            int index = lastPathSegment.lastIndexOf(".git");
-            if (index > 0) {
-                lastPathSegment = lastPathSegment.substring(0, index);
-            }
+        if (lastPathSegment == null) return path;
+
+        int index = lastPathSegment.lastIndexOf(".git");
+        if (index > 0) {
+            lastPathSegment = lastPathSegment.substring(0, index);
         }
         return lastPathSegment;
     }

@@ -20,6 +20,7 @@
 
     <!-- RepoListViewModel -->
     <string name="not_a_git_repo">Could not find git repository</string>
+
     <string name="local_repo">"Local Repository"</string>
 
     <!-- AddRepoViewModel -->
@@ -41,8 +42,6 @@
     <string name="operation_fail">Operation failed</string>
     <string name="origin_added">Remote origin added</string>
     <string name="origin_set">Remote origin set</string>
-
-
 
     <!-- activity_repo_tasks -->
     <string name="task_result_title">Task result</string>
