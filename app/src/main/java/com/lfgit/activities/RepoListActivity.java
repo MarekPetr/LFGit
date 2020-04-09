@@ -152,21 +152,11 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
 
         Boolean assetsInstalled() {
             final int DOESNT_EXIST = -1;
-
             // Get saved version code
             SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
-
             // Check for first run or upgrade
-            if (currentVersionCode == savedVersionCode) {
-                // This is just a normal run
-                return true;
-            } else if (savedVersionCode == DOESNT_EXIST) {
-                // This is a new install (or the user cleared the shared preferences)
-            } else if (currentVersionCode > savedVersionCode) {
-                // This is an upgrade
-            }
-            return false;
+            return currentVersionCode == savedVersionCode;
         }
 
         void updateInstallPreference() {
