@@ -1,4 +1,4 @@
-package com.lfgit.installer;
+package com.lfgit.install;
 import android.os.AsyncTask;
 import android.system.ErrnoException;
 import android.system.Os;
@@ -46,7 +46,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
 
 
     // source:https://github.com/termux/termux-app/blob/master/app/src/main/java/com/termux/app/TermuxInstaller.java
-    private Boolean installAssets() {
+    private Boolean installFiles() {
         final File PREFIX_FILE = new File(USR_DIR);
         if (PREFIX_FILE.isDirectory()) {
             return true;
@@ -168,7 +168,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
 
     @Override
     protected Boolean doInBackground(Boolean... params) {
-        return installAssets();
+        return installFiles();
     }
 
     @Override

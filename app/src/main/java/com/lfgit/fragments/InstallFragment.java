@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.lfgit.R;
-import com.lfgit.installer.AsyncTaskListener;
-import com.lfgit.installer.InstallTask;
+import com.lfgit.install.AsyncTaskListener;
+import com.lfgit.install.InstallTask;
 
 import org.jetbrains.annotations.NotNull;
 
