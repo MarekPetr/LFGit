@@ -63,6 +63,10 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
             mRepoListViewModel.setRepos(repoList);
         });
 
+        mRepoListViewModel.getExecResult().observe(this, result -> {
+            mRepoListViewModel.processExecResult(result);
+        });
+
         pullToRefresh = findViewById(R.id.repoListLayout);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
