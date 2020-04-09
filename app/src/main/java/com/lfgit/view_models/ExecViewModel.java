@@ -3,9 +3,11 @@ package com.lfgit.view_models;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.lfgit.R;
 import com.lfgit.database.RepoRepository;
 import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
@@ -14,7 +16,7 @@ import com.lfgit.utilites.TaskState;
 import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import static com.lfgit.utilites.Constants.InnerState.*;
-import static com.lfgit.utilites.Constants.Task.*;
+import static com.lfgit.utilites.Constants.PendingTask.*;
 
 public abstract class ExecViewModel extends AndroidViewModel implements ExecListener {
 
@@ -40,6 +42,7 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
         }
     }
 
+    Application mApplication;
     GitExec mGitExec;
     RepoRepository mRepository;
 
@@ -51,8 +54,13 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
 
     ExecViewModel(@NonNull Application application) {
         super(application);
+        mApplication = application;
         mRepository = new RepoRepository(application);
         mGitExec = new GitExec(this);
+    }
+
+    String getAppString(int resId) {
+        return mApplication.getString(resId);
     }
 
     // background thread
@@ -96,15 +104,15 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     }
 
     // background thread
-    Boolean isLongTask(Constants.Task task) {
-        return task == PUSH || task == PULL || task == CLONE ||
-                task == CHECKOUT_REMOTE || task == CHECKOUT_LOCAL;
+    Boolean isLongTask(Constants.PendingTask pendingTask) {
+        return pendingTask == PUSH || pendingTask == PULL || pendingTask == CLONE ||
+                pendingTask == CHECKOUT_REMOTE || pendingTask == CHECKOUT_LOCAL;
     }
     
     // background thread
     Boolean longUserTaskFinished(TaskState state) {
-        Constants.Task currentTask = state.getPendingTask();
-        return (state.getInnerState() == FOR_USER && isLongTask(currentTask));
+        Constants.PendingTask currentPendingTask = state.getPendingTask();
+        return (state.getInnerState() == FOR_USER && isLongTask(currentPendingTask));
     }
     
     // background thread

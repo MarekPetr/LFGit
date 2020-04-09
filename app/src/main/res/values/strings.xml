@@ -12,9 +12,37 @@
     <string name="menu_refresh">Refresh</string>
 
     <!-- repo_list_item -->
-    <string name="unknown_remote">Push or Pull to update remote</string>
+    <string name="unknown_remote">Unknown remote</string>
 
+    <!-- View Models -->
+    <string name="repoAlreadyAdded">"Repository already added"</string>
     <string name="repo_not_found">"Repository not found"</string>
+
+    <!-- RepoListViewModel -->
+    <string name="not_a_git_repo">Could not find git repository</string>
+    <string name="local_repo">"Local Repository"</string>
+
+    <!-- AddRepoViewModel -->
+    <string name="clone_prompt_info">Please enter remote URL and directory</string>
+    <string name="clone_enter_remote">Enter http/https Remote URL</string>
+    <string name="clone_enter_depth">Please enter depth</string>
+    <string name="clone_success">Clone succeeded</string>
+    <string name="init_enter_dir">Please enter directory</string>
+    <string name="init_success">Repository initialized</string>
+    <string name="add_internal_only">Please enter internal storage directory</string>
+
+    <!-- RepoTasksViewModel -->
+    <string name="enter_creds">Please enter username and password</string>
+    <string name="enter_remote">Please enter remote URL</string>
+    <string name="enter_commit_msg">Please enter commit message</string>
+    <string name="enter_branch">Please enter branch</string>
+    <string name="enter_pattern">Please enter pattern</string>
+    <string name="operation_success">Operation succeeded</string>
+    <string name="operation_fail">Operation failed</string>
+    <string name="origin_added">Remote origin added</string>
+    <string name="origin_set">Remote origin set</string>
+
+
 
     <!-- activity_repo_tasks -->
     <string name="task_result_title">Task result</string>

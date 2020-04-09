@@ -10,7 +10,7 @@ import com.lfgit.executors.GitExec;
 import com.lfgit.utilites.TaskState;
 
 import static com.lfgit.utilites.Constants.InnerState.FOR_APP;
-import static com.lfgit.utilites.Constants.Task.NONE;
+import static com.lfgit.utilites.Constants.PendingTask.NONE;
 import static com.lfgit.utilites.Logger.LogMsg;
 
 public class SettingsFragment extends PreferenceFragmentCompat

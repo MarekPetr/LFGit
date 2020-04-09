@@ -1,17 +1,17 @@
 package com.lfgit.utilites;
 
-import com.lfgit.utilites.Constants.Task;
+import com.lfgit.utilites.Constants.PendingTask;
 import com.lfgit.utilites.Constants.InnerState;
 
 public class TaskState {
     private InnerState mInnerState;
-    private Task mPendingTask;
+    private PendingTask mPendingTask;
 
-    public TaskState(InnerState state, Task pendingTask) {
+    public TaskState(InnerState state, PendingTask pendingTask) {
         mInnerState = state;
         mPendingTask = pendingTask;
     }
-    public void newState(InnerState state, Task pendingTask) {
+    public void newState(InnerState state, PendingTask pendingTask) {
         mInnerState = state;
         mPendingTask = pendingTask;
     }
@@ -21,10 +21,10 @@ public class TaskState {
     public void setInnerState(InnerState mInnerState) {
         this.mInnerState = mInnerState;
     }
-    public Task getPendingTask() {
+    public PendingTask getPendingTask() {
         return mPendingTask;
     }
-    public void setPendingTask(Task mPendingTask) {
+    public void setPendingTask(PendingTask mPendingTask) {
         this.mPendingTask = mPendingTask;
     }
 }

@@ -37,6 +37,10 @@ public class GitExec {
         executor.run(gitPath, ".", "config", "--global", "core.hooksPath", HOOKS_DIR);
     }
 
+    public void isRepo(String path) {
+        executor.run(gitPath, path, "rev-parse", "--git-dir");
+    }
+
     public void init(String localPath) {
         String gitOperation = "init";
         executor.run(gitPath, localPath, gitOperation);

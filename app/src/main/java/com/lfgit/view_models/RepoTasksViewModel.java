@@ -4,6 +4,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.lfgit.R;
 import com.lfgit.database.model.Repo;
 import com.lfgit.fragments.dialogs.CheckoutDialog;
 import com.lfgit.fragments.dialogs.CommitDialog;
@@ -15,11 +16,10 @@ import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
 import java.util.Objects;
 
 import static com.lfgit.utilites.Constants.InnerState.*;
-import static com.lfgit.utilites.Constants.Task.*;
+import static com.lfgit.utilites.Constants.PendingTask.*;
 
 public class RepoTasksViewModel extends ExecViewModel implements
         CredentialsDialog.CredentialsDialogListener,
@@ -77,7 +77,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
             tasks[drawerPosition].execute();
         } else {
             mRepository.deleteByID(mRepo.getId());
-            mNoRepo.setValue("Repository no longer exists");
+            mNoRepo.setValue(getAppString(R.string.repo_not_found));
         }
     }
 
@@ -192,7 +192,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
             mRepository.updateCredentials(mRepo);
             pushPendingAndFinish();
         } else {
-            setShowToast("Please enter username and password");
+            setShowToast(getAppString(R.string.enter_creds));
         }
     }
     @Override
@@ -210,20 +210,20 @@ public class RepoTasksViewModel extends ExecViewModel implements
     @Override
     public void handleRemoteURL(String remoteURL) {
         if (!StringUtils.isBlank(remoteURL)) {
-            Constants.Task task = mState.getPendingTask();
+            Constants.PendingTask pendingTask = mState.getPendingTask();
             setPromptRemote(false);
             mTempRemoteURL = remoteURL;
 
-            if (task == ADD_REMOTE) {
+            if (pendingTask == ADD_REMOTE) {
                 mState.setInnerState(ADD_ORIGIN_REMOTE);
                 mGitExec.addOriginRemote(mRepo, remoteURL);
-            } else if (task == SET_REMOTE){
+            } else if (pendingTask == SET_REMOTE){
                 mState.setInnerState(SET_ORIGIN_REMOTE);
                 mGitExec.editOriginRemote(mRepo, remoteURL);
             }
 
         } else {
-            setShowToast("Please enter remote URL");
+            setShowToast(getAppString(R.string.enter_remote));
         }
     }
 
@@ -239,7 +239,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
             mState.setInnerState(FOR_USER);
             mGitExec.commit(getRepoPath(), message);
         } else {
-            setShowToast("Please enter commit message");
+            setShowToast(getAppString(R.string.enter_commit_msg));
         }
     }
     @Override
@@ -258,7 +258,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
                 mGitExec.checkoutRemote(getRepoPath(), branch);
             }
         } else {
-            setShowToast("Please enter branch");
+            setShowToast(getAppString(R.string.enter_branch));
         }
     }
 
@@ -276,14 +276,14 @@ public class RepoTasksViewModel extends ExecViewModel implements
         if (!StringUtils.isBlank(pattern)) {
             setPromptPattern(false);
             mState.setInnerState(FOR_USER);
-            Constants.Task pending = mState.getPendingTask();
+            Constants.PendingTask pending = mState.getPendingTask();
             if (pending == LFS_TRACK) {
                 mGitExec.lfsTrackPattern(getRepoPath(), pattern);
             } else if (pending == LFS_UNTRACK) {
                 mGitExec.lfsUntrackPattern(getRepoPath(), pattern);
             }
         } else {
-            setShowToast("Please enter pattern");
+            setShowToast(getAppString(R.string.enter_pattern));
         }
     }
 
@@ -301,9 +301,9 @@ public class RepoTasksViewModel extends ExecViewModel implements
         } else {
             if (result.isEmpty()) {
                 if (errCode == 0) {
-                    setShowToast("Operation successful");
+                    setShowToast(getAppString(R.string.operation_success));
                 } else {
-                    setShowToast("Operation failed");
+                    setShowToast(getAppString(R.string.operation_fail));
                 }
             } else {
                 setTaskResult(result);
@@ -319,9 +319,9 @@ public class RepoTasksViewModel extends ExecViewModel implements
         Constants.InnerState innerState = mState.getInnerState();
         if (innerState == GET_REMOTE_GIT) {
             if (resultLines.length == 0 || errCode != 0) {
-                mRepo.setRemoteURL("Local Repository");
+                mRepo.setRemoteURL(getAppString(R.string.local_repo));
                 mRepository.updateRemoteURL(mRepo);
-                setShowToast("Please add a remote");
+                setShowToast(getAppString(R.string.enter_remote));
             } else {
                 mRepo.setRemoteURL(resultLines[0]);
                 mRepository.updateRemoteURL(mRepo);
@@ -341,15 +341,15 @@ public class RepoTasksViewModel extends ExecViewModel implements
                 if (resultLines.length != 0) {
                     setTaskResult(result);
                 } else {
-                    setShowToast("Operation failed");
+                    setShowToast(getAppString(R.string.operation_fail));
                 }
             } else {
                 mRepo.setRemoteURL(mTempRemoteURL);
                 mRepository.updateRemoteURL(mRepo);
                 if (innerState == ADD_ORIGIN_REMOTE) {
-                    setShowToast("Remote origin added");
+                    setShowToast(getAppString(R.string.origin_added));
                 } else {
-                    setShowToast("Remote origin set");
+                    setShowToast(getAppString(R.string.origin_set));
                 }
             }
             mState.newState(FOR_APP, NONE);

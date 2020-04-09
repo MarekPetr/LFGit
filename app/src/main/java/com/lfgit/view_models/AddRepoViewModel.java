@@ -4,6 +4,7 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.lfgit.R;
 import com.lfgit.database.model.Repo;
 import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.TaskState;
@@ -15,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 
 import static com.lfgit.utilites.Constants.EXT_STORAGE;
-import static com.lfgit.utilites.Constants.Task.*;
+import static com.lfgit.utilites.Constants.PendingTask.*;
 import static com.lfgit.utilites.Constants.InnerState.*;
 
 public class AddRepoViewModel extends ExecViewModel {
@@ -48,7 +49,7 @@ public class AddRepoViewModel extends ExecViewModel {
     private Boolean repoAlreadyAdded(String path) {
         for (Repo repo : mAllRepos) {
             if (path.equals(repo.getLocalPath())) {
-                setShowToast("Repository already added");
+                setShowToast(getAppString(R.string.repoAlreadyAdded));
                 return true;
             }
         }
@@ -57,11 +58,11 @@ public class AddRepoViewModel extends ExecViewModel {
 
     public void cloneRepoHandler() {
         if (StringUtils.isBlank(cloneRepoPath) || StringUtils.isBlank(cloneURLPath)) {
-            setShowToast("Please enter remote URL and directory");
+            setShowToast(getAppString(R.string.clone_prompt_info));
             return;
         }
         if (!cloneURLPath.startsWith("https://") && !cloneURLPath.startsWith("http://")) {
-            setShowToast("Enter http/https Remote URL");
+            setShowToast(getAppString(R.string.clone_enter_remote));
             return;
         }
         String fullRepoPath = getFullCloneRepoPath();
@@ -72,7 +73,7 @@ public class AddRepoViewModel extends ExecViewModel {
         if (isShallow != null && isShallow) {
             String depth = getDepth();
             if (StringUtils.isBlank(depth)) {
-                setShowToast("Please enter depth");
+                setShowToast(getAppString(R.string.clone_enter_depth));
                 return;
             }
             mState = new TaskState(FOR_USER, SHALLOW_CLONE);
@@ -85,7 +86,7 @@ public class AddRepoViewModel extends ExecViewModel {
 
     public void initRepoHandler() {
         if (StringUtils.isBlank(initRepoPath)) {
-            setShowToast("Please enter directory");
+            setShowToast(getAppString(R.string.init_enter_dir));
             return;
         }
         if (!isInternalStorage(initRepoPath)) return;
@@ -97,7 +98,7 @@ public class AddRepoViewModel extends ExecViewModel {
 
     private Boolean isInternalStorage(String path) {
         if (!path.startsWith(EXT_STORAGE)) {
-            setShowToast("Please enter internal storage directory");
+            setShowToast(getAppString(R.string.add_internal_only));
             return false;
         }
         return true;
@@ -107,7 +108,7 @@ public class AddRepoViewModel extends ExecViewModel {
         String result = execResult.getResult();
         int errCode = execResult.getErrCode();
 
-        Constants.Task pendingTask = mState.getPendingTask();
+        Constants.PendingTask pendingTask = mState.getPendingTask();
         if (pendingTask == CLONE || pendingTask == SHALLOW_CLONE) {
             insertClonedRepo(result, errCode);
         } else if (pendingTask == INIT) {
@@ -118,7 +119,7 @@ public class AddRepoViewModel extends ExecViewModel {
     private void insertClonedRepo(String result, int errCode) {
         boolean successErrors = result.contains("Clone succeeded");
         if (errCode == 0 || successErrors) {
-            String toastMsg = "Clone successful";
+            String toastMsg = getAppString(R.string.clone_success);
             if (successErrors) {
                 toastMsg = result;
             };
@@ -136,7 +137,7 @@ public class AddRepoViewModel extends ExecViewModel {
     private void insertInitRepo(String result, int errCode) {
         if (errCode == 0) {
             mRepository.insertRepo(new Repo(initRepoPath));
-            mInitResult.setValue("Repository initialized");
+            mInitResult.setValue(getAppString(R.string.init_success));
         } else {
             setShowToast(result);
         }

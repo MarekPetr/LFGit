@@ -26,7 +26,7 @@ public class Constants {
         }
     }
 
-    public enum Task {
+    public enum PendingTask {
         CLONE,
         SHALLOW_CLONE,
         INIT,
@@ -53,6 +53,7 @@ public class Constants {
     }
 
     public enum InnerState {
+        IS_REPO,
         FOR_APP,
         FOR_USER,
         GET_REMOTE_GIT,

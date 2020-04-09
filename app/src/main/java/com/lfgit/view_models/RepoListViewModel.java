@@ -1,19 +1,23 @@
 package com.lfgit.view_models;
 
 import java.util.List;
+import java.util.Objects;
 
 import android.app.Application;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.lfgit.R;
 import com.lfgit.database.RepoRepository;
 import com.lfgit.database.model.Repo;
-import com.lfgit.view_models.Events.SingleLiveEvent;
+import com.lfgit.utilites.Constants;
+import com.lfgit.utilites.TaskState;
 
-public class RepoListViewModel extends AndroidViewModel {
-    private RepoRepository mRepository;
+import static com.lfgit.utilites.Constants.InnerState.*;
+import static com.lfgit.utilites.Constants.PendingTask.*;
+
+public class RepoListViewModel extends ExecViewModel {
     private List<Repo> mAllRepos;
-    private SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
+    private Repo mLastRepo;
 
     public RepoListViewModel(Application application) {
         super(application);
@@ -34,21 +38,41 @@ public class RepoListViewModel extends AndroidViewModel {
     public void addLocalRepo(String path) {
         for (Repo repo : mAllRepos) {
             if (path.equals(repo.getLocalPath())) {
-                setShowToast("Repository already added");
+                setShowToast(getAppString(R.string.repoAlreadyAdded));
                 return;
             }
         }
-        mRepository.insertRepo(new Repo(path));
-    }
-
-    private void setShowToast(String message) {
-        mShowToast.setValue(message);
-    }
-    public SingleLiveEvent<String> getShowToast() {
-        return mShowToast;
+        mState = new TaskState(IS_REPO, NONE);
+        mLastRepo = new Repo(path);
+        mGitExec.isRepo(path);
     }
 
     public Boolean repoDirExists(Repo repo) {
         return mRepository.repoDirExists(repo);
+    }
+
+    public void processExecResult(ExecResult execResult) {
+        int errCode = execResult.getErrCode();
+        String result = execResult.getResult();
+
+        Constants.InnerState state = mState.getInnerState();
+        if (state == IS_REPO) {
+            if (errCode == 0) {
+                mState = new TaskState(GET_REMOTE_GIT, NONE);
+                mGitExec.getRemoteURL(mLastRepo);
+            } else {
+                setShowToast(getAppString(R.string.not_a_git_repo));
+                mState = new TaskState(FOR_APP, NONE);
+            }
+        } else if (state == GET_REMOTE_GIT) {
+            String[] resultLines = result.split(Objects.requireNonNull(System.getProperty("line.separator")));
+            if (resultLines.length == 0 || errCode != 0) {
+                mLastRepo.setRemoteURL(getAppString(R.string.local_repo));
+            } else {
+                mLastRepo.setRemoteURL(resultLines[0]);
+            }
+            mRepository.insertRepo(mLastRepo);
+            mState = new TaskState(FOR_APP, NONE);
+        }
     }
 }
