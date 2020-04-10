@@ -12,10 +12,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.lfgit.R;
-import com.lfgit.adapters.RepoOperationsAdapter;
+import com.lfgit.adapters.RepoTasksAdapter;
 import com.lfgit.database.model.Repo;
 import com.lfgit.databinding.ActivityRepoTasksBinding;
 import com.lfgit.fragments.dialogs.*;
@@ -142,7 +141,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         mRightDrawer = findViewById(R.id.rightDrawer);
         ListView mRepoOperationList = findViewById(R.id.repoOperationList);
 
-        RepoOperationsAdapter mDrawerAdapter = new RepoOperationsAdapter(this, mRepoTasksViewModel);
+        RepoTasksAdapter mDrawerAdapter = new RepoTasksAdapter(this, mRepoTasksViewModel);
         mRepoOperationList.setAdapter(mDrawerAdapter);
         mRepoOperationList.setOnItemClickListener(mDrawerAdapter);
     }

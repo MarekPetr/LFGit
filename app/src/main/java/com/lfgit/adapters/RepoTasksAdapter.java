@@ -11,20 +11,20 @@ import android.widget.TextView;
 
 import com.lfgit.R;
 import com.lfgit.activities.RepoTasksActivity;
-import com.lfgit.adapters.RepoTaskAdapter.DrawerItem;
+import com.lfgit.adapters.RepoTasksAdapter.DrawerItem;
 import com.lfgit.view_models.RepoTasksViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
 // source:
 // https://github.com/maks/MGit/blob/master/app/src/main/java/me/sheimi/sgit/adapters/RepoOperationsAdapter.java
-public class RepoTaskAdapter extends ArrayAdapter<DrawerItem>
+public class RepoTasksAdapter extends ArrayAdapter<DrawerItem>
         implements OnItemClickListener {
 
     private RepoTasksViewModel mViewModel;
     private RepoTasksActivity mRepoTasksActivity;
 
-    public RepoTaskAdapter(Context context, RepoTasksViewModel viewModel) {
+    public RepoTasksAdapter(Context context, RepoTasksViewModel viewModel) {
         super(context, 0);
         setupDrawerItem();
         mViewModel = viewModel;
