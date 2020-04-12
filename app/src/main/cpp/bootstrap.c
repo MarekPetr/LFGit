@@ -3,7 +3,7 @@
 extern jbyte blob[];
 extern int blob_size;
 
-JNIEXPORT jbyteArray JNICALL Java_com_lfgit_installer_InstallTask_getZip(JNIEnv *env, __attribute__((__unused__)) jobject This)
+JNIEXPORT jbyteArray JNICALL Java_com_lfgit_install_InstallTask_getZip(JNIEnv *env, __attribute__((__unused__)) jobject This)
 {
     jbyteArray ret = (*env)->NewByteArray(env, blob_size);
     (*env)->SetByteArrayRegion(env, ret, 0, blob_size, blob);
