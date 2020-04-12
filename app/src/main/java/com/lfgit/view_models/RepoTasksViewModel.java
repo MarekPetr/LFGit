@@ -321,7 +321,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
             if (resultLines.length == 0 || errCode != 0) {
                 mRepo.setRemoteURL(getAppString(R.string.local_repo));
                 mRepository.updateRemoteURL(mRepo);
-                setShowToast(getAppString(R.string.enter_remote));
+                setShowToast(getAppString(R.string.add_remote));
             } else {
                 mRepo.setRemoteURL(resultLines[0]);
                 mRepository.updateRemoteURL(mRepo);
