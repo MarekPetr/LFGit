@@ -45,9 +45,8 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     Application mApplication;
     GitExec mGitExec;
     RepoRepository mRepository;
-
     TaskState mState = new TaskState(FOR_APP, NONE);
-    // observe result
+
     private MutableLiveData<ExecResult> mExecResult = new MutableLiveData<>();
     private SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mExecPending = new SingleLiveEvent<>();
@@ -122,7 +121,6 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     }
 
     // background thread
-    // hides pending when task state is FINISH
     void hidePendingIfNeeded(TaskState state) {
         if (longUserTaskFinished(state)) postHidePending();
     }

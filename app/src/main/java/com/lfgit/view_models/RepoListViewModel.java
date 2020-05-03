@@ -23,8 +23,8 @@ public class RepoListViewModel extends ExecViewModel {
 
     public RepoListViewModel(Application application) {
         super(application);
-        mRepository = new RepoRepository(application);
     }
+    
     public LiveData<List<Repo>> getAllRepos() {
         return mRepository.getAllRepos();
     }
