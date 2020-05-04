@@ -19,5 +19,3 @@ build
 
 .idea/*
 .gradle
-gradle.properties
-
