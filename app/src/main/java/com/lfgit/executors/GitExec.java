@@ -163,6 +163,8 @@ public class GitExec {
         executor.run(lfsPath, localPath, "ls-files");
     }
 
+    public void lfsPrune(String localPath) {executor.run(lfsPath, localPath, "prune");}
+
     public void lfsEnv(String localPath) {
         executor.run(lfsPath, localPath, "env");
     }

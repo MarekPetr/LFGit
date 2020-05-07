@@ -17,6 +17,7 @@
         <item>LFS Untrack</item>
         <item>LFS List Patterns</item>
         <item>LFS List Files</item>
+        <item>LFS Prune</item>
         <item>LFS Status</item>
         <item>LFS Env</item>
         <item>Change Credentials</item>
