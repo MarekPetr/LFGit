@@ -30,7 +30,7 @@
 ### Create a local repository
 1. Open the menu and click `Init/Clone repository`
 2. Enter local repository directory
-3. A local empty repo will be created
+3. Click the `INITIALIZE` button
 
 ### URL format
 #### HTTP(S) URLs
