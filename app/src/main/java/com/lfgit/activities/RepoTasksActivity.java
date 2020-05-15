@@ -90,7 +90,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
     }
 
     private void showDialog(DialogFragment dialog, String tag) {
-        FragmentTransaction ft = getFragmentTransaction(tag);
+        FragmentTransaction ft = getFragmentTransaction();
         dialog.show(ft, tag);
     }
 
@@ -110,12 +110,8 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         mPatternDialog = PatternDialog.newInstance(mRepoTasksViewModel);
     }
 
-    private FragmentTransaction getFragmentTransaction(String tag) {
+    private FragmentTransaction getFragmentTransaction() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment prev = getSupportFragmentManager().findFragmentByTag("commit_dialog");
-        if (prev != null) {
-            ft.remove(prev);
-        }
         ft.addToBackStack(null);
         return ft;
     }
