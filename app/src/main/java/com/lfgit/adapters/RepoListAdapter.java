@@ -19,10 +19,12 @@ import com.lfgit.view_models.RepoListViewModel;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Bind repositories to the view.
+ */
 public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
 
@@ -96,6 +98,8 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
         if (repo != null) {
             holder.title.setText(repo.getDisplayName());
             holder.localPath.setText(repo.getLocalPath());
+
+            // set remote URL if known
             if (!StringUtils.isBlank(repo.getRemoteURL())) {
                 holder.remoteURL.setText(repo.getRemoteURL());
             } else {
@@ -110,8 +114,8 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
     }
 
     private void setExistingRepos(List<Repo> repos) {
+        // if repository directory exists add it to the list
         List<Repo> validRepos = new ArrayList<>();
-
         for (Repo repo:repos) {
             if (mRepoListViewModel.repoDirExists(repo)) {
                 validRepos.add(repo);

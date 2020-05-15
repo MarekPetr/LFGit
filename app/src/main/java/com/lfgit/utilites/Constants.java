@@ -16,16 +16,7 @@ public class Constants {
     public static final String HOOKS_DIR = FILES_DIR + "/hooks";
     public static String EXT_STORAGE = Environment.getExternalStorageDirectory().toString() + "/";
 
-    public enum AddRepo {
-        OK(0),
-        ALREADY_ADDED(1);
-
-        int value;
-        AddRepo(int value) {
-            this.value = value;
-        }
-    }
-
+    /** Pending Git Task */
     public enum PendingTask {
         CLONE,
         SHALLOW_CLONE,
@@ -53,6 +44,7 @@ public class Constants {
         NONE,
     }
 
+    /** Inner state of a task */
     public enum InnerState {
         IS_REPO,
         FOR_APP,

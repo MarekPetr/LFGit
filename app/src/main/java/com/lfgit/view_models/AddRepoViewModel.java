@@ -19,6 +19,9 @@ import static com.lfgit.utilites.Constants.EXT_STORAGE;
 import static com.lfgit.utilites.Constants.PendingTask.*;
 import static com.lfgit.utilites.Constants.InnerState.*;
 
+/**
+ * Clone and Init repositories
+ * */
 public class AddRepoViewModel extends ExecViewModel {
     // data binding
     private String initRepoPath;
@@ -56,6 +59,7 @@ public class AddRepoViewModel extends ExecViewModel {
         return false;
     }
 
+    /** Handle a clone request */
     public void cloneRepoHandler() {
         if (StringUtils.isBlank(cloneRepoPath) || StringUtils.isBlank(cloneURLPath)) {
             setShowToast(getAppString(R.string.clone_prompt_info));
@@ -84,6 +88,7 @@ public class AddRepoViewModel extends ExecViewModel {
         }
     }
 
+    /** Handle an initialize request */
     public void initRepoHandler() {
         if (StringUtils.isBlank(initRepoPath)) {
             setShowToast(getAppString(R.string.init_enter_dir));
@@ -96,6 +101,7 @@ public class AddRepoViewModel extends ExecViewModel {
         mGitExec.init(initRepoPath);
     }
 
+    /** Check is given path is in the internal storage */
     private Boolean isInternalStorage(String path) {
         if (!path.startsWith(EXT_STORAGE)) {
             setShowToast(getAppString(R.string.add_internal_only));
@@ -104,10 +110,12 @@ public class AddRepoViewModel extends ExecViewModel {
         return true;
     }
 
+    /** Process the result of the execution of a binary file */
     public void processExecResult(ExecResult execResult) {
         String result = execResult.getResult();
         int errCode = execResult.getErrCode();
 
+        // Insert cloned or initialized repository to the database
         Constants.PendingTask pendingTask = mState.getPendingTask();
         if (pendingTask == CLONE || pendingTask == SHALLOW_CLONE) {
             insertClonedRepo(result, errCode);
@@ -116,6 +124,7 @@ public class AddRepoViewModel extends ExecViewModel {
         }
     }
 
+    /** Insert a cloned repository to the database */
     private void insertClonedRepo(String result, int errCode) {
         boolean successErrors = result.contains("Clone succeeded");
         if (errCode == 0 || successErrors) {
@@ -133,7 +142,7 @@ public class AddRepoViewModel extends ExecViewModel {
             setShowToast(result);
         }
     }
-
+    /** Insert an initialized repository to the database */
     private void insertInitRepo(String result, int errCode) {
         if (errCode == 0) {
             mRepository.insertRepo(new Repo(initRepoPath, getAppString(R.string.local_repo)));

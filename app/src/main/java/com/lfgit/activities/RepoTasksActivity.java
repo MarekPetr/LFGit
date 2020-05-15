@@ -20,6 +20,9 @@ import com.lfgit.databinding.ActivityRepoTasksBinding;
 import com.lfgit.fragments.dialogs.*;
 import com.lfgit.view_models.RepoTasksViewModel;
 
+/**
+ * An activity implementing Git tasks user interface.
+ */
 public class RepoTasksActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;

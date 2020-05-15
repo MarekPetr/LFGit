@@ -16,8 +16,13 @@ import com.lfgit.view_models.RepoTasksViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
-// source:
-// https://github.com/maks/MGit/blob/master/app/src/main/java/me/sheimi/sgit/adapters/RepoOperationsAdapter.java
+/**
+ * Bind Git tasks to the task drawer
+ *
+ * source:
+ * https://github.com/maks/MGit/blob/master/app/src/main/java/me/sheimi/sgit/adapters/RepoOperationsAdapter.java
+ */
+
 public class RepoTasksAdapter extends ArrayAdapter<DrawerItem>
         implements OnItemClickListener {
 
@@ -70,7 +75,7 @@ public class RepoTasksAdapter extends ArrayAdapter<DrawerItem>
 
     private void setupDrawerItem() {
         String[] ops = getContext().getResources().getStringArray(
-                R.array.repo_operation_names);
+                R.array.repo_tasks_array);
         for (String op : ops) {
             add(new DrawerItem(op));
         }

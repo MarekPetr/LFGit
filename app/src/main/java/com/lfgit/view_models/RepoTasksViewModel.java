@@ -21,6 +21,10 @@ import java.util.Objects;
 import static com.lfgit.utilites.Constants.InnerState.*;
 import static com.lfgit.utilites.Constants.PendingTask.*;
 
+/**
+ * Git tasks logic
+ * (Git task is a sequence ending with a Git command execution)
+ * */
 public class RepoTasksViewModel extends ExecViewModel implements
         CredentialsDialog.CredentialsDialogListener,
         RemoteDialog.AddRemoteDialogListener,
@@ -47,6 +51,8 @@ public class RepoTasksViewModel extends ExecViewModel implements
         void execute();
     }
 
+    // Git tasks wrapper.
+    // The order must be the same as in the repo_tasks_array.
     private GitAction[] tasks = new GitAction[] {
             this::gitAddAllToStage,
             this::gitCommit,
@@ -73,6 +79,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
             },
     };
 
+    /** Execute a given Git task or show an error */
     public void execGitTask(int drawerPosition) {
         if (mRepository.repoDirExists(mRepo)) {
             tasks[drawerPosition].execute();
@@ -185,10 +192,12 @@ public class RepoTasksViewModel extends ExecViewModel implements
         mGitExec.getRemoteURL(mRepo);
     }
 
+    /** check if Git credentials are set in the database */
     private Boolean credentialsSetDB() {
         return mRepo.getPassword() != null && mRepo.getUsername() != null;
     }
 
+    /** Handle new credentials */
     @Override
     public void handleCredentials(String username, String password) {
         if (!StringUtils.isBlank(password) && !StringUtils.isBlank(username)) {
@@ -213,6 +222,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
         }
     }
 
+    /** Handle new remote URL */
     @Override
     public void handleRemoteURL(String remoteURL) {
         if (!StringUtils.isBlank(remoteURL)) {
@@ -238,6 +248,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
         startState();
     }
 
+    /** Handle a commit message*/
     @Override
     public void handleCommitMsg(String message) {
         if (!StringUtils.isBlank(message)) {
@@ -253,6 +264,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
         startState();
     }
 
+    /** Handle a branch to checkout */
     @Override
     public void handleCheckoutBranch(String branch) {
         if (!StringUtils.isBlank(branch)) {
@@ -267,7 +279,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
             setShowToast(getAppString(R.string.enter_branch));
         }
     }
-
     @Override
     public void onCancelCheckoutDialog() {
         startState();
@@ -277,6 +288,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
         mState.newState(FOR_USER, NONE);
     }
 
+    /** Handle a Git LFS pattern */
     @Override
     public void handlePattern(String pattern) {
         if (!StringUtils.isBlank(pattern)) {
@@ -292,16 +304,17 @@ public class RepoTasksViewModel extends ExecViewModel implements
             setShowToast(getAppString(R.string.enter_pattern));
         }
     }
-
     @Override
     public void onCancelPatternDialog() {
         startState();
     }
 
+    /** Process the result of a command execution */
     public void processExecResult(ExecResult execResult) {
         String result = execResult.getResult();
         int errCode = execResult.getErrCode();
 
+        // show the result if it is for user or process it further
         if (mState.getInnerState() != FOR_USER) {
             processTaskResult(result, errCode);
         } else {
@@ -318,23 +331,27 @@ public class RepoTasksViewModel extends ExecViewModel implements
         }
     }
 
+    /** Process a task result */
     private void processTaskResult(String result, int errCode) {
-        // get first remote URL from multiline result String
+        // get the first line (the origin remote URL) from a multiline result String
         String[] resultLines = result.split(Objects.requireNonNull(System.getProperty("line.separator")));
 
         Constants.InnerState innerState = mState.getInnerState();
         if (innerState == GET_REMOTE_GIT) {
             if (resultLines.length == 0 || errCode != 0) {
+                // if the result is empty, set the repository as local
                 mRepo.setRemoteURL(getAppString(R.string.local_repo));
                 mRepository.updateRemoteURL(mRepo);
                 setShowToast(getAppString(R.string.add_remote));
             } else {
+                // set remote URL and 'pull' if needed
                 mRepo.setRemoteURL(resultLines[0]);
                 mRepository.updateRemoteURL(mRepo);
                 if (mState.getPendingTask() == PULL) {
                     mState.newState(FOR_USER, PULL);
                     mGitExec.pull(mRepo);
                 } else {
+                    // prompt for credentials if not set or push if it is pending
                     if (!credentialsSetDB()) {
                         setPromptCredentials(true);
                     } else {
@@ -343,6 +360,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
                 }
             }
         } else if (innerState == ADD_ORIGIN_REMOTE || innerState == SET_ORIGIN_REMOTE) {
+            // set the repository remote URL or display an error
             if (errCode != 0) {
                 if (resultLines.length != 0) {
                     setTaskResult(result);

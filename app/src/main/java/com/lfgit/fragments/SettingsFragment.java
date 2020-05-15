@@ -13,6 +13,9 @@ import static com.lfgit.utilites.Constants.InnerState.FOR_APP;
 import static com.lfgit.utilites.Constants.PendingTask.NONE;
 import static com.lfgit.utilites.Logger.LogMsg;
 
+/**
+ * Set preference settings
+ * */
 public class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener, ExecListener {
 
@@ -29,7 +32,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         String prefValue = sharedPreferences.getString(key, "");
         LogMsg(prefValue);
-        TaskState state = new TaskState(FOR_APP, NONE);
         if (key.equals(getString(R.string.git_username_key))) {
             gitExec.setUsername(prefValue);
         } else if (key.equals(getString(R.string.git_email_key))) {

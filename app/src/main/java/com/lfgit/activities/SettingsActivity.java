@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.lfgit.R;
 import com.lfgit.fragments.SettingsFragment;
 
+/**
+ * An activity providing preference settings.
+ */
 public class SettingsActivity extends AppCompatActivity {
 
     @Override

@@ -23,9 +23,13 @@ import static com.lfgit.utilites.Constants.HOOKS_DIR;
 import static com.lfgit.utilites.Constants.USR_DIR;
 import static com.lfgit.utilites.Constants.USR_STAGING_DIR;
 
+/**
+ * Install the bootstrap packages
+ * */
 public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements ExecListener {
     private Boolean installed = false;
     private GitExec exec = new GitExec(this);
+
     @Override
     public void onExecStarted() {
     }
@@ -44,9 +48,30 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
         this.listener = listener;
     }
 
-
-    // source:https://github.com/termux/termux-app/blob/master/app/src/main/java/com/termux/app/TermuxInstaller.java
+    /**
+     * Install the bootstrap packages if necessary by following the below steps:
+     * <p/>
+     * (1) If $PREFIX already exist, assume that it is correct and be done. Note that this relies on that we do not create a
+     * broken $PREFIX folder below.
+     * <p/>
+     * (2) A progress dialog is shown with "Installing" message and a spinner.
+     * <p/>
+     * (3) A staging folder, $STAGING_PREFIX, is {@link #deleteFolder(File)} if left over from broken installation below.
+     * <p/>
+     * (4) The zip file is loaded from a shared library.
+     * <p/>
+     * (5) The zip, containing entries relative to the $PREFIX, is is downloaded and extracted by a zip input stream
+     * continuously encountering zip file entries:
+     * <p/>
+     * (5.1) If the zip entry encountered is SYMLINKS.txt, go through it and remember all symlinks to setup.
+     * <p/>
+     * (5.2) For every other zip entry, extract it into $STAGING_PREFIX and set execute permissions if necessary.
+     *
+     * source:
+     * https://github.com/termux/termux-app/blob/master/app/src/main/java/com/termux/app/TermuxInstaller.java
+     */
     private Boolean installFiles() {
+
         final File PREFIX_FILE = new File(USR_DIR);
         if (PREFIX_FILE.isDirectory()) {
             return true;
@@ -121,16 +146,19 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
             throw new RuntimeException("Unable to rename staging folder");
         }
 
+        // Create a directory for Git Hooks
         File dir = new File(HOOKS_DIR);
         if (!dir.exists()) {
             dir.mkdir();
         }
+
+        // Git LFS needs shell in the $PREFIX folder
         try {
             Os.symlink("/system/bin/sh", BIN_DIR+"/sh");
         } catch (ErrnoException e) {
             e.printStackTrace();
         }
-
+        // Install Git Hooks
         exec.configHooks();
         return true;
     }

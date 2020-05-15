@@ -13,7 +13,6 @@ import androidx.lifecycle.Observer;
 
 
 /**
- * source: https://github.com/NordicSemiconductor/Android-nRF-Blinky/blob/master/app/src/main/java/no/nordicsemi/android/blinky/viewmodels/SingleLiveEvent.java
  * A lifecycle-aware observable that sends only new updates after subscription, used for events like
  * navigation and Snackbar messages.
  * <p>
@@ -22,6 +21,8 @@ import androidx.lifecycle.Observer;
  * explicit call to setValue() or call().
  * <p>
  * Note that only one observer is going to be notified of changes.
+ *
+ * source: https://github.com/NordicSemiconductor/Android-nRF-Blinky/blob/master/app/src/main/java/no/nordicsemi/android/blinky/viewmodels/SingleLiveEvent.java
  */
 @SuppressWarnings("unused")
 public class SingleLiveEvent<T> extends MutableLiveData<T> {

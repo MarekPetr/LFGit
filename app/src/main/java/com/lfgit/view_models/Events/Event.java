@@ -1,8 +1,8 @@
 package com.lfgit.view_models.Events;
 
 /**
- * source: https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
  * Used as a wrapper for data that is exposed via a LiveData that represents an event.
+ * source: https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
  */
 @SuppressWarnings("unused")
 public class Event<T> {

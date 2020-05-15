@@ -14,6 +14,9 @@ import com.lfgit.R;
 import com.lfgit.utilites.UriHelper;
 import com.lfgit.view_models.AddRepoViewModel;
 
+/**
+ * Init/Clone activity
+ */
 public class AddRepoActivity extends BasicAbstractActivity {
     private ActivityInitRepoBinding mBinding;
     private AddRepoViewModel mAddRepoViewModel;

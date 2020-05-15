@@ -1,13 +1,10 @@
 package com.lfgit.view_models;
 
 import android.app.Application;
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.lfgit.R;
 import com.lfgit.database.RepoRepository;
 import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
@@ -18,8 +15,12 @@ import com.lfgit.view_models.Events.SingleLiveEvent;
 import static com.lfgit.utilites.Constants.InnerState.*;
 import static com.lfgit.utilites.Constants.PendingTask.*;
 
+/**
+ * A common ViewModel for other ViewModels handling binary files execution
+ * */
 public abstract class ExecViewModel extends AndroidViewModel implements ExecListener {
 
+    /** Result wrapper */
     public static class ExecResult {
         private String result;
         private int errCode;
@@ -75,6 +76,33 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
         postExecResult(new ExecResult(result, errCode));
     }
 
+    /** Check if task is long running */
+    Boolean isLongTask(Constants.PendingTask pendingTask) {
+        return pendingTask == PUSH || pendingTask == PULL || pendingTask == CLONE ||
+                pendingTask == SHALLOW_CLONE ||  pendingTask == CHECKOUT_REMOTE ||
+                pendingTask == CHECKOUT_LOCAL;
+    }
+
+    /** Check if long running task is finished */
+    Boolean longUserTaskFinished(TaskState state) {
+        Constants.PendingTask currentPendingTask = state.getPendingTask();
+        return (state.getInnerState() == FOR_USER && isLongTask(currentPendingTask));
+    }
+    
+    // background thread
+    void showPendingIfNeeded(TaskState state) {
+        if (longUserTaskFinished(state)) postShowPending();
+    }
+
+    // background thread
+    void hidePendingIfNeeded(TaskState state) {
+        if (longUserTaskFinished(state)) postHidePending();
+    }
+
+    public SingleLiveEvent<Boolean> getExecPending() {
+        return mExecPending;
+    }
+
     // background thread
     void postShowPending() {
         mExecPending.postValue(true);
@@ -100,32 +128,5 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     }
     public void postExecResult(ExecResult execResult) {
         mExecResult.postValue(execResult);
-    }
-
-    // background thread
-    Boolean isLongTask(Constants.PendingTask pendingTask) {
-        return pendingTask == PUSH || pendingTask == PULL || pendingTask == CLONE ||
-                pendingTask == SHALLOW_CLONE ||  pendingTask == CHECKOUT_REMOTE ||
-                pendingTask == CHECKOUT_LOCAL;
-    }
-    
-    // background thread
-    Boolean longUserTaskFinished(TaskState state) {
-        Constants.PendingTask currentPendingTask = state.getPendingTask();
-        return (state.getInnerState() == FOR_USER && isLongTask(currentPendingTask));
-    }
-    
-    // background thread
-    void showPendingIfNeeded(TaskState state) {
-        if (longUserTaskFinished(state)) postShowPending();
-    }
-
-    // background thread
-    void hidePendingIfNeeded(TaskState state) {
-        if (longUserTaskFinished(state)) postHidePending();
-    }
-
-    public SingleLiveEvent<Boolean> getExecPending() {
-        return mExecPending;
     }
 }
