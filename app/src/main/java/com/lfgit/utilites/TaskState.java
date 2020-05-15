@@ -3,6 +3,9 @@ package com.lfgit.utilites;
 import com.lfgit.utilites.Constants.PendingTask;
 import com.lfgit.utilites.Constants.InnerState;
 
+/**
+ * Task states enabling sequential processing of Git tasks
+ * */
 public class TaskState {
     private InnerState mInnerState;
     private PendingTask mPendingTask;

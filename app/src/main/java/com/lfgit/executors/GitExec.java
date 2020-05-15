@@ -2,14 +2,16 @@ package com.lfgit.executors;
 
 import com.lfgit.database.model.Repo;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Constants.HOOKS_DIR;
 import static com.lfgit.utilites.Logger.LogMsg;
-import static java.lang.String.valueOf;
 
+/**
+ * Git commands
+ */
 public class GitExec {
 
     private String gitPath = "git";
@@ -20,29 +22,43 @@ public class GitExec {
         executor = new BinaryExecutor(callback);
     }
 
+    /** Make directories if they don't exist yet */
+    private void mkdirsIfNotExist(String path) {
+        File f = new File(path);
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+    }
+
+    /** Check if directory is a Git repository */
+    public void isRepo(String path) {
+        executor.run(gitPath, path, "rev-parse", "--git-dir");
+    }
+
+    /** Set Git Profile credentials */
     public void configCreds(String email, String username) {
         executor.run(gitPath, ".","config", "--global", "user.name", username);
         executor.run(gitPath, ".","config", "--global", "user.email", email);
     }
 
+    /** Set Git Profile email */
     public void setEmail(String email) {
         executor.run(gitPath, ".","config", "--global", "user.email", email);
     }
 
+    /** Set Git Profile username */
     public void setUsername(String username) {
         executor.run(gitPath, ".","config", "--global", "user.name", username);
     }
 
+    /** Set hooks path */
     public void configHooks() {
         executor.run(gitPath, ".", "config", "--global", "core.hooksPath", HOOKS_DIR);
     }
 
-    public void isRepo(String path) {
-        executor.run(gitPath, path, "rev-parse", "--git-dir");
-    }
-
     public void init(String localPath) {
         String gitOperation = "init";
+        mkdirsIfNotExist(localPath);
         executor.run(gitPath, localPath, gitOperation);
     }
 
@@ -53,6 +69,7 @@ public class GitExec {
 
     public void clone(String localPath, String remoteURL) {
         String gitOperation = "clone";
+        mkdirsIfNotExist(localPath);
         executor.run(gitPath, localPath, gitOperation, remoteURL);
     }
 
@@ -84,14 +101,18 @@ public class GitExec {
     }
 
     public void push(Repo repo) {
-        ExecWithCredentials(gitPath, repo,"push");
+        ExecWithCredentials(repo,"push");
     }
 
     public void pull(Repo repo) {
         executor.run(gitPath, repo.getLocalPath(), "pull");
     }
 
-    private void ExecWithCredentials(String binary, Repo repo, String... gitOperation) {
+    /**
+     * Execute a command with address http(s)://username:password@domain
+     * Handles URL encoding
+     * */
+    private void ExecWithCredentials(Repo repo, String... gitOperation) {
         String username = repo.getUsername();
         String password = repo.getPassword();
         try {
@@ -136,7 +157,7 @@ public class GitExec {
     }
 
     public void lfsPush(Repo repo) {
-        ExecWithCredentials("git", repo, "push", "--all");
+        ExecWithCredentials(repo, "push", "--all");
     }
 
     public void lfsPull(Repo repo) {

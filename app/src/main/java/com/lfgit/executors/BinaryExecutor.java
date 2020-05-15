@@ -15,6 +15,9 @@ import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Constants.LIB_DIR;
 import static com.lfgit.utilites.Logger.LogMsg;
 
+/**
+ * Execute a compiled program.
+ */
 class BinaryExecutor {
 
     private Process mProcess = null;
@@ -30,12 +33,7 @@ class BinaryExecutor {
     void run(String binary, String destDir, String... strings) {
         String exeBin = mExeDir + "/" + binary;
         File f = new File(destDir);
-        if (binary.equals("git") &&
-                (strings[0].equals("init") || strings[0].equals("clone"))) {
-            if (!f.exists()) {
-                f.mkdirs();
-            }
-        }
+
         List<String> args = new ArrayList<>();
         args.add(exeBin);
         args.addAll(Arrays.asList(strings));

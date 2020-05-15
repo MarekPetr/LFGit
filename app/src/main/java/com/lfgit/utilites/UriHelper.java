@@ -10,6 +10,9 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
+/**
+ * Helper class providing storage URIs
+ * */
 public class UriHelper {
 
     public static String getGitDir(String path) {

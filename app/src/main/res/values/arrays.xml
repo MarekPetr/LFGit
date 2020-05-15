@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="repo_operation_names">
+    <string-array name="repo_tasks_array">
         <item>Add all to stage</item>
         <item>Commit</item>
         <item>Push</item>

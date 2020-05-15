@@ -11,6 +11,9 @@ import androidx.core.content.ContextCompat;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Basic activity providing common methods for other activites.
+ */
 public abstract class BasicAbstractActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST = 1;
     ProgressDialog mProgressDialog;

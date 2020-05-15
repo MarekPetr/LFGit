@@ -24,6 +24,9 @@ import com.lfgit.fragments.InstallFragment;
 import com.lfgit.utilites.UriHelper;
 import com.lfgit.view_models.RepoListViewModel;
 
+/**
+ * An activity implementing list of repositories and initial installation.
+ */
 public class RepoListActivity extends BasicAbstractActivity implements InstallFragment.FragmentCallback {
     private ActivityRepoListBinding mBinding;
     private RepoListViewModel mRepoListViewModel;
@@ -39,6 +42,7 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // install runnable programs if needed (Git, etc.)
         if (mInstallPref.assetsInstalled()) {
             checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         } else {
@@ -134,6 +138,7 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
 
         if (requestCode == ADD_REPO_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
+                // Get the URI of a repository to add
                 Uri uri = intent.getData();
                 String path = UriHelper.getDirPath(this, uri);
                 if (path != null) {
@@ -145,6 +150,7 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
         }
     }
 
+    /** Save install preference with version code */
     class InstallPreference {
         private final String PREFS_NAME = "mInstallPref";
         private final String PREF_VERSION_CODE_KEY = "version_code";

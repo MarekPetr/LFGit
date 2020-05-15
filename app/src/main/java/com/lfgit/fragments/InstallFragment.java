@@ -15,8 +15,14 @@ import com.lfgit.install.InstallTask;
 
 import org.jetbrains.annotations.NotNull;
 
-// source:
-// https://androidresearch.wordpress.com/2013/05/10/dealing-with-asynctask-and-screen-orientation/
+/**
+ * Install runnable programs.
+ * Handle activity lifecycle.
+ *
+ * source:
+ * https://androidresearch.wordpress.com/2013/05/10/dealing-with-asynctask-and-screen-orientation/
+ */
+
 public class InstallFragment extends Fragment implements AsyncTaskListener {
     private ProgressDialog mProgressDialog;
     private boolean isTaskRunning = false;
