@@ -10,31 +10,33 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.lfgit.R;
+import com.lfgit.view_models.RepoTasksViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public class CheckoutDialog extends DialogFragment {
-    private CheckoutDialogListener mListener;
     private EditText mBranch;
+    private RepoTasksViewModel viewModel;
 
     public CheckoutDialog() {
         // empty constructor required
     }
 
-    public static CheckoutDialog newInstance(CheckoutDialogListener listener) {
-        CheckoutDialog dialog = new CheckoutDialog();
-        dialog.mListener = listener;
-        return dialog;
+    public static CheckoutDialog newInstance() {
+        return new CheckoutDialog();
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View view = inflater.inflate(R.layout.checkout_layout, null, false);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(RepoTasksViewModel.class);
 
         mBranch = view.findViewById(R.id.branchEditText);
         Button mEnterButton = view.findViewById(R.id.enterButton);
@@ -45,7 +47,7 @@ public class CheckoutDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 String branch = mBranch.getText().toString();
-                mListener.handleCheckoutBranch(branch);
+                viewModel.handleCheckoutBranch(branch);
             }
         });
         return alertDialogBuilder.create();
@@ -54,11 +56,6 @@ public class CheckoutDialog extends DialogFragment {
     @Override
     public void onCancel(@NotNull DialogInterface dialog) {
         super.onCancel(dialog);
-        mListener.onCancelCheckoutDialog();
-    }
-
-    public interface CheckoutDialogListener {
-        void handleCheckoutBranch(String branch);
-        void onCancelCheckoutDialog();
+        viewModel.startState();
     }
 }

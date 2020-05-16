@@ -25,13 +25,7 @@ import static com.lfgit.utilites.Constants.PendingTask.*;
  * Git tasks logic
  * (Git task is a sequence ending with a Git command execution)
  * */
-public class RepoTasksViewModel extends ExecViewModel implements
-        CredentialsDialog.CredentialsDialogListener,
-        RemoteDialog.AddRemoteDialogListener,
-        CommitDialog.CommitDialogListener,
-        CheckoutDialog.CheckoutDialogListener,
-        PatternDialog.PatternDialogListener
-{
+public class RepoTasksViewModel extends ExecViewModel {
 
     private Repo mRepo;
     private MutableLiveData<String> mTaskResult = new MutableLiveData<>();
@@ -198,7 +192,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
     }
 
     /** Handle new credentials */
-    @Override
     public void handleCredentials(String username, String password) {
         if (!StringUtils.isBlank(password) && !StringUtils.isBlank(username)) {
             setPromptCredentials(false);
@@ -210,10 +203,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
             setShowToast(getAppString(R.string.enter_creds));
         }
     }
-    @Override
-    public void onCancelCredentialsDialog() {
-        startState();
-    }
 
     private void pushPendingAndFinish() {
         if (mState.getPendingTask() == PUSH) {
@@ -223,7 +212,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
     }
 
     /** Handle new remote URL */
-    @Override
     public void handleRemoteURL(String remoteURL) {
         if (!StringUtils.isBlank(remoteURL)) {
             Constants.PendingTask pendingTask = mState.getPendingTask();
@@ -243,13 +231,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
         }
     }
 
-    @Override
-    public void onCancelAddRemoteDialog() {
-        startState();
-    }
-
     /** Handle a commit message*/
-    @Override
     public void handleCommitMsg(String message) {
         if (!StringUtils.isBlank(message)) {
             setPromptCommit(false);
@@ -259,13 +241,8 @@ public class RepoTasksViewModel extends ExecViewModel implements
             setShowToast(getAppString(R.string.enter_commit_msg));
         }
     }
-    @Override
-    public void onCancelCommitDialog() {
-        startState();
-    }
 
     /** Handle a branch to checkout */
-    @Override
     public void handleCheckoutBranch(String branch) {
         if (!StringUtils.isBlank(branch)) {
             setPromptCheckout(false);
@@ -279,17 +256,13 @@ public class RepoTasksViewModel extends ExecViewModel implements
             setShowToast(getAppString(R.string.enter_branch));
         }
     }
-    @Override
-    public void onCancelCheckoutDialog() {
-        startState();
-    }
 
-    private void startState() {
+    /** Reset the viewModel task state */
+    public void startState() {
         mState.newState(FOR_USER, NONE);
     }
 
     /** Handle a Git LFS pattern */
-    @Override
     public void handlePattern(String pattern) {
         if (!StringUtils.isBlank(pattern)) {
             setPromptPattern(false);
@@ -303,10 +276,6 @@ public class RepoTasksViewModel extends ExecViewModel implements
         } else {
             setShowToast(getAppString(R.string.enter_pattern));
         }
-    }
-    @Override
-    public void onCancelPatternDialog() {
-        startState();
     }
 
     /** Process the result of a command execution */

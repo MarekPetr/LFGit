@@ -84,7 +84,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
     }
 
     private void hideDialog(DialogFragment dialog) {
-        if (dialog != null) {
+        if (dialog != null && dialog.getDialog().isShowing()) {
             dialog.dismiss();
         }
     }
@@ -103,11 +103,11 @@ public class RepoTasksActivity extends BasicAbstractActivity {
     }
 
     private void setupDialogs() {
-        mCommitDialog = CommitDialog.newInstance(mRepoTasksViewModel);
-        mCredsDialog = CredentialsDialog.newInstance(mRepoTasksViewModel);
-        mRemoteDialog = RemoteDialog.newInstance(mRepoTasksViewModel);
-        mCheckoutDialog = CheckoutDialog.newInstance(mRepoTasksViewModel);
-        mPatternDialog = PatternDialog.newInstance(mRepoTasksViewModel);
+        mCommitDialog = CommitDialog.newInstance();
+        mCredsDialog = CredentialsDialog.newInstance();
+        mRemoteDialog = RemoteDialog.newInstance();
+        mCheckoutDialog = CheckoutDialog.newInstance();
+        mPatternDialog = PatternDialog.newInstance();
     }
 
     private FragmentTransaction getFragmentTransaction() {
@@ -151,5 +151,15 @@ public class RepoTasksActivity extends BasicAbstractActivity {
 
     public void openDrawer() {
         mDrawerLayout.openDrawer(mRightDrawer);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideDialog(mCommitDialog);
+        hideDialog(mCheckoutDialog);
+        hideDialog(mRemoteDialog);
+        hideDialog(mCheckoutDialog);
+        hideDialog(mPatternDialog);
     }
 }

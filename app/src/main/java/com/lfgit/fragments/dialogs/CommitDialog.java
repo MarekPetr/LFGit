@@ -10,15 +10,17 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.lfgit.R;
+import com.lfgit.view_models.RepoTasksViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public class CommitDialog extends DialogFragment {
-    private CommitDialogListener mListener;
+    private RepoTasksViewModel viewModel;
     private EditText mCommitMsgEditText;
     private Button mEnterButton;
 
@@ -26,9 +28,8 @@ public class CommitDialog extends DialogFragment {
         // empty constructor required
     }
 
-    public static CommitDialog newInstance(CommitDialogListener listener) {
+    public static CommitDialog newInstance() {
         CommitDialog dialog = new CommitDialog();
-        dialog.mListener = listener;
         return dialog;
     }
 
@@ -36,6 +37,8 @@ public class CommitDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View view = inflater.inflate(R.layout.commit_dialog_layout, null, false);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(RepoTasksViewModel.class);
 
         mCommitMsgEditText = view.findViewById(R.id.commitMsgEditText);
         mEnterButton = view.findViewById(R.id.enterButton);
@@ -46,7 +49,7 @@ public class CommitDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 String commitMsg = mCommitMsgEditText.getText().toString();
-                mListener.handleCommitMsg(commitMsg);
+                viewModel.handleCommitMsg(commitMsg);
             }
         });
         return alertDialogBuilder.create();
@@ -55,7 +58,7 @@ public class CommitDialog extends DialogFragment {
     @Override
     public void onCancel(@NotNull DialogInterface dialog) {
         super.onCancel(dialog);
-        mListener.onCancelCommitDialog();
+        viewModel.startState();
     }
 
     public interface CommitDialogListener {

@@ -10,24 +10,25 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.lfgit.R;
+import com.lfgit.view_models.RepoTasksViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public class RemoteDialog extends DialogFragment {
-    private AddRemoteDialogListener mListener;
+    private RepoTasksViewModel viewModel;
     private EditText mRemoteURL;
 
     public RemoteDialog() {
         // empty constructor required
     }
 
-    public static RemoteDialog newInstance(AddRemoteDialogListener listener) {
+    public static RemoteDialog newInstance() {
         RemoteDialog dialog = new RemoteDialog();
-        dialog.mListener = listener;
         return dialog;
     }
 
@@ -35,6 +36,8 @@ public class RemoteDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View view = inflater.inflate(R.layout.add_remote_layout, null, false);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(RepoTasksViewModel.class);
 
         mRemoteURL = view.findViewById(R.id.remotePathEditText);
         Button mEnterButton = view.findViewById(R.id.enterButton);
@@ -45,7 +48,7 @@ public class RemoteDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 String remoteURL = mRemoteURL.getText().toString();
-                mListener.handleRemoteURL(remoteURL);
+                viewModel.handleRemoteURL(remoteURL);
             }
         });
         return alertDialogBuilder.create();
@@ -54,11 +57,6 @@ public class RemoteDialog extends DialogFragment {
     @Override
     public void onCancel(@NotNull DialogInterface dialog) {
         super.onCancel(dialog);
-        mListener.onCancelAddRemoteDialog();
-    }
-
-    public interface AddRemoteDialogListener {
-        void handleRemoteURL(String remoteURL);
-        void onCancelAddRemoteDialog();
+        viewModel.startState();
     }
 }
