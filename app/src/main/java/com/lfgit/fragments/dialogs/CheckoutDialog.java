@@ -1,6 +1,8 @@
 package com.lfgit.fragments.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,16 +16,16 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.lfgit.R;
+import com.lfgit.activities.RepoTasksActivity;
 import com.lfgit.view_models.RepoTasksViewModel;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 public class CheckoutDialog extends DialogFragment {
     private EditText mBranch;
     private RepoTasksViewModel viewModel;
     private View view;
+    private RepoTasksActivity activity;
 
     public CheckoutDialog() {
         // empty constructor required
@@ -35,10 +37,10 @@ public class CheckoutDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        LayoutInflater inflater = LayoutInflater.from(activity);
         view = inflater.inflate(R.layout.checkout_layout, null, false);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity);
         alertDialogBuilder.setView(view);
 
         return alertDialogBuilder.create();
@@ -49,7 +51,7 @@ public class CheckoutDialog extends DialogFragment {
                              ViewGroup container,
                              Bundle savedInstanceState)
     {
-        viewModel = new ViewModelProvider(getActivity()).get(RepoTasksViewModel.class);
+        viewModel = new ViewModelProvider(activity).get(RepoTasksViewModel.class);
         mBranch = view.findViewById(R.id.branchEditText);
         Button mEnterButton = view.findViewById(R.id.enterButton);
         mEnterButton.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +72,13 @@ public class CheckoutDialog extends DialogFragment {
 
     @Override
     public void onCancel(@NotNull DialogInterface dialog) {
-        super.onCancel(dialog);
         viewModel.startState();
+        super.onCancel(dialog);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        activity = (RepoTasksActivity) context;
+        super.onAttach(context);
     }
 }

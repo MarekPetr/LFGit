@@ -20,6 +20,8 @@ import com.lfgit.databinding.ActivityRepoTasksBinding;
 import com.lfgit.fragments.dialogs.*;
 import com.lfgit.view_models.RepoTasksViewModel;
 
+import static com.lfgit.utilites.Logger.LogMsg;
+
 /**
  * An activity implementing Git tasks user interface.
  */
@@ -62,7 +64,6 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         mRepoTasksViewModel.getExecPending().observe(this, this::toggleProgressDialog);
 
         mRepoTasksViewModel.getPromptCredentials().observe(this, promptCredentials -> {
-
             toggleDialog(promptCredentials, mCredsDialog);
         });
 
@@ -75,6 +76,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         });
 
         mRepoTasksViewModel.getPromptCheckout().observe(this, show -> {
+            LogMsg(mRepoTasksViewModel.mState.getPendingTask().toString());
             if (show) {
                 mCheckoutDialog = CheckoutDialog.newInstance();
                 showDialog(mCheckoutDialog);

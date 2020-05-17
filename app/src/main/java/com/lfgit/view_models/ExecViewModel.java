@@ -46,7 +46,7 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     Application mApplication;
     GitExec mGitExec;
     RepoRepository mRepository;
-    TaskState mState = new TaskState(FOR_APP, NONE);
+    public TaskState mState = new TaskState(FOR_APP, NONE);
 
     private MutableLiveData<ExecResult> mExecResult = new MutableLiveData<>();
     private SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
