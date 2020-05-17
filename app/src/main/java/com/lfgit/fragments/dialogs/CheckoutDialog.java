@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -22,6 +23,7 @@ import java.util.Objects;
 public class CheckoutDialog extends DialogFragment {
     private EditText mBranch;
     private RepoTasksViewModel viewModel;
+    private View view;
 
     public CheckoutDialog() {
         // empty constructor required
@@ -34,15 +36,22 @@ public class CheckoutDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        View view = inflater.inflate(R.layout.checkout_layout, null, false);
+        view = inflater.inflate(R.layout.checkout_layout, null, false);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(RepoTasksViewModel.class);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setView(view);
 
+        return alertDialogBuilder.create();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState)
+    {
+        viewModel = new ViewModelProvider(getActivity()).get(RepoTasksViewModel.class);
         mBranch = view.findViewById(R.id.branchEditText);
         Button mEnterButton = view.findViewById(R.id.enterButton);
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
-        alertDialogBuilder.setView(view);
         mEnterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,7 +59,13 @@ public class CheckoutDialog extends DialogFragment {
                 viewModel.handleCheckoutBranch(branch);
             }
         });
-        return alertDialogBuilder.create();
+        return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        view = null;
+        super.onDestroyView();
     }
 
     @Override
