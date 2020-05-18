@@ -2,6 +2,14 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="repoTasksViewModel"
+            type="com.lfgit.view_models.RepoTasksViewModel"/>
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -23,6 +31,7 @@
             android:autofillHints="Directory"
             android:hint="@string/branch_name"
             android:inputType="text"
+            android:text="@={repoTasksViewModel.branch}"
             bind:layout_constraintStart_toStartOf="@+id/titleTextView"
             bind:layout_constraintTop_toBottomOf="@+id/titleTextView"
             bind:layout_constraintEnd_toEndOf="parent">
@@ -33,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/smallSpace"
             android:text="@string/enter_button"
+            android:onClick="@{() -> repoTasksViewModel.handleCheckoutBranch()}"
             bind:layout_constraintStart_toStartOf="@+id/branchEditText"
             bind:layout_constraintTop_toBottomOf="@+id/branchEditText">
         </Button>

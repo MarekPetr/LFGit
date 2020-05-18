@@ -33,9 +33,21 @@ public class RepoTasksViewModel extends ExecViewModel {
     private SingleLiveEvent<Boolean> mPromptCredentials = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptRemote = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptCommit = new SingleLiveEvent<>();
-    private SingleLiveEvent<Boolean> mPromptCheckout = new SingleLiveEvent<>();
+
+    public MutableLiveData<Boolean> getPromptCheckout() {
+        return mPromptCheckout;
+    }
+
+    public void setPromptCheckout(MutableLiveData<Boolean> mPromptCheckout) {
+        this.mPromptCheckout = mPromptCheckout;
+    }
+
+    private MutableLiveData<Boolean> mPromptCheckout = new MutableLiveData<>();
+
     private SingleLiveEvent<Boolean> mPromptPattern = new SingleLiveEvent<>();
     private String mTempRemoteURL;
+
+    public MutableLiveData<String> branch = new MutableLiveData<>();
 
     public RepoTasksViewModel(@NonNull Application application) {
         super(application);
@@ -135,12 +147,12 @@ public class RepoTasksViewModel extends ExecViewModel {
 
     private void gitCheckoutLocal() {
         mState.newState(FOR_USER, CHECKOUT_LOCAL);
-        setPromptCheckout(true);
+        mPromptCheckout.setValue(true);
     }
 
     private void gitCheckoutRemote() {
         mState.newState(FOR_USER, CHECKOUT_REMOTE);
-        setPromptCheckout(true);
+        mPromptCheckout.setValue(true);
     }
 
     private void lfsTrackPattern() {
@@ -243,14 +255,15 @@ public class RepoTasksViewModel extends ExecViewModel {
     }
 
     /** Handle a branch to checkout */
-    public void handleCheckoutBranch(String branch) {
-        if (!StringUtils.isBlank(branch)) {
-            setPromptCheckout(false);
+    public void handleCheckoutBranch() {
+        String branchName = branch.getValue();
+        if (!StringUtils.isBlank(branchName)) {
+            mPromptCheckout.setValue(false);
             mState.setInnerState(FOR_USER);
             if (mState.getPendingTask() == CHECKOUT_LOCAL) {
-                mGitExec.checkoutLocal(getRepoPath(), branch);
+                mGitExec.checkoutLocal(getRepoPath(), branchName);
             } else {
-                mGitExec.checkoutRemote(getRepoPath(), branch);
+                mGitExec.checkoutRemote(getRepoPath(), branchName);
             }
         } else {
             setShowToast(getAppString(R.string.enter_branch));
@@ -384,12 +397,6 @@ public class RepoTasksViewModel extends ExecViewModel {
         mPromptCommit.setValue(prompt);
     }
 
-    public SingleLiveEvent<Boolean> getPromptCheckout() {
-        return mPromptCheckout;
-    }
-    public void setPromptCheckout(Boolean prompt) {
-        mPromptCheckout.setValue(prompt);
-    }
     public SingleLiveEvent<Boolean> getPromptPattern() {
         return mPromptPattern;
     }
@@ -398,6 +405,14 @@ public class RepoTasksViewModel extends ExecViewModel {
     }
     public SingleLiveEvent<String> getNoRepo() {
         return mNoRepo;
+    }
+
+    public MutableLiveData<String> getBranch() {
+        return branch;
+    }
+
+    public void setBranch(MutableLiveData<String> branch) {
+        this.branch = branch;
     }
 
 }
