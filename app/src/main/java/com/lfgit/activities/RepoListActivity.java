@@ -21,8 +21,11 @@ import com.lfgit.R;
 import com.lfgit.adapters.RepoListAdapter;
 import com.lfgit.databinding.ActivityRepoListBinding;
 import com.lfgit.fragments.InstallFragment;
+import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.UriHelper;
 import com.lfgit.view_models.RepoListViewModel;
+
+import java.io.File;
 
 /**
  * An activity implementing list of repositories and initial installation.
@@ -141,11 +144,18 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
                 // Get the URI of a repository to add
                 Uri uri = intent.getData();
                 String path = UriHelper.getDirPath(this, uri);
-                if (path != null) {
+                if (Constants.isWritablePath(path)) {
                     mRepoListViewModel.addLocalRepo(path);
                 } else {
-                    showToastMsg(getString (R. string.internal_storage_only));
+                    showToastMsg(getApplication().getString(R.string.no_write_dir));
                 }
+
+                /*File f = new File(path);
+                if(!f.canWrite()) {
+                    showToastMsg(getApplication().getString(R.string.no_write_dir));
+                } else {
+                    mRepoListViewModel.addLocalRepo(path);
+                }*/
             }
         }
     }

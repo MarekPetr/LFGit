@@ -10,6 +10,8 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
+import java.io.File;
+
 /**
  * Helper class providing storage URIs
  * */
@@ -52,8 +54,7 @@ public class UriHelper {
                     }
                     return Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
-                // TODO handle non-primary volumes
-                return null;
+                return "storage" + "/" + docId.replace(":","/");
 
             }
             // DownloadsProvider
@@ -160,4 +161,6 @@ public class UriHelper {
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
+
+
 }
