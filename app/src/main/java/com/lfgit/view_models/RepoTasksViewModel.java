@@ -33,16 +33,7 @@ public class RepoTasksViewModel extends ExecViewModel {
     private SingleLiveEvent<Boolean> mPromptCredentials = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptRemote = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mPromptCommit = new SingleLiveEvent<>();
-
-    public MutableLiveData<Boolean> getPromptCheckout() {
-        return mPromptCheckout;
-    }
-
-    public void setPromptCheckout(MutableLiveData<Boolean> mPromptCheckout) {
-        this.mPromptCheckout = mPromptCheckout;
-    }
-
-    private MutableLiveData<Boolean> mPromptCheckout = new MutableLiveData<>();
+    private SingleLiveEvent<Boolean> mPromptCheckout = new SingleLiveEvent<>();
 
     private SingleLiveEvent<Boolean> mPromptPattern = new SingleLiveEvent<>();
     private String mTempRemoteURL;
@@ -147,12 +138,12 @@ public class RepoTasksViewModel extends ExecViewModel {
 
     private void gitCheckoutLocal() {
         mState.newState(FOR_USER, CHECKOUT_LOCAL);
-        mPromptCheckout.setValue(true);
+        setPromptCheckout(true);
     }
 
     private void gitCheckoutRemote() {
         mState.newState(FOR_USER, CHECKOUT_REMOTE);
-        mPromptCheckout.setValue(true);
+        setPromptCheckout(true);
     }
 
     private void lfsTrackPattern() {
@@ -258,7 +249,7 @@ public class RepoTasksViewModel extends ExecViewModel {
     public void handleCheckoutBranch() {
         String branchName = branch.getValue();
         if (!StringUtils.isBlank(branchName)) {
-            mPromptCheckout.setValue(false);
+            setPromptCheckout(false);
             mState.setInnerState(FOR_USER);
             if (mState.getPendingTask() == CHECKOUT_LOCAL) {
                 mGitExec.checkoutLocal(getRepoPath(), branchName);
@@ -403,6 +394,14 @@ public class RepoTasksViewModel extends ExecViewModel {
     public void setPromptPattern(Boolean prompt) {
         mPromptPattern.setValue(prompt);
     }
+
+    public SingleLiveEvent<Boolean> getPromptCheckout() {
+        return mPromptCheckout;
+    }
+    public void setPromptCheckout(Boolean prompt) {
+        mPromptCheckout.setValue(prompt);
+    }
+
     public SingleLiveEvent<String> getNoRepo() {
         return mNoRepo;
     }

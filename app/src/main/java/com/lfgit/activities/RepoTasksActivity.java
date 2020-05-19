@@ -1,5 +1,6 @@
 package com.lfgit.activities;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
@@ -64,56 +65,66 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         mRepoTasksViewModel.getExecPending().observe(this, this::toggleProgressDialog);
 
         mRepoTasksViewModel.getPromptCredentials().observe(this, promptCredentials -> {
-            toggleDialog(promptCredentials, mCredsDialog);
+            toggleDialog(promptCredentials, mCredsDialog, "credsDialog");
         });
 
         mRepoTasksViewModel.getPromptAddRemote().observe(this, promptRemote -> {
-            toggleDialog(promptRemote, mRemoteDialog);
+            toggleDialog(promptRemote, mRemoteDialog, "remoteDialog");
         });
 
         mRepoTasksViewModel.getPromptCommit().observe(this, promptCommit -> {
-            toggleDialog(promptCommit, mCommitDialog);
+            toggleDialog(promptCommit, mCommitDialog, "commitDialog");
         });
 
         mRepoTasksViewModel.getPromptCheckout().observe(this, show -> {
+            String tag = "checkoutDialog";
             LogMsg(mRepoTasksViewModel.mState.getPendingTask().toString());
             if (show) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                Fragment prev = getSupportFragmentManager().findFragmentByTag(tag);
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                // save transaction to the back stack
+                ft.addToBackStack(tag);
                 mCheckoutDialog = CheckoutDialog.newInstance();
-                showDialog(mCheckoutDialog);
+                mCheckoutDialog.show(ft, tag);
             } else {
-                hideDialog(mCheckoutDialog);
+                hideDialog(tag);
             }
         });
         mRepoTasksViewModel.getPromptPattern().observe(this, promptPattern -> {
-            toggleDialog(promptPattern, mPatternDialog);
+            String tag = "patternDialog";
+            toggleDialog(promptPattern, mPatternDialog, tag);
         });
 
         mRepoTasksViewModel.getShowToast().observe(this, this::showToastMsg);
     }
 
-    private void hideDialog(DialogFragment dialog) {
+    private void hideDialog(String tag) {
+        Fragment dialog = getSupportFragmentManager().findFragmentByTag(tag);
         if (dialog != null) {
-            dialog.dismiss();
+            DialogFragment df = (DialogFragment) dialog;
+            df.dismiss();
         }
     }
 
-    private void showDialog(DialogFragment dialog) {
-        String dialogTag = "dialog";
+    private void showDialog(DialogFragment dialog, String tag) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        // save transaction to the back stack
-        Fragment prev = getSupportFragmentManager().findFragmentByTag(dialogTag);
+        Fragment prev = getSupportFragmentManager().findFragmentByTag(tag);
         if (prev != null) {
             ft.remove(prev);
         }
+        // save transaction to the back stack
         ft.addToBackStack(null);
-        dialog.show(ft, dialogTag);
+        dialog.show(ft, tag);
     }
 
-    private void toggleDialog(Boolean show, DialogFragment dialog) {
+    private void toggleDialog(Boolean show, DialogFragment dialog, String tag) {
         if (show) {
-            showDialog(dialog);
+            showDialog(dialog, tag);
         } else {
-            hideDialog(dialog);
+            hideDialog(tag);
         }
     }
 
