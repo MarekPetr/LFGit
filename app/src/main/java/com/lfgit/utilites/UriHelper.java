@@ -54,12 +54,10 @@ public class UriHelper {
                     }
                     return Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
-                return "storage" + "/" + docId.replace(":","/");
-
+                return "/storage" + "/" + docId.replace(":","/");
             }
             // DownloadsProvider
             else if (isDownloadsDocument(uri)) {
-
                 final String id = DocumentsContract.getDocumentId(uri);
                 final Uri contentUri = ContentUris.withAppendedId(
                         Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
@@ -161,6 +159,4 @@ public class UriHelper {
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
-
-
 }
