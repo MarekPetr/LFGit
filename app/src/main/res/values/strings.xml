@@ -4,6 +4,7 @@
 
     <string name="install_progress_title">Installing</string>
     <string name="install_progress_msg">Please wait a moment…</string>
+    <string name="no_write_dir">Target directory is not writable</string>
 
     <!-- menu_repo_list -->
     <string name="menu_settings">Settings</string>
@@ -43,7 +44,6 @@
     <string name="origin_added">Remote origin added</string>
     <string name="origin_set">Remote origin set</string>
     <string name="add_remote">Please add a remote</string>
-
 
     <!-- activity_repo_tasks -->
     <string name="task_result_title">Task result</string>

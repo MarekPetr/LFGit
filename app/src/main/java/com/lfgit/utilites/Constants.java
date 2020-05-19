@@ -3,6 +3,8 @@ import android.os.Environment;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+
 public class Constants {
     public static final String PKG = "com.lfgit/";
     public static final String APP_DIR = "/data/data" + "/" + PKG;
@@ -15,6 +17,7 @@ public class Constants {
     public static final String GIT_CORE_DIR = FILES_DIR + "/libexec/git-core";
     public static final String HOOKS_DIR = FILES_DIR + "/hooks";
     public static String EXT_STORAGE = Environment.getExternalStorageDirectory().toString() + "/";
+
 
     /** Pending Git Task */
     public enum PendingTask {
@@ -52,5 +55,23 @@ public class Constants {
         GET_REMOTE_GIT,
         ADD_ORIGIN_REMOTE,
         SET_ORIGIN_REMOTE,
+    }
+
+    /**
+     *  Make directories if they don't exist yet.
+     *  Return path as a File.
+     */
+    public static Boolean isWritablePath(String path) {
+        File f = mkdirsIfNotExist(path);
+        return f.canWrite();
+    }
+
+    /** Make directories if they don't exist yet, return path as a File */
+    public static File mkdirsIfNotExist(String path) {
+        File f = new File(path);
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        return f;
     }
 }
