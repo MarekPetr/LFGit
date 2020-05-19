@@ -1,6 +1,7 @@
 package com.lfgit.executors;
 
 import com.lfgit.database.model.Repo;
+import com.lfgit.utilites.Constants;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -22,13 +23,6 @@ public class GitExec {
         executor = new BinaryExecutor(callback);
     }
 
-    /** Make directories if they don't exist yet */
-    private void mkdirsIfNotExist(String path) {
-        File f = new File(path);
-        if (!f.exists()) {
-            f.mkdirs();
-        }
-    }
 
     /** Check if directory is a Git repository */
     public void isRepo(String path) {
@@ -58,7 +52,7 @@ public class GitExec {
 
     public void init(String localPath) {
         String gitOperation = "init";
-        mkdirsIfNotExist(localPath);
+        Constants.mkdirsIfNotExist(localPath);
         executor.run(gitPath, localPath, gitOperation);
     }
 
@@ -69,7 +63,7 @@ public class GitExec {
 
     public void clone(String localPath, String remoteURL) {
         String gitOperation = "clone";
-        mkdirsIfNotExist(localPath);
+        Constants.mkdirsIfNotExist(localPath);
         executor.run(gitPath, localPath, gitOperation, remoteURL);
     }
 

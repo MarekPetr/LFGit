@@ -13,9 +13,9 @@ import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.util.List;
 
-import static com.lfgit.utilites.Constants.EXT_STORAGE;
 import static com.lfgit.utilites.Constants.PendingTask.*;
 import static com.lfgit.utilites.Constants.InnerState.*;
 
@@ -70,7 +70,7 @@ public class AddRepoViewModel extends ExecViewModel {
             return;
         }
         String fullRepoPath = getFullCloneRepoPath();
-        if (!isInternalStorage(fullRepoPath)) return;
+
         if (repoAlreadyAdded(fullRepoPath)) return;
 
         Boolean isShallow = isShallowClone.getValue();
@@ -80,31 +80,32 @@ public class AddRepoViewModel extends ExecViewModel {
                 setShowToast(getAppString(R.string.clone_enter_depth));
                 return;
             }
+            if (!ifNotWritableShowToast(cloneRepoPath)) return;
             mState = new TaskState(FOR_USER, SHALLOW_CLONE);
             mGitExec.shallowClone(cloneRepoPath, cloneURLPath, depth);
         } else {
+            if (!ifNotWritableShowToast(cloneRepoPath)) return;
             mState = new TaskState(FOR_USER, CLONE);
             mGitExec.clone(cloneRepoPath, cloneURLPath);
         }
     }
 
-    /** Handle an initialize request */
+    /** Handle the repository init request */
     public void initRepoHandler() {
         if (StringUtils.isBlank(initRepoPath)) {
             setShowToast(getAppString(R.string.init_enter_dir));
             return;
         }
-        if (!isInternalStorage(initRepoPath)) return;
-        if (repoAlreadyAdded(initRepoPath)) return;
 
+        if (repoAlreadyAdded(initRepoPath)) return;
+        if (!ifNotWritableShowToast(initRepoPath)) return;
         mState = new TaskState(FOR_USER, INIT);
         mGitExec.init(initRepoPath);
     }
 
-    /** Check is given path is in the internal storage */
-    private Boolean isInternalStorage(String path) {
-        if (!path.startsWith(EXT_STORAGE)) {
-            setShowToast(getAppString(R.string.add_internal_only));
+    private Boolean ifNotWritableShowToast(String path) {
+        if (!Constants.isWritablePath(path)) {
+            setShowToast(getAppString(R.string.no_write_dir));
             return false;
         }
         return true;
