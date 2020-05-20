@@ -8,12 +8,10 @@ import com.lfgit.R;
 import com.lfgit.database.model.Repo;
 import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.TaskState;
-import com.lfgit.utilites.UriHelper;
 import com.lfgit.view_models.Events.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
 import java.util.List;
 
 import static com.lfgit.utilites.Constants.PendingTask.*;
@@ -104,6 +102,7 @@ public class AddRepoViewModel extends ExecViewModel {
     }
 
     private Boolean ifNotWritableShowToast(String path) {
+        Constants.mkdirsIfNotExist(path);
         if (!Constants.isWritablePath(path)) {
             setShowToast(getAppString(R.string.no_write_dir));
             return false;
@@ -172,7 +171,7 @@ public class AddRepoViewModel extends ExecViewModel {
         this.cloneRepoPath = cloneRepoPath;
     }
     private String getFullCloneRepoPath() {
-        return (cloneRepoPath + "/" + UriHelper.getGitDir(cloneURLPath));
+        return (cloneRepoPath + "/" + Constants.getGitDir(cloneURLPath));
     }
     public String getCloneURLPath() {
         return cloneURLPath;

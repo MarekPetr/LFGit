@@ -57,21 +57,31 @@ public class Constants {
         SET_ORIGIN_REMOTE,
     }
 
-    /**
-     *  Make directories if they don't exist yet.
-     *  Return path as a File.
-     */
+    /** Check if path is writable. */
     public static Boolean isWritablePath(String path) {
-        File f = mkdirsIfNotExist(path);
+        File f = new File(path);
         return f.canWrite();
     }
 
-    /** Make directories if they don't exist yet, return path as a File */
+    /** Make directories if they don't exist yet.
+     *  Returns path as a File.
+     * */
     public static File mkdirsIfNotExist(String path) {
         File f = new File(path);
         if (!f.exists()) {
             f.mkdirs();
         }
         return f;
+    }
+
+    /** Returns the Git directory name ( = the project name) */
+    public static String getGitDir(String path) {
+        String lastPathSegment = path.substring(path.lastIndexOf("/") + 1);
+
+        int index = lastPathSegment.lastIndexOf(".git");
+        if (index > 0) {
+            lastPathSegment = lastPathSegment.substring(0, index);
+        }
+        return lastPathSegment;
     }
 }
