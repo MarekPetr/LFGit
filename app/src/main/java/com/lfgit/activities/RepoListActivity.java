@@ -27,6 +27,8 @@ import com.lfgit.view_models.RepoListViewModel;
 
 import java.io.File;
 
+import static com.lfgit.utilites.Logger.LogMsg;
+
 /**
  * An activity implementing list of repositories and initial installation.
  */
@@ -149,13 +151,6 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
                 } else {
                     showToastMsg(getApplication().getString(R.string.no_write_dir));
                 }
-
-                /*File f = new File(path);
-                if(!f.canWrite()) {
-                    showToastMsg(getApplication().getString(R.string.no_write_dir));
-                } else {
-                    mRepoListViewModel.addLocalRepo(path);
-                }*/
             }
         }
     }

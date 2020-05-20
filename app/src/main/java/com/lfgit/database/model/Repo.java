@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.lfgit.utilites.UriHelper;
+import com.lfgit.utilites.Constants;
 
 import java.io.Serializable;
 
@@ -37,7 +37,7 @@ public class Repo implements Serializable {
     }
 
     public String getDisplayName() {
-        return UriHelper.getGitDir(localPath);
+        return Constants.getGitDir(localPath);
     }
 
     public int getId() {

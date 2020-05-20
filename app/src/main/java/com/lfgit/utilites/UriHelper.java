@@ -11,24 +11,14 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
 import java.io.File;
+import java.util.Arrays;
+
+import static com.lfgit.utilites.Logger.LogMsg;
 
 /**
  * Helper class providing storage URIs
  * */
 public class UriHelper {
-
-    public static String getGitDir(String path) {
-        Uri uri = Uri.parse(path);
-        // get directory from URI
-        String lastPathSegment = uri.getLastPathSegment();
-        if (lastPathSegment == null) return path;
-
-        int index = lastPathSegment.lastIndexOf(".git");
-        if (index > 0) {
-            lastPathSegment = lastPathSegment.substring(0, index);
-        }
-        return lastPathSegment;
-    }
 
     public static String getDirPath(final Context context, final Uri uri) {
         Uri DocUri = DocumentsContract.buildDocumentUriUsingTree(uri,
@@ -45,16 +35,20 @@ public class UriHelper {
             // ExternalStorageProvider
             if (isExternalStorageDocument(uri)) {
                 final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
+                final String[] split = docId.split(":", 2);
 
-                if ("primary".equalsIgnoreCase(type)) {
-                    if (split.length == 1) {
+                if ("primary".equalsIgnoreCase(split[0])) {
+                    if (split[1].equals("")) {
                         return Environment.getExternalStorageDirectory().toString();
                     }
                     return Environment.getExternalStorageDirectory() + "/" + split[1];
+                } else {
+                    String rootStorage = "/storage/" + split[0];
+                    if (split[1].equals("")) {
+                        return rootStorage;
+                    }
+                    return rootStorage + "/" + split[1];
                 }
-                return "/storage" + "/" + docId.replace(":","/");
             }
             // DownloadsProvider
             else if (isDownloadsDocument(uri)) {
