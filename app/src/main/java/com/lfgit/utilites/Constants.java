@@ -76,6 +76,9 @@ public class Constants {
 
     /** Returns the Git directory name ( = the project name) */
     public static String getGitDir(String path) {
+        if (path.endsWith("/")) {
+            path = path.substring(0, path.length() - 1);
+        }
         String lastPathSegment = path.substring(path.lastIndexOf("/") + 1);
 
         int index = lastPathSegment.lastIndexOf(".git");
