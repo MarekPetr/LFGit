@@ -48,7 +48,7 @@ public class AddRepoViewModel extends ExecViewModel {
     }
 
     private Boolean repoAlreadyAdded(String path) {
-        path = removeEndingForwardSlash(path);
+        path = removeEndingForwardSlashes(path);
         for (Repo repo : mAllRepos) {
             if (path.equals(repo.getLocalPath())) {
                 setShowToast(getAppString(R.string.repoAlreadyAdded));
@@ -135,8 +135,8 @@ public class AddRepoViewModel extends ExecViewModel {
 
             // clone to directory of clone URL
             String fullRepoPath = getFullCloneRepoPath();
-            String path = removeEndingForwardSlash(fullRepoPath);
-            Repo repo = new Repo(path, cloneURLPath);
+            String URL = removeEndingForwardSlashes(cloneURLPath);
+            Repo repo = new Repo(fullRepoPath, URL);
             mRepository.insertRepo(repo);
             mCloneResult.setValue(toastMsg);
         } else {
@@ -146,7 +146,7 @@ public class AddRepoViewModel extends ExecViewModel {
     /** Insert an initialized repository to the database */
     private void insertInitRepo(String result, int errCode) {
         if (errCode == 0) {
-            String path = removeEndingForwardSlash(initRepoPath);
+            String path = removeEndingForwardSlashes(initRepoPath);
             mRepository.insertRepo(new Repo(path, getAppString(R.string.local_repo)));
             mInitResult.setValue(getAppString(R.string.init_success));
         } else {
@@ -154,12 +154,9 @@ public class AddRepoViewModel extends ExecViewModel {
         }
     }
 
-    /** Returns path without an ending forward slash character */
-    private String removeEndingForwardSlash(String path) {
-        if (path.endsWith("/")) {
-            return path.substring(0, path.length() - 1);
-        }
-        return path;
+    /** Returns path without ending forward slashes */
+    private String removeEndingForwardSlashes(String path) {
+        return path.replaceAll("/+$", "");
     }
 
     public SingleLiveEvent<String> getCloneResult() {
@@ -181,8 +178,9 @@ public class AddRepoViewModel extends ExecViewModel {
         this.cloneRepoPath = cloneRepoPath;
     }
     private String getFullCloneRepoPath() {
-        String path = removeEndingForwardSlash(cloneRepoPath);
-        return (path + "/" + Constants.getGitDir(cloneURLPath));
+        String path = removeEndingForwardSlashes(cloneRepoPath);
+        String URL = removeEndingForwardSlashes(cloneURLPath);
+        return (path + "/" + Constants.getGitDir(URL));
     }
     public String getCloneURLPath() {
         return cloneURLPath;

@@ -222,7 +222,7 @@ public class RepoTasksViewModel extends ExecViewModel implements
         }
     }
 
-    /** Handle new remote URL */
+    /** Handle a new remote URL */
     @Override
     public void handleRemoteURL(String remoteURL) {
         if (!StringUtils.isBlank(remoteURL)) {
