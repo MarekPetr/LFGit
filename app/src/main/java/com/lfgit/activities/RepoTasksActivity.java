@@ -1,6 +1,5 @@
 package com.lfgit.activities;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
@@ -29,7 +28,6 @@ import static com.lfgit.utilites.Logger.LogMsg;
 public class RepoTasksActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;
-    private ActivityRepoTasksBinding mBinding;
     private CredentialsDialog mCredsDialog;
     private RemoteDialog mRemoteDialog;
     private CommitDialog mCommitDialog;
@@ -42,7 +40,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repo_tasks);
 
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_tasks);
+        ActivityRepoTasksBinding mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_tasks);
         mRepoTasksViewModel = new ViewModelProvider(this).get(RepoTasksViewModel.class);
         mBinding.setRepoTasksViewModel(mRepoTasksViewModel);
         mBinding.setLifecycleOwner(this);
