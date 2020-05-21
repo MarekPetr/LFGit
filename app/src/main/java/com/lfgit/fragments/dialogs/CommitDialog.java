@@ -18,6 +18,6 @@ public class CommitDialog extends EnterTextDialog {
 
     @Override
     int getDialogLayoutID() {
-        return R.layout.commit_dialog_layout;
+        return R.layout.commit_dialog;
     }
 }

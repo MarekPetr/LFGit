@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -40,7 +39,7 @@ public class CredentialsDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Activity activity = requireActivity();
         LayoutInflater inflater = LayoutInflater.from(activity);
-        view = inflater.inflate(R.layout.credentials_dialog_layout, null, false);
+        view = inflater.inflate(R.layout.credentials_dialog, null, false);
 
         viewModel = new ViewModelProvider((ViewModelStoreOwner) activity).get(RepoTasksViewModel.class);
 

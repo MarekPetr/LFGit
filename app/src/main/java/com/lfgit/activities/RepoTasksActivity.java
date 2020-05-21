@@ -64,30 +64,24 @@ public class RepoTasksActivity extends BasicAbstractActivity {
 
         mRepoTasksViewModel.getExecPending().observe(this, this::toggleProgressDialog);
 
-        mRepoTasksViewModel.getPromptCredentials().observe(this, promptCredentials -> {
-            toggleDialog(promptCredentials, mCredsDialog, "credsDialog");
+        mRepoTasksViewModel.getPromptCredentials().observe(this, show -> {
+            toggleDialog(show, mCredsDialog, "credsDialog");
         });
 
-        mRepoTasksViewModel.getPromptAddRemote().observe(this, promptRemote -> {
-            toggleDialog(promptRemote, mRemoteDialog, "remoteDialog");
+        mRepoTasksViewModel.getPromptAddRemote().observe(this, show -> {
+            toggleDialog(show, mRemoteDialog, "remoteDialog");
         });
 
-        mRepoTasksViewModel.getPromptCommit().observe(this, promptCommit -> {
-            toggleDialog(promptCommit, mCommitDialog, "commitDialog");
+        mRepoTasksViewModel.getPromptCommit().observe(this, show -> {
+            toggleDialog(show, mCommitDialog, "commitDialog");
         });
 
         mRepoTasksViewModel.getPromptCheckout().observe(this, show -> {
-            String tag = "checkoutDialog";
-            if (show) {
-                mCheckoutDialog = CheckoutDialog.newInstance();
-                showDialog(mCheckoutDialog, tag);
-            } else {
-                hideDialog(tag);
-            }
+            toggleDialog(show, mCheckoutDialog, "checkoutDialog");
         });
-        mRepoTasksViewModel.getPromptPattern().observe(this, promptPattern -> {
-            String tag = "patternDialog";
-            toggleDialog(promptPattern, mPatternDialog, tag);
+
+        mRepoTasksViewModel.getPromptPattern().observe(this, show -> {
+            toggleDialog(show, mPatternDialog, "patternDialog");
         });
 
         mRepoTasksViewModel.getShowToast().observe(this, this::showToastMsg);
@@ -107,8 +101,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         if (prev != null) {
             ft.remove(prev);
         }
-        // save transaction to the back stack
-        ft.addToBackStack(null);
+        ft.addToBackStack(tag);
         dialog.show(ft, tag);
     }
 
@@ -121,6 +114,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
     }
 
     private void setupDialogs() {
+        mCheckoutDialog = CheckoutDialog.newInstance();
         mCommitDialog = CommitDialog.newInstance();
         mCredsDialog = CredentialsDialog.newInstance();
         mRemoteDialog = RemoteDialog.newInstance();

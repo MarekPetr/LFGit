@@ -84,10 +84,10 @@
     <string name="credentials_title">Enter remote credentials:</string>
     <string name="enter_button">ENTER</string>
 
-    <!-- add_remote_dialog -->
+    <!-- remote_dialog -->
     <string name="add_remote_title">Enter remote path for origin:</string>
 
-    <!-- commit_dialog_layout -->
+    <!-- commit_dialog -->
     <string name="commit_msg">Commit Message</string>
     <string name="commit_title">Enter commit message</string>
 
@@ -95,7 +95,7 @@
     <string name="branch_name">Branch</string>
     <string name="checkout_title">Enter branch to checkout</string>
 
-    <!-- pattern_dialog_layout -->
+    <!-- pattern_dialog -->
     <string name="pattern_title">Enter pattern</string>
     <string name="pattern_hint">Pattern</string>
 
