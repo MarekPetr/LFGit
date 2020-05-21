@@ -246,15 +246,14 @@ public class RepoTasksViewModel extends ExecViewModel {
     }
 
     /** Handle a branch to checkout */
-    public void handleCheckoutBranch() {
-        String branchName = branch.getValue();
-        if (!StringUtils.isBlank(branchName)) {
+    public void handleCheckoutBranch(String branch) {
+        if (!StringUtils.isBlank(branch)) {
             setPromptCheckout(false);
             mState.setInnerState(FOR_USER);
             if (mState.getPendingTask() == CHECKOUT_LOCAL) {
-                mGitExec.checkoutLocal(getRepoPath(), branchName);
+                mGitExec.checkoutLocal(getRepoPath(), branch);
             } else {
-                mGitExec.checkoutRemote(getRepoPath(), branchName);
+                mGitExec.checkoutRemote(getRepoPath(), branch);
             }
         } else {
             setShowToast(getAppString(R.string.enter_branch));

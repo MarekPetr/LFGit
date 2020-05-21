@@ -78,17 +78,9 @@ public class RepoTasksActivity extends BasicAbstractActivity {
 
         mRepoTasksViewModel.getPromptCheckout().observe(this, show -> {
             String tag = "checkoutDialog";
-            LogMsg(mRepoTasksViewModel.mState.getPendingTask().toString());
             if (show) {
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                Fragment prev = getSupportFragmentManager().findFragmentByTag(tag);
-                if (prev != null) {
-                    ft.remove(prev);
-                }
-                // save transaction to the back stack
-                ft.addToBackStack(tag);
                 mCheckoutDialog = CheckoutDialog.newInstance();
-                mCheckoutDialog.show(ft, tag);
+                showDialog(mCheckoutDialog, tag);
             } else {
                 hideDialog(tag);
             }
@@ -135,8 +127,6 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         mPatternDialog = PatternDialog.newInstance();
     }
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_repo_detail, menu);
@@ -173,4 +163,5 @@ public class RepoTasksActivity extends BasicAbstractActivity {
     public void openDrawer() {
         mDrawerLayout.openDrawer(mRightDrawer);
     }
+
 }

@@ -14,6 +14,8 @@ import com.lfgit.R;
 import com.lfgit.utilites.UriHelper;
 import com.lfgit.view_models.AddRepoViewModel;
 
+import static com.lfgit.utilites.Logger.LogMsg;
+
 /**
  * Init/Clone activity
  */

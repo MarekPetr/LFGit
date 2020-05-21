@@ -3,7 +3,6 @@ package com.lfgit.view_models;
 import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.database.RepoRepository;
 import com.lfgit.executors.ExecListener;
@@ -46,9 +45,9 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     Application mApplication;
     GitExec mGitExec;
     RepoRepository mRepository;
-    public TaskState mState = new TaskState(FOR_APP, NONE);
+    public TaskState mState;
 
-    private MutableLiveData<ExecResult> mExecResult = new MutableLiveData<>();
+    private SingleLiveEvent<ExecResult> mExecResult = new SingleLiveEvent<>();
     private SingleLiveEvent<String> mShowToast = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> mExecPending = new SingleLiveEvent<>();
 
@@ -57,6 +56,7 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
         mApplication = application;
         mRepository = new RepoRepository(application);
         mGitExec = new GitExec(this);
+        mState = new TaskState(FOR_APP, NONE);
     }
 
     String getAppString(int resId) {
@@ -123,7 +123,7 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
         mShowToast.postValue(message);
     }
 
-    public MutableLiveData<ExecResult> getExecResult() {
+    public SingleLiveEvent<ExecResult> getExecResult() {
         return mExecResult;
     }
     public void postExecResult(ExecResult execResult) {

@@ -19,44 +19,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class RemoteDialog extends DialogFragment {
-    private RepoTasksViewModel viewModel;
-    private EditText mRemoteURL;
-
+public class RemoteDialog extends EnterTextDialog {
     public RemoteDialog() {
         // empty constructor required
     }
 
     public static RemoteDialog newInstance() {
-        RemoteDialog dialog = new RemoteDialog();
-        return dialog;
+        return new RemoteDialog();
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        View view = inflater.inflate(R.layout.add_remote_layout, null, false);
-
-        viewModel = new ViewModelProvider(requireActivity()).get(RepoTasksViewModel.class);
-
-        mRemoteURL = view.findViewById(R.id.remotePathEditText);
-        Button mEnterButton = view.findViewById(R.id.enterButton);
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
-        alertDialogBuilder.setView(view);
-        mEnterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String remoteURL = mRemoteURL.getText().toString();
-                viewModel.handleRemoteURL(remoteURL);
-            }
-        });
-        return alertDialogBuilder.create();
+    void handleText(String text) {
+        viewModel.handleRemoteURL(text);
     }
 
     @Override
-    public void onCancel(@NotNull DialogInterface dialog) {
-        super.onCancel(dialog);
-        viewModel.startState();
+    int getDialogLayoutID() {
+        return R.layout.add_remote_dialog;
     }
 }

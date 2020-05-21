@@ -19,45 +19,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class PatternDialog extends DialogFragment {
-    private RepoTasksViewModel viewModel;
-    private EditText mPatternEditText;
-    private Button mEnterButton;
-
+public class PatternDialog extends EnterTextDialog {
     public PatternDialog() {
         // empty constructor required
     }
 
     public static PatternDialog newInstance() {
-        PatternDialog dialog = new PatternDialog();
-        return dialog;
+        return new PatternDialog();
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        View view = inflater.inflate(R.layout.pattern_dialog_layout, null, false);
-
-        viewModel = new ViewModelProvider(requireActivity()).get(RepoTasksViewModel.class);
-
-        mPatternEditText = view.findViewById(R.id.patternEditText);
-        mEnterButton = view.findViewById(R.id.enterButton);
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
-        alertDialogBuilder.setView(view);
-        mEnterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String commitMsg = mPatternEditText.getText().toString();
-                viewModel.handlePattern(commitMsg);
-            }
-        });
-        return alertDialogBuilder.create();
+    void handleText(String text) {
+        viewModel.handlePattern(text);
     }
 
     @Override
-    public void onCancel(@NotNull DialogInterface dialog) {
-        super.onCancel(dialog);
-        viewModel.startState();
+    int getDialogLayoutID() {
+        return R.layout.pattern_dialog_layout;
     }
 }

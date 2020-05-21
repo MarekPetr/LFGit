@@ -84,14 +84,14 @@
     <string name="credentials_title">Enter remote credentials:</string>
     <string name="enter_button">ENTER</string>
 
-    <!-- add_remote_layout -->
+    <!-- add_remote_dialog -->
     <string name="add_remote_title">Enter remote path for origin:</string>
 
     <!-- commit_dialog_layout -->
     <string name="commit_msg">Commit Message</string>
     <string name="commit_title">Enter commit message</string>
 
-    <!-- checkout_dialog_layout -->
+    <!-- checkout_dialog -->
     <string name="branch_name">Branch</string>
     <string name="checkout_title">Enter branch to checkout</string>
 
