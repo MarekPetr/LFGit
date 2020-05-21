@@ -28,7 +28,6 @@ import com.lfgit.view_models.RepoListViewModel;
  * An activity implementing list of repositories and initial installation.
  */
 public class RepoListActivity extends BasicAbstractActivity implements InstallFragment.FragmentCallback {
-    private ActivityRepoListBinding mBinding;
     private RepoListViewModel mRepoListViewModel;
     private RepoListAdapter mRepoListAdapter;
     private SwipeRefreshLayout pullToRefresh;
@@ -51,7 +50,7 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
 
         mRepoListViewModel = new ViewModelProvider(this).get(RepoListViewModel.class);
 
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_list);
+        ActivityRepoListBinding mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_list);
         mBinding.setLifecycleOwner(this);
         mBinding.setRepoListViewModel(mRepoListViewModel);
 

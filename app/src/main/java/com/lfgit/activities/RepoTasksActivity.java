@@ -20,8 +20,6 @@ import com.lfgit.databinding.ActivityRepoTasksBinding;
 import com.lfgit.fragments.dialogs.*;
 import com.lfgit.view_models.RepoTasksViewModel;
 
-import static com.lfgit.utilites.Logger.LogMsg;
-
 /**
  * An activity implementing Git tasks user interface.
  */
