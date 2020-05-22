@@ -6,11 +6,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.R;
 import com.lfgit.database.model.Repo;
-import com.lfgit.fragments.dialogs.CheckoutDialog;
-import com.lfgit.fragments.dialogs.CommitDialog;
-import com.lfgit.fragments.dialogs.PatternDialog;
-import com.lfgit.fragments.dialogs.RemoteDialog;
-import com.lfgit.fragments.dialogs.CredentialsDialog;
 import com.lfgit.utilites.Constants;
 import com.lfgit.view_models.Events.SingleLiveEvent;
 
@@ -314,7 +309,7 @@ public class RepoTasksViewModel extends ExecViewModel {
                 // if the result is empty, set the repository as local
                 mRepo.setRemoteURL(getAppString(R.string.local_repo));
                 mRepository.updateRemoteURL(mRepo);
-                setShowToast(getAppString(R.string.add_remote));
+                setShowToast(getAppString(R.string.no_remote));
             } else {
                 // set remote URL and 'pull' if needed
                 mRepo.setRemoteURL(resultLines[0]);
