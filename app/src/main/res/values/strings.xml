@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">LFGit</string>
-    <string name="dialog_choose_option">Choose option</string>
+    <string name="dialog_choose_option">Choose an option</string>
+    <string name="title_activity_settings">Settings</string>
 
     <string name="install_progress_title">Installing</string>
     <string name="install_progress_msg">Please wait a moment…</string>
@@ -20,18 +21,17 @@
     <string name="repo_not_found">"Repository not found"</string>
 
     <!-- RepoListViewModel -->
-    <string name="not_a_git_repo">Could not find git repository</string>
+    <string name="not_a_git_repo">Could not find a compatible git repository</string>
 
     <string name="local_repo">"Local Repository"</string>
 
     <!-- AddRepoViewModel -->
-    <string name="clone_prompt_info">Please enter remote URL and directory</string>
-    <string name="clone_enter_remote">Enter http/https Remote URL</string>
-    <string name="clone_enter_depth">Please enter depth</string>
+    <string name="clone_prompt_info">Please enter a remote URL and a directory</string>
+    <string name="clone_enter_remote">Enter a http/https Remote URL</string>
+    <string name="clone_enter_depth">Please enter a depth</string>
     <string name="clone_success">Clone succeeded</string>
-    <string name="init_enter_dir">Please enter directory</string>
+    <string name="init_enter_dir">Please enter a directory</string>
     <string name="init_success">Repository initialized</string>
-    <string name="add_internal_only">Please enter internal storage directory</string>
 
     <!-- RepoTasksViewModel -->
     <string name="enter_creds">Please enter username and password</string>
@@ -61,11 +61,6 @@
     <string name="shallow_clone">Shallow clone</string>
     <string name="depth">Depth</string>
 
-    <string name="internal_storage_only">Only internal storage is supported</string>
-    <string name="enter_internal_storage">Please enter internal storage directory</string>
-
-    <string name="title_activity_settings">Settings</string>
-
     <!-- Preference Titles -->
     <string name="git_profile">Git Profile</string>
     <string name="sync_header">Sync</string>
@@ -81,21 +76,21 @@
     <!-- credentials dialog -->
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
-    <string name="credentials_title">Enter remote credentials:</string>
+    <string name="credentials_title">Enter your credentials to the remote server:</string>
     <string name="enter_button">ENTER</string>
 
-    <!-- add_remote_layout -->
-    <string name="add_remote_title">Enter remote path for origin:</string>
+    <!-- remote_dialog -->
+    <string name="add_remote_title">Enter a remote path for origin:</string>
 
-    <!-- commit_dialog_layout -->
+    <!-- commit_dialog -->
     <string name="commit_msg">Commit Message</string>
     <string name="commit_title">Enter commit message</string>
 
-    <!-- checkout_dialog_layout -->
+    <!-- checkout_dialog -->
     <string name="branch_name">Branch</string>
-    <string name="checkout_title">Enter branch to checkout</string>
+    <string name="checkout_title">Enter a branch to checkout</string>
 
-    <!-- pattern_dialog_layout -->
+    <!-- pattern_dialog -->
     <string name="pattern_title">Enter pattern</string>
     <string name="pattern_hint">Pattern</string>
 
