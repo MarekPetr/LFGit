@@ -26,7 +26,6 @@ import com.lfgit.view_models.RepoTasksViewModel;
 public class RepoTasksActivity extends BasicAbstractActivity {
     private RelativeLayout mRightDrawer;
     private DrawerLayout mDrawerLayout;
-    private ActivityRepoTasksBinding mBinding;
     private CredentialsDialog mCredsDialog;
     private RemoteDialog mRemoteDialog;
     private CommitDialog mCommitDialog;
@@ -39,7 +38,7 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repo_tasks);
 
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_tasks);
+        ActivityRepoTasksBinding mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_tasks);
         mRepoTasksViewModel = new ViewModelProvider(this).get(RepoTasksViewModel.class);
         mBinding.setRepoTasksViewModel(mRepoTasksViewModel);
         mBinding.setLifecycleOwner(this);
@@ -61,36 +60,44 @@ public class RepoTasksActivity extends BasicAbstractActivity {
 
         mRepoTasksViewModel.getExecPending().observe(this, this::toggleProgressDialog);
 
-        mRepoTasksViewModel.getPromptCredentials().observe(this, promptCredentials -> {
-            toggleDialog(promptCredentials, mCredsDialog, "creds_dialog");
+        mRepoTasksViewModel.getPromptCredentials().observe(this, show -> {
+            toggleDialog(show, mCredsDialog, "credsDialog");
         });
 
-        mRepoTasksViewModel.getPromptAddRemote().observe(this, promptRemote -> {
-            toggleDialog(promptRemote, mRemoteDialog, "remote_dialog");
+        mRepoTasksViewModel.getPromptAddRemote().observe(this, show -> {
+            toggleDialog(show, mRemoteDialog, "remoteDialog");
         });
 
-        mRepoTasksViewModel.getPromptCommit().observe(this, promptCommit -> {
-            toggleDialog(promptCommit, mCommitDialog, "commit_dialog");
+        mRepoTasksViewModel.getPromptCommit().observe(this, show -> {
+            toggleDialog(show, mCommitDialog, "commitDialog");
         });
 
-        mRepoTasksViewModel.getPromptCheckout().observe(this, promptCheckout -> {
-            toggleDialog(promptCheckout, mCheckoutDialog, "checkout_dialog");
+        mRepoTasksViewModel.getPromptCheckout().observe(this, show -> {
+            toggleDialog(show, mCheckoutDialog, "checkoutDialog");
         });
-        mRepoTasksViewModel.getPromptPattern().observe(this, promptPattern -> {
-            toggleDialog(promptPattern, mPatternDialog, "prompt_dialog");
+
+        mRepoTasksViewModel.getPromptPattern().observe(this, show -> {
+            toggleDialog(show, mPatternDialog, "patternDialog");
         });
 
         mRepoTasksViewModel.getShowToast().observe(this, this::showToastMsg);
     }
 
-    private void hideDialog(DialogFragment dialog) {
+    private void hideDialog(String tag) {
+        Fragment dialog = getSupportFragmentManager().findFragmentByTag(tag);
         if (dialog != null) {
-            dialog.dismiss();
+            DialogFragment df = (DialogFragment) dialog;
+            df.dismiss();
         }
     }
 
     private void showDialog(DialogFragment dialog, String tag) {
-        FragmentTransaction ft = getFragmentTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag(tag);
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(tag);
         dialog.show(ft, tag);
     }
 
@@ -98,22 +105,16 @@ public class RepoTasksActivity extends BasicAbstractActivity {
         if (show) {
             showDialog(dialog, tag);
         } else {
-            hideDialog(dialog);
+            hideDialog(tag);
         }
     }
 
     private void setupDialogs() {
-        mCommitDialog = CommitDialog.newInstance(mRepoTasksViewModel);
-        mCredsDialog = CredentialsDialog.newInstance(mRepoTasksViewModel);
-        mRemoteDialog = RemoteDialog.newInstance(mRepoTasksViewModel);
-        mCheckoutDialog = CheckoutDialog.newInstance(mRepoTasksViewModel);
-        mPatternDialog = PatternDialog.newInstance(mRepoTasksViewModel);
-    }
-
-    private FragmentTransaction getFragmentTransaction() {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.addToBackStack(null);
-        return ft;
+        mCheckoutDialog = CheckoutDialog.newInstance();
+        mCommitDialog = CommitDialog.newInstance();
+        mCredsDialog = CredentialsDialog.newInstance();
+        mRemoteDialog = RemoteDialog.newInstance();
+        mPatternDialog = PatternDialog.newInstance();
     }
 
     @Override
@@ -152,4 +153,5 @@ public class RepoTasksActivity extends BasicAbstractActivity {
     public void openDrawer() {
         mDrawerLayout.openDrawer(mRightDrawer);
     }
+
 }
