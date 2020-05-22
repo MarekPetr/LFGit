@@ -1,5 +1,6 @@
 package com.lfgit.fragments.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -10,59 +11,55 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.lfgit.R;
+import com.lfgit.view_models.RepoTasksViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public class CredentialsDialog extends DialogFragment {
-    private CredentialsDialogListener mListener;
+    private RepoTasksViewModel viewModel;
     private EditText mUsernameEditText;
     private EditText mPasswordEditText;
-    private Button mEnterButton;
+    private View view;
 
     public CredentialsDialog() {
         // empty constructor required
     }
 
-    public static CredentialsDialog newInstance(CredentialsDialogListener listener) {
-        CredentialsDialog dialog = new CredentialsDialog();
-        dialog.mListener = listener;
-        return dialog;
+    public static CredentialsDialog newInstance() {
+        return new CredentialsDialog();
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        View view = inflater.inflate(R.layout.credentials_dialog_layout, null, false);
+        Activity activity = requireActivity();
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        view = inflater.inflate(R.layout.credentials_dialog, null, false);
+
+        viewModel = new ViewModelProvider((ViewModelStoreOwner) activity).get(RepoTasksViewModel.class);
 
         mUsernameEditText = view.findViewById(R.id.usernameEditText);
         mPasswordEditText = view.findViewById(R.id.passwordEditText);
-        mEnterButton = view.findViewById(R.id.enterButton);
+        Button mEnterButton = view.findViewById(R.id.enterButton);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
         alertDialogBuilder.setView(view);
-        mEnterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String username = mUsernameEditText.getText().toString();
-                String password = mPasswordEditText.getText().toString();
-                mListener.handleCredentials(username, password);
-            }
+        mEnterButton.setOnClickListener(buttonView -> {
+            String username = mUsernameEditText.getText().toString();
+            String password = mPasswordEditText.getText().toString();
+            viewModel.handleCredentials(username, password);
         });
         return alertDialogBuilder.create();
     }
 
     @Override
     public void onCancel(@NotNull DialogInterface dialog) {
+        viewModel.startState();
         super.onCancel(dialog);
-        mListener.onCancelCredentialsDialog();
-    }
-
-    public interface CredentialsDialogListener {
-        void handleCredentials(String username, String password);
-        void onCancelCredentialsDialog();
     }
 }
