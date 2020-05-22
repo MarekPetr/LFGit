@@ -16,11 +16,12 @@ import java.util.Arrays;
 import static com.lfgit.utilites.Logger.LogMsg;
 
 /**
- * Helper class providing storage URIs
+ * Helper class providing URI to storage conversion
  * */
 public class UriHelper {
 
-    public static String getDirPath(final Context context, final Uri uri) {
+    /** Returns a path to storage from a Uniform Resource Identifier (URI) */
+    public static String getStoragePathFromURI(final Context context, final Uri uri) {
         Uri DocUri = DocumentsContract.buildDocumentUriUsingTree(uri,
                 DocumentsContract.getTreeDocumentId(uri));
         return getPath(context, DocUri);

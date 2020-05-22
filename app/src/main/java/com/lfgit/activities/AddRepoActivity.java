@@ -68,16 +68,12 @@ public class AddRepoActivity extends BasicAbstractActivity {
 
     public String setRepoPath(Intent intent, int requestCode) {
         Uri uri = intent.getData();
-        String path = UriHelper.getDirPath(this, uri);
-        // path is null when primary directory URI was not returned from intent
-        if (path != null) {
-            if (requestCode == INIT_BROWSE_REQUEST_CODE) {
-                mBinding.getAddRepoViewModel().setInitRepoPath(path);
-            } else if (requestCode == CLONE_BROWSE_REQUEST_CODE) {
-                mBinding.getAddRepoViewModel().setCloneRepoPath(path);
-            }
-        } else {
-            showToastMsg(getString (R. string.internal_storage_only));
+        String path = UriHelper.getStoragePathFromURI(this, uri);
+
+        if (requestCode == INIT_BROWSE_REQUEST_CODE) {
+            mBinding.getAddRepoViewModel().setInitRepoPath(path);
+        } else if (requestCode == CLONE_BROWSE_REQUEST_CODE) {
+            mBinding.getAddRepoViewModel().setCloneRepoPath(path);
         }
         return path;
     }
