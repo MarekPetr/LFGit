@@ -23,8 +23,7 @@
         </activity>
         <activity
             android:name=".activities.RepoTasksActivity"
-            android:parentActivityName=".activities.RepoListActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden">
+            android:parentActivityName=".activities.RepoListActivity">
         </activity>
         <activity
             android:name=".activities.AddRepoActivity"

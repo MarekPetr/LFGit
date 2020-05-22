@@ -34,11 +34,11 @@
     <string name="init_success">Repository initialized</string>
 
     <!-- RepoTasksViewModel -->
-    <string name="enter_creds">Please enter username and password</string>
-    <string name="enter_remote">Please enter remote URL</string>
-    <string name="enter_commit_msg">Please enter commit message</string>
-    <string name="enter_branch">Please enter branch</string>
-    <string name="enter_pattern">Please enter pattern</string>
+    <string name="enter_creds">Please enter your username and password</string>
+    <string name="enter_remote">Please enter a remote URL</string>
+    <string name="enter_commit_msg">Please enter a commit message</string>
+    <string name="enter_branch">Please enter a branch</string>
+    <string name="enter_pattern">Please enter a pattern</string>
     <string name="operation_success">Operation succeeded</string>
     <string name="operation_fail">Operation failed</string>
     <string name="origin_added">Remote origin added</string>
@@ -80,7 +80,7 @@
     <string name="enter_button">ENTER</string>
 
     <!-- remote_dialog -->
-    <string name="add_remote_title">Enter a remote path for origin:</string>
+    <string name="add_remote_title">Enter a remote URL to origin:</string>
 
     <!-- commit_dialog -->
     <string name="commit_msg">Commit Message</string>
