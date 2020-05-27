@@ -28,8 +28,8 @@
                 app:layout_constraintTop_toTopOf="parent">
             </TextView>
 
-            <LinearLayout
-                android:id="@+id/resultLayout"
+            <ScrollView
+                android:id="@+id/resultScrollView"
                 android:layout_width="match_parent"
                 android:layout_height="0sp"
                 android:background="@drawable/border"
@@ -49,7 +49,7 @@
                     android:textIsSelectable="true"
                     android:text="@={RepoTasksViewModel.taskResult}">
                 </TextView>
-            </LinearLayout>
+            </ScrollView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <RelativeLayout

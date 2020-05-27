@@ -45,7 +45,6 @@ public class RepoTasksActivity extends BasicAbstractActivity {
 
         setupDrawer();
         setupDialogs();
-        mBinding.taskResult.setMovementMethod(new ScrollingMovementMethod());
 
         Repo repo = (Repo) getIntent().getSerializableExtra(Repo.TAG);
         mRepoTasksViewModel.setRepo(repo);
