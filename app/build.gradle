@@ -8,8 +8,8 @@ android {
         applicationId "com.lfgit"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 13
-        versionName "1.09"
+        versionCode 14
+        versionName "1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
          externalNativeBuild {
@@ -60,7 +60,7 @@ repositories {
 dependencies {
     def room_version = "2.2.5"
     implementation "androidx.room:room-runtime:$room_version"
-    implementation 'androidx.preference:preference:1.1.0'
+    implementation 'androidx.preference:preference:1.1.1'
     annotationProcessor "androidx.room:room-compiler:$room_version"
     // For Kotlin use kapt instead of annotationProcessor
     // optional - Kotlin Extensions and Coroutines support for Room
