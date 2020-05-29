@@ -1,6 +1,4 @@
 package com.lfgit.fragments;
-
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -14,7 +12,6 @@ import com.lfgit.R;
 import com.lfgit.activities.RepoListActivity;
 import com.lfgit.install.AsyncTaskListener;
 import com.lfgit.install.InstallTask;
-import com.lfgit.view_models.RepoListViewModel;
 
 import org.jetbrains.annotations.NotNull;
 

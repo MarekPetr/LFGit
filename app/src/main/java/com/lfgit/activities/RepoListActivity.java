@@ -71,12 +71,9 @@ public class RepoListActivity extends BasicAbstractActivity {
         });
 
         pullToRefresh = findViewById(R.id.repoListLayout);
-        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mRepoListAdapter.refreshRepos();
-                pullToRefresh.setRefreshing(false);
-            }
+        pullToRefresh.setOnRefreshListener(() -> {
+            mRepoListAdapter.refreshRepos();
+            pullToRefresh.setRefreshing(false);
         });
     }
 
