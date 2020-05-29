@@ -1,5 +1,6 @@
 package com.lfgit.fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -10,8 +11,10 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.lfgit.R;
+import com.lfgit.activities.RepoListActivity;
 import com.lfgit.install.AsyncTaskListener;
 import com.lfgit.install.InstallTask;
+import com.lfgit.view_models.RepoListViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,8 +30,7 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
     private ProgressDialog mProgressDialog;
     private boolean isTaskRunning = false;
     private boolean isFirstRun = true;
-    private Context mContext;
-    private FragmentCallback mCallback;
+    private RepoListActivity mActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,13 +71,13 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
             mProgressDialog.dismiss();
         }
         isTaskRunning = false;
-        mCallback.removeFragment();
+        mActivity.removeFragment();
     }
 
     @Override
     public void onAttach(@NotNull Context context) {
         super.onAttach(context);
-        mContext=context;
+        mActivity = (RepoListActivity) context;
     }
 
     @Override
@@ -85,19 +87,12 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
+        mActivity = null;
         super.onDetach();
     }
     private void showProgressDialog() {
-        String title = mContext.getResources().getString(R.string.install_progress_title);
-        String msg = mContext.getResources().getString(R.string.install_progress_msg);
+        String title = mActivity.getResources().getString(R.string.install_progress_title);
+        String msg = mActivity.getResources().getString(R.string.install_progress_msg);
         mProgressDialog = ProgressDialog.show(getActivity(), title, msg);
-    }
-
-    public void setCallback(FragmentCallback callback) {
-        this.mCallback = callback;
-    }
-
-    public interface FragmentCallback {
-        void removeFragment();
     }
 }
