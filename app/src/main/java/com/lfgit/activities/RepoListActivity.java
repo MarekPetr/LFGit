@@ -34,7 +34,6 @@ public class RepoListActivity extends BasicAbstractActivity {
     private SwipeRefreshLayout pullToRefresh;
     private InstallPreference mInstallPref = new InstallPreference();
     FragmentManager mManager = getSupportFragmentManager();
-    private String mInstallTag = "installFragment";
     private static final int ADD_REPO_REQUEST_CODE = 1;
 
     @Override
@@ -42,10 +41,11 @@ public class RepoListActivity extends BasicAbstractActivity {
         super.onCreate(savedInstanceState);
 
         // install runnable programs if needed (Git, etc.)
-        if (mInstallPref.assetsInstalled()) {
-            checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        } else {
+        if (mInstallPref.isFirstRun()) {
+            mInstallPref.updateInstallPreference();
             runInstallFragment();
+        } else {
+            checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
 
         mRepoListViewModel = new ViewModelProvider(this).get(RepoListViewModel.class);
@@ -81,7 +81,6 @@ public class RepoListActivity extends BasicAbstractActivity {
         FragmentTransaction transaction = mManager.beginTransaction();
         InstallFragment fragment = new InstallFragment();
         transaction.add(R.id.repoListLayout,fragment);
-        transaction.addToBackStack(mInstallTag);
         transaction.commit();
     }
 
@@ -117,16 +116,6 @@ public class RepoListActivity extends BasicAbstractActivity {
         return true;
     }
 
-    public void removeFragment() {
-        Fragment fragment = mManager.findFragmentByTag(mInstallTag);
-        if (fragment != null) {
-            mManager.beginTransaction().remove(fragment);
-        }
-
-        mInstallPref.updateInstallPreference();
-        checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -151,13 +140,13 @@ public class RepoListActivity extends BasicAbstractActivity {
         private final String PREF_VERSION_CODE_KEY = "version_code";
         private int currentVersionCode = BuildConfig.VERSION_CODE;
 
-        Boolean assetsInstalled() {
+        Boolean isFirstRun() {
             final int DOESNT_EXIST = -1;
             // Get saved version code
             SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
             // Check for first run or upgrade
-            return currentVersionCode == savedVersionCode;
+            return currentVersionCode != savedVersionCode;
         }
 
         void updateInstallPreference() {

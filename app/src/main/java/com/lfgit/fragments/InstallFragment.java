@@ -1,4 +1,5 @@
 package com.lfgit.fragments;
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -68,7 +69,7 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
             mProgressDialog.dismiss();
         }
         isTaskRunning = false;
-        mActivity.removeFragment();
+        mActivity.checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     @Override

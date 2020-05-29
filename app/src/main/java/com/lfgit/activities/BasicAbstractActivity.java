@@ -38,7 +38,7 @@ public abstract class BasicAbstractActivity extends AppCompatActivity {
         }
     }
 
-    protected void checkAndRequestPermissions(String permission) {
+    public void checkAndRequestPermissions(String permission) {
         if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted, so request it from user
             ActivityCompat.requestPermissions(this, new String[]{permission}, PERMISSIONS_REQUEST);
