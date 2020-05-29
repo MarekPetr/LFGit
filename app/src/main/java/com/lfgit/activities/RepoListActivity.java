@@ -28,14 +28,13 @@ import com.lfgit.view_models.RepoListViewModel;
 /**
  * An activity implementing list of repositories and initial installation.
  */
-public class RepoListActivity extends BasicAbstractActivity implements InstallFragment.FragmentCallback {
+public class RepoListActivity extends BasicAbstractActivity {
     private RepoListViewModel mRepoListViewModel;
     private RepoListAdapter mRepoListAdapter;
     private SwipeRefreshLayout pullToRefresh;
     private InstallPreference mInstallPref = new InstallPreference();
     FragmentManager mManager = getSupportFragmentManager();
-    private String mInstallTag = "install";
-
+    private String mInstallTag = "installFragment";
     private static final int ADD_REPO_REQUEST_CODE = 1;
 
     @Override
@@ -72,19 +71,15 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
         });
 
         pullToRefresh = findViewById(R.id.repoListLayout);
-        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mRepoListAdapter.refreshRepos();
-                pullToRefresh.setRefreshing(false);
-            }
+        pullToRefresh.setOnRefreshListener(() -> {
+            mRepoListAdapter.refreshRepos();
+            pullToRefresh.setRefreshing(false);
         });
     }
 
     private void runInstallFragment() {
         FragmentTransaction transaction = mManager.beginTransaction();
         InstallFragment fragment = new InstallFragment();
-        fragment.setCallback(this);
         transaction.add(R.id.repoListLayout,fragment);
         transaction.addToBackStack(mInstallTag);
         transaction.commit();
@@ -122,12 +117,12 @@ public class RepoListActivity extends BasicAbstractActivity implements InstallFr
         return true;
     }
 
-    @Override
     public void removeFragment() {
         Fragment fragment = mManager.findFragmentByTag(mInstallTag);
-        if(fragment != null) {
-            mManager.popBackStack();
+        if (fragment != null) {
+            mManager.beginTransaction().remove(fragment);
         }
+
         mInstallPref.updateInstallPreference();
         checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }

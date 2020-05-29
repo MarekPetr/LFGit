@@ -8,8 +8,8 @@ android {
         applicationId "com.lfgit"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 12
-        versionName "1.08"
+        versionCode 13
+        versionName "1.09"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
          externalNativeBuild {

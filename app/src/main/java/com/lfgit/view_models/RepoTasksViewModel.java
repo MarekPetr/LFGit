@@ -196,6 +196,7 @@ public class RepoTasksViewModel extends ExecViewModel {
             mRepo.setUsername(username);
             mRepo.setPassword(password);
             mRepository.updateCredentials(mRepo);
+            setShowToast(getAppString(R.string.credentials_saved));
             pushPendingAndFinish();
         } else {
             setShowToast(getAppString(R.string.enter_creds));
