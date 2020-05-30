@@ -25,6 +25,8 @@ import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.UriHelper;
 import com.lfgit.view_models.RepoListViewModel;
 
+import static com.lfgit.utilites.Logger.LogMsg;
+
 /**
  * An activity implementing list of repositories and initial installation.
  */
@@ -40,15 +42,8 @@ public class RepoListActivity extends BasicAbstractActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // install runnable programs if needed (Git, etc.)
-        if (mInstallPref.isFirstRun()) {
-            mInstallPref.updateInstallPreference();
-            runInstallFragment();
-        } else {
-            checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-
         mRepoListViewModel = new ViewModelProvider(this).get(RepoListViewModel.class);
+        installIfNeeded(mRepoListViewModel);
 
         ActivityRepoListBinding mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repo_list);
         mBinding.setLifecycleOwner(this);
@@ -77,11 +72,30 @@ public class RepoListActivity extends BasicAbstractActivity {
         });
     }
 
+    /** Install packages if needed, or just ask for permissions */
+    private void installIfNeeded(RepoListViewModel viewModel) {
+        if (!viewModel.isInstalling()) {
+            if (mInstallPref.isFirstRun()) {
+                viewModel.setInstalling(true);
+                runInstallFragment();
+            } else {
+                checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
+        }
+    }
+
     private void runInstallFragment() {
         FragmentTransaction transaction = mManager.beginTransaction();
         InstallFragment fragment = new InstallFragment();
         transaction.add(R.id.repoListLayout,fragment);
         transaction.commit();
+    }
+
+    /** Method called after packages are installed */
+    public void onPackagesInstalled() {
+        mRepoListViewModel.setInstalling(false);
+        mInstallPref.updateInstallPreference();
+        checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     @Override

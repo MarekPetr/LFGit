@@ -19,6 +19,7 @@ import static com.lfgit.utilites.Constants.PendingTask.*;
 public class RepoListViewModel extends ExecViewModel {
     private List<Repo> mAllRepos;
     private Repo mLastRepo;
+    private Boolean mInstalling = false;
 
     public RepoListViewModel(Application application) {
         super(application);
@@ -91,5 +92,13 @@ public class RepoListViewModel extends ExecViewModel {
             mRepository.insertRepo(mLastRepo);
             mState = new TaskState(FOR_APP, NONE);
         }
+    }
+
+    public void setInstalling(Boolean value) {
+        mInstalling = value;
+    }
+
+    public Boolean isInstalling() {
+        return mInstalling;
     }
 }

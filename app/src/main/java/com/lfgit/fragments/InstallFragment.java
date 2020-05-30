@@ -8,16 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.lfgit.R;
 import com.lfgit.activities.RepoListActivity;
 import com.lfgit.install.AsyncTaskListener;
 import com.lfgit.install.InstallTask;
+import com.lfgit.view_models.RepoListViewModel;
+import com.lfgit.view_models.RepoTasksViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Install runnable programs.
+ * Install packages.
  * Handle activity lifecycle.
  *
  * source:
@@ -42,6 +45,7 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
         // If we are returning here from a screen orientation
         // and the AsyncTask is still working, re-create and display the
         // progress dialog.
+
         if (isTaskRunning) {
             showProgressDialog();
         }
@@ -69,7 +73,7 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
             mProgressDialog.dismiss();
         }
         isTaskRunning = false;
-        mActivity.checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        mActivity.onPackagesInstalled();
     }
 
     @Override
