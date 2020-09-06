@@ -1,8 +1,6 @@
 package com.lfgit.utilites;
 import android.os.Environment;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 
 public class Constants {
