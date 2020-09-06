@@ -6,6 +6,7 @@ import android.util.Pair;
 
 import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
+import com.lfgit.executors.GitExecListener;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -26,9 +27,11 @@ import static com.lfgit.utilites.Logger.LogMsg;
 /**
  * Install the bootstrap packages
  * */
-public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements ExecListener {
+public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
+        implements ExecListener,GitExecListener
+{
     private Boolean installed = false;
-    private GitExec exec = new GitExec(this);
+    private GitExec exec = new GitExec(this, this);
 
     @Override
     public void onExecStarted() {
@@ -40,6 +43,10 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
             exec.lfsInstall();
             installed = true;
         }
+    }
+
+    @Override
+    public void onError(String errorMsg) {
     }
 
     private AsyncTaskListener listener;
