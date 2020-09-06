@@ -6,6 +6,7 @@
     <string name="install_progress_title">Installing</string>
     <string name="install_progress_msg">Please wait a moment…</string>
     <string name="no_write_dir">Target directory is not writable</string>
+    <string name="storage_not_supported">Not supported storage</string>
 
     <!-- menu_repo_list -->
     <string name="menu_settings">Settings</string>
