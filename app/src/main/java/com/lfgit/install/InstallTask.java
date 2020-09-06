@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static com.lfgit.utilites.Constants.BIN_DIR;
 import static com.lfgit.utilites.Constants.HOOKS_DIR;
 import static com.lfgit.utilites.Constants.USR_DIR;
 import static com.lfgit.utilites.Constants.USR_STAGING_DIR;
+import static com.lfgit.utilites.Logger.LogMsg;
 
 /**
  * Install the bootstrap packages
@@ -70,11 +70,12 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
      * source:
      * https://github.com/termux/termux-app/blob/master/app/src/main/java/com/termux/app/TermuxInstaller.java
      */
+
     private Boolean installFiles() {
 
         final File PREFIX_FILE = new File(USR_DIR);
         if (PREFIX_FILE.isDirectory()) {
-            return true;
+            return false;
         }
 
         final String STAGING_PREFIX_PATH = USR_STAGING_DIR;
@@ -82,10 +83,8 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
 
         if (STAGING_PREFIX_FILE.exists()) {
             try {
-                deleteFolder(STAGING_PREFIX_FILE);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                if(!deleteFolder(STAGING_PREFIX_FILE)) return false;
+            } catch (IOException ignored) {}
         }
 
         final byte[] buffer = new byte[8096];
@@ -100,20 +99,22 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
                     String line;
                     while ((line = symlinksReader.readLine()) != null) {
                         String[] parts = line.split("→");
-                        if (parts.length != 2)
-                            throw new RuntimeException("Malformed symlink line: " + line);
+                        if (parts.length != 2){
+                            LogMsg("Malformed symlink line: " + line);
+                            return false;
+                        }
                         String oldPath = parts[1];
                         String newPath = STAGING_PREFIX_PATH + "/" + parts[0];
                         symlinks.add(Pair.create(oldPath, newPath));
 
-                        ensureDirectoryExists(new File(newPath).getParentFile());
+                        if (!ensureDirectoryExists(new File(newPath).getParentFile())) return false;
                     }
                 } else {
                     String zipEntryName = zipEntry.getName();
                     File targetFile = new File(STAGING_PREFIX_PATH, zipEntryName);
                     boolean isDirectory = zipEntry.isDirectory();
 
-                    ensureDirectoryExists(isDirectory ? targetFile : targetFile.getParentFile());
+                    if (!ensureDirectoryExists(isDirectory ? targetFile : targetFile.getParentFile())) return false;
 
                     if (!isDirectory) {
                         try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
@@ -132,18 +133,25 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
             e.printStackTrace();
         }
 
-        if (symlinks.isEmpty())
-            throw new RuntimeException("No SYMLINKS.txt encountered");
+        if (symlinks.isEmpty()) {
+            LogMsg("No SYMLINKS.txt encountered");
+            return false;
+        }
+
+        symlinks.add(Pair.create("/system/bin/sh", STAGING_PREFIX_PATH + "/sh"));
+
         for (Pair<String, String> symlink : symlinks) {
             try {
                 Os.symlink(symlink.first, symlink.second);
             } catch (ErrnoException e) {
-                e.printStackTrace();
+                LogMsg("Unable to create symlink: " + symlink.first + " → " + symlink.second);
+                return false;
             }
         }
 
         if (!STAGING_PREFIX_FILE.renameTo(PREFIX_FILE)) {
-            throw new RuntimeException("Unable to rename staging folder");
+            LogMsg("Unable to rename staging folder");
+            return false;
         }
 
         // Create a directory for Git Hooks
@@ -151,22 +159,18 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
         if (!dir.exists()) {
             dir.mkdir();
         }
-
-        // Git LFS needs shell in the $PREFIX folder
-        try {
-            Os.symlink("/system/bin/sh", BIN_DIR+"/sh");
-        } catch (ErrnoException e) {
-            e.printStackTrace();
-        }
         // Install Git Hooks
         exec.configHooks();
+
         return true;
     }
 
-    private static void ensureDirectoryExists(File directory) {
+    private static Boolean ensureDirectoryExists(File directory) {
         if (!directory.isDirectory() && !directory.mkdirs()) {
-            throw new RuntimeException("Unable to create directory: " + directory.getAbsolutePath());
+            LogMsg("Unable to create directory: " + directory.getAbsolutePath());
+            return false;
         }
+        return true;
     }
 
     private static byte[] loadZipBytes() {
@@ -178,7 +182,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
     public static native byte[] getZip();
 
     /** Delete a folder and all its content or throw. Don't follow symlinks. */
-    static void deleteFolder(File fileOrDirectory) throws IOException {
+    static Boolean deleteFolder(File fileOrDirectory) throws IOException {
         if (fileOrDirectory.getCanonicalPath().equals(fileOrDirectory.getAbsolutePath()) && fileOrDirectory.isDirectory()) {
             File[] children = fileOrDirectory.listFiles();
 
@@ -190,8 +194,10 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
         }
 
         if (!fileOrDirectory.delete()) {
-            throw new RuntimeException("Unable to delete " + (fileOrDirectory.isDirectory() ? "directory " : "file ") + fileOrDirectory.getAbsolutePath());
+            LogMsg("Unable to delete " + (fileOrDirectory.isDirectory() ? "directory " : "file ") + fileOrDirectory.getAbsolutePath());
+            return false;
         }
+        return true;
     }
 
     @Override
@@ -205,7 +211,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean> implements Ex
     }
 
     @Override
-    protected void onPostExecute(Boolean v) {
-        listener.onTaskFinished();
+    protected void onPostExecute(Boolean retVal) {
+        listener.onTaskFinished(retVal);
     }
 }

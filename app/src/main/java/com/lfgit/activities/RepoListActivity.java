@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
@@ -24,8 +23,6 @@ import com.lfgit.fragments.InstallFragment;
 import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.UriHelper;
 import com.lfgit.view_models.RepoListViewModel;
-
-import static com.lfgit.utilites.Logger.LogMsg;
 
 /**
  * An activity implementing list of repositories and initial installation.
@@ -91,11 +88,15 @@ public class RepoListActivity extends BasicAbstractActivity {
         transaction.commit();
     }
 
-    /** Method called after packages are installed */
-    public void onPackagesInstalled() {
+    public void onPackagesInstalled(Boolean installed) {
         mRepoListViewModel.setInstalling(false);
-        mInstallPref.updateInstallPreference();
-        checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (installed) {
+            mInstallPref.updateInstallPreference();
+            checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        } else {
+            showToastMsg(getString(R.string.install_failed));
+            finishAffinity();
+        }
     }
 
     @Override

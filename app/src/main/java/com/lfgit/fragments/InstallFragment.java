@@ -68,12 +68,12 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
     }
 
     @Override
-    public void onTaskFinished() {
+    public void onTaskFinished(Boolean success) {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
         isTaskRunning = false;
-        mActivity.onPackagesInstalled();
+        mActivity.onPackagesInstalled(success);
     }
 
     @Override
