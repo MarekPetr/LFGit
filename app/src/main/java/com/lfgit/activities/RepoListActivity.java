@@ -139,7 +139,9 @@ public class RepoListActivity extends BasicAbstractActivity {
                 // Get the URI of a repository to add
                 Uri uri = intent.getData();
                 String path = UriHelper.getStoragePathFromURI(this, uri);
-                if (Constants.isWritablePath(path)) {
+                if (path == null) {
+                    showToastMsg(getApplication().getString(R.string.storage_not_supported));
+                } else if (Constants.isWritablePath(path)) {
                     mRepoListViewModel.addLocalRepo(path);
                 } else {
                     showToastMsg(getApplication().getString(R.string.no_write_dir));
