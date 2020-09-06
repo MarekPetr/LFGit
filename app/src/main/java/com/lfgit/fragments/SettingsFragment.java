@@ -7,6 +7,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.lfgit.R;
 import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
+import com.lfgit.executors.GitExecListener;
 import com.lfgit.utilites.TaskState;
 
 import static com.lfgit.utilites.Constants.InnerState.FOR_APP;
@@ -17,9 +18,9 @@ import static com.lfgit.utilites.Logger.LogMsg;
  * Set preference settings
  * */
 public class SettingsFragment extends PreferenceFragmentCompat
-        implements SharedPreferences.OnSharedPreferenceChangeListener, ExecListener {
+        implements SharedPreferences.OnSharedPreferenceChangeListener, ExecListener, GitExecListener {
 
-    private GitExec gitExec = new GitExec(this);
+    private GitExec gitExec = new GitExec(this, this);
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -57,5 +58,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     @Override
     public void onExecFinished(String result, int errCode) {
+    }
+
+    @Override
+    public void onError(String errorMsg) {
     }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.lfgit.R;
 import com.lfgit.database.model.Repo;
+import com.lfgit.executors.GitExecListener;
 import com.lfgit.utilites.Constants;
 import com.lfgit.view_models.Events.SingleLiveEvent;
 
@@ -20,7 +21,7 @@ import static com.lfgit.utilites.Constants.PendingTask.*;
  * Git tasks logic
  * (Git task is a sequence ending with a Git command execution)
  * */
-public class RepoTasksViewModel extends ExecViewModel {
+public class RepoTasksViewModel extends ExecViewModel implements GitExecListener {
 
     private Repo mRepo;
     private MutableLiveData<String> mTaskResult = new MutableLiveData<>();
@@ -38,6 +39,7 @@ public class RepoTasksViewModel extends ExecViewModel {
     public RepoTasksViewModel(@NonNull Application application) {
         super(application);
     }
+
 
     interface GitAction {
         void execute();
