@@ -11,6 +11,11 @@
     <!-- installTask -->
     <string name="install_failed">Unable to install packages, reinstall the application.</string>
 
+    <!-- GitExec -->
+    <string name="http_only">Remote Origin is not a http(s) URL</string>
+    <string name="no_creds">"Missing username or password"</string>
+    <string name="encoding_creds_err">Encoding of credentials failed</string>
+
     <!-- menu_repo_list -->
     <string name="menu_settings">Settings</string>
     <string name="menu_init_repo">Init/Clone a repo</string>

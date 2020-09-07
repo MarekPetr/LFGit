@@ -1,4 +1,5 @@
 package com.lfgit.install;
+import android.app.Application;
 import android.os.AsyncTask;
 import android.system.ErrnoException;
 import android.system.Os;
@@ -22,7 +23,8 @@ import java.util.zip.ZipInputStream;
 import static com.lfgit.utilites.Constants.HOOKS_DIR;
 import static com.lfgit.utilites.Constants.USR_DIR;
 import static com.lfgit.utilites.Constants.USR_STAGING_DIR;
-import static com.lfgit.utilites.Logger.LogMsg;
+import static com.lfgit.utilites.Logger.LogErr;
+import static com.lfgit.utilites.Logger.LogExc;
 
 /**
  * Install the bootstrap packages
@@ -30,8 +32,14 @@ import static com.lfgit.utilites.Logger.LogMsg;
 public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
         implements ExecListener,GitExecListener
 {
-    private Boolean installed = false;
-    private GitExec exec = new GitExec(this, this);
+    private Boolean mInstalled = false;
+    private GitExec mGitExec;
+    private AsyncTaskListener mListener;
+
+    public InstallTask(AsyncTaskListener listener, Application application)  {
+        this.mListener = listener;
+        this.mGitExec = new GitExec(this, this, application);
+    }
 
     @Override
     public void onExecStarted() {
@@ -39,20 +47,14 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
 
     @Override
     public void onExecFinished(String result, int errCode) {
-        if (!installed) {
-            exec.lfsInstall();
-            installed = true;
+        if (!mInstalled) {
+            mGitExec.lfsInstall();
+            mInstalled = true;
         }
     }
 
     @Override
     public void onError(String errorMsg) {
-    }
-
-    private AsyncTaskListener listener;
-
-    public InstallTask(AsyncTaskListener listener)  {
-        this.listener = listener;
     }
 
     /**
@@ -107,7 +109,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
                     while ((line = symlinksReader.readLine()) != null) {
                         String[] parts = line.split("→");
                         if (parts.length != 2){
-                            LogMsg("Malformed symlink line: " + line);
+                            LogErr("Malformed symlink line: " + line);
                             return false;
                         }
                         String oldPath = parts[1];
@@ -137,11 +139,12 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
                 }
             }
         } catch (IOException | ErrnoException e) {
-            e.printStackTrace();
+            LogExc("Unable to read zipBytes", e);
+            return false;
         }
 
         if (symlinks.isEmpty()) {
-            LogMsg("No SYMLINKS.txt encountered");
+            LogErr("No SYMLINKS.txt encountered");
             return false;
         }
 
@@ -151,13 +154,13 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
             try {
                 Os.symlink(symlink.first, symlink.second);
             } catch (ErrnoException e) {
-                LogMsg("Unable to create symlink: " + symlink.first + " → " + symlink.second);
+                LogErr("Unable to create symlink: " + symlink.first + " → " + symlink.second);
                 return false;
             }
         }
 
         if (!STAGING_PREFIX_FILE.renameTo(PREFIX_FILE)) {
-            LogMsg("Unable to rename staging folder");
+            LogErr("Unable to rename staging folder");
             return false;
         }
 
@@ -167,14 +170,14 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
             dir.mkdir();
         }
         // Install Git Hooks
-        exec.configHooks();
+        mGitExec.configHooks();
 
         return true;
     }
 
     private static Boolean ensureDirectoryExists(File directory) {
         if (!directory.isDirectory() && !directory.mkdirs()) {
-            LogMsg("Unable to create directory: " + directory.getAbsolutePath());
+            LogErr("Unable to create directory: " + directory.getAbsolutePath());
             return false;
         }
         return true;
@@ -201,7 +204,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
         }
 
         if (!fileOrDirectory.delete()) {
-            LogMsg("Unable to delete " + (fileOrDirectory.isDirectory() ? "directory " : "file ") + fileOrDirectory.getAbsolutePath());
+            LogErr("Unable to delete " + (fileOrDirectory.isDirectory() ? "directory " : "file ") + fileOrDirectory.getAbsolutePath());
             return false;
         }
         return true;
@@ -214,11 +217,11 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
 
     @Override
     protected void onPreExecute() {
-        listener.onTaskStarted();
+        mListener.onTaskStarted();
     }
 
     @Override
     protected void onPostExecute(Boolean retVal) {
-        listener.onTaskFinished(retVal);
+        mListener.onTaskFinished(retVal);
     }
 }

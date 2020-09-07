@@ -49,12 +49,15 @@ public class AddRepoViewModel extends ExecViewModel {
 
     private Boolean repoAlreadyAdded(String path) {
         path = removeEndingForwardSlashes(path);
-        for (Repo repo : mAllRepos) {
-            if (path.equals(repo.getLocalPath())) {
-                setShowToast(getAppString(R.string.repoAlreadyAdded));
-                return true;
+        if (mAllRepos != null) {
+            for (Repo repo : mAllRepos) {
+                if (path.equals(repo.getLocalPath())) {
+                    setShowToast(getAppString(R.string.repoAlreadyAdded));
+                    return true;
+                }
             }
         }
+
         return false;
     }
 

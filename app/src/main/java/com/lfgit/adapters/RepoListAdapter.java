@@ -47,10 +47,12 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
             mContext.startActivity(intent);
         } else {
             mContext.showToastMsg(mContext.getResources().getString(R.string.repo_not_found));
-            List<Repo> repoList = mLastRepoList;
-            repoList.remove(repo);
-            setRepos(repoList);
-            removeRepoDB(repo);
+            if (mLastRepoList != null) {
+                List<Repo> repoList = mLastRepoList;
+                repoList.remove(repo);
+                setRepos(repoList);
+                removeRepoDB(repo);
+            }
         }
     }
 
@@ -109,11 +111,14 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
     }
 
     public void setRepos(List<Repo> repos) {
+        if (repos == null) return;
         mLastRepoList = repos;
         setExistingRepos(repos);
     }
 
     private void setExistingRepos(List<Repo> repos) {
+        if (repos == null) return;
+
         // if repository directory exists add it to the list
         List<Repo> validRepos = new ArrayList<>();
         for (Repo repo:repos) {
@@ -130,7 +135,9 @@ public class RepoListAdapter extends ArrayAdapter<Repo> implements AdapterView.O
     }
 
     public void refreshRepos() {
-        setExistingRepos(mLastRepoList);
+        if (mLastRepoList != null) {
+            setExistingRepos(mLastRepoList);
+        }
     }
 
     private void deleteRepo(int position) {

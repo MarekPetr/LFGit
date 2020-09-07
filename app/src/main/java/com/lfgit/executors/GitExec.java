@@ -1,5 +1,8 @@
 package com.lfgit.executors;
 
+import android.app.Application;
+
+import com.lfgit.R;
 import com.lfgit.database.model.Repo;
 import com.lfgit.utilites.Constants;
 
@@ -7,21 +10,27 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import static com.lfgit.utilites.Constants.HOOKS_DIR;
-import static com.lfgit.utilites.Logger.LogMsg;
+import static com.lfgit.utilites.Logger.LogDebugMsg;
 
 /**
  * Git commands
  */
 public class GitExec {
     private GitExecListener mGitExecListener;
+    private BinaryExecutor mExecutor;
+    private Application mApplication;
 
     private String mGitPath = "git";
     private String mLfsPath = "git-lfs";
-    private BinaryExecutor mExecutor;
 
-    public GitExec(ExecListener execCallback, GitExecListener errorCallback) {
+
+    public GitExec(ExecListener execCallback,
+                   GitExecListener errorCallback,
+                   Application application)
+    {
         mExecutor = new BinaryExecutor(execCallback);
         mGitExecListener = errorCallback;
+        mApplication = application;
     }
 
     /** Check if directory is a Git repository */
@@ -111,7 +120,7 @@ public class GitExec {
 
         String httpRegex = "^https?://(?!.*//).*$";
         if (!remoteURL.matches(httpRegex)) {
-            mGitExecListener.onError("Only http(s) URL is supported");
+            mGitExecListener.onError(mApplication.getString(R.string.http_only));
             return;
         }
 
@@ -119,7 +128,7 @@ public class GitExec {
         String username = repo.getUsername();
         String password = repo.getPassword();
         if (username.isEmpty() || password.isEmpty()) {
-            mGitExecListener.onError("Missing username or password");
+            mGitExecListener.onError(mApplication.getString(R.string.no_creds));
             return;
         }
 
@@ -127,15 +136,15 @@ public class GitExec {
             username = URLEncoder.encode(repo.getUsername(), "UTF-8");
             password = URLEncoder.encode(repo.getPassword(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            LogMsg("Encoding failed");
-            mGitExecListener.onError("Encoding of credentials failed");
+            LogDebugMsg("Encoding failed");
+            mGitExecListener.onError(mApplication.getString(R.string.encoding_creds_err));
             return;
         }
 
         String splitSeq = "://";
         String[] parts = remoteURL.split(splitSeq);
         if (parts.length != 2) {
-            mGitExecListener.onError("Remote Origin is not a http(s) URL");
+            mGitExecListener.onError(mApplication.getString(R.string.http_only));
             return;
         }
         
@@ -205,4 +214,5 @@ public class GitExec {
     public void lfsStatus(String localPath) {
         mExecutor.run(mLfsPath, localPath, "status");
     }
+
 }
