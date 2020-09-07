@@ -47,7 +47,7 @@ public class CredentialsDialog extends DialogFragment {
         mPasswordEditText = view.findViewById(R.id.passwordEditText);
         Button mEnterButton = view.findViewById(R.id.enterButton);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(requireActivity());
         alertDialogBuilder.setView(view);
         mEnterButton.setOnClickListener(buttonView -> {
             String username = mUsernameEditText.getText().toString();

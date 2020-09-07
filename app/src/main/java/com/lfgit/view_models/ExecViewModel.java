@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import com.lfgit.database.RepoRepository;
 import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
+import com.lfgit.executors.GitExecListener;
 import com.lfgit.utilites.Constants;
 import com.lfgit.utilites.TaskState;
 import com.lfgit.view_models.Events.SingleLiveEvent;
@@ -17,7 +18,7 @@ import static com.lfgit.utilites.Constants.PendingTask.*;
 /**
  * A common ViewModel for other ViewModels handling binary files execution
  * */
-public abstract class ExecViewModel extends AndroidViewModel implements ExecListener {
+public abstract class ExecViewModel extends AndroidViewModel implements ExecListener, GitExecListener {
 
     /** Result wrapper */
     public static class ExecResult {
@@ -55,7 +56,7 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
         super(application);
         mApplication = application;
         mRepository = new RepoRepository(application);
-        mGitExec = new GitExec(this);
+        mGitExec = new GitExec(this, this, application);
         mState = new TaskState(FOR_APP, NONE);
     }
 
@@ -74,6 +75,11 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
     public void onExecFinished(String result, int errCode) {
         hidePendingIfNeeded(mState);
         postExecResult(new ExecResult(result, errCode));
+    }
+
+    @Override
+    public void onError(String errorMsg) {
+        setShowToast(errorMsg);
     }
 
     /** Check if task is long running */

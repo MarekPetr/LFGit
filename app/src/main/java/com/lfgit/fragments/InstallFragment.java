@@ -19,6 +19,8 @@ import com.lfgit.view_models.RepoTasksViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 /**
  * Install packages.
  * Handle activity lifecycle.
@@ -50,14 +52,19 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
             showProgressDialog();
         }
         if (isFirstRun) {
-            InstallTask installer  = new InstallTask(this);
+            InstallTask installer  = new InstallTask(
+                    this,
+                    requireActivity().getApplication()
+            );
             installer.execute(true);
             isFirstRun = false;
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState){
         return inflater.inflate(R.layout.activity_repo_list, container, false);
     }
 
@@ -68,12 +75,12 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
     }
 
     @Override
-    public void onTaskFinished() {
+    public void onTaskFinished(Boolean success) {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
         isTaskRunning = false;
-        mActivity.onPackagesInstalled();
+        mActivity.onPackagesInstalled(success);
     }
 
     @Override

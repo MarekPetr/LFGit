@@ -47,11 +47,13 @@ public class RepoListViewModel extends ExecViewModel {
             return;
         }
 
-        // check if repository is already added
-        for (Repo repo : mAllRepos) {
-            if (path.equals(repo.getLocalPath())) {
-                setShowToast(getAppString(R.string.repoAlreadyAdded));
-                return;
+        if (mAllRepos != null) {
+            // check if repository is already added
+            for (Repo repo : mAllRepos) {
+                if (path.equals(repo.getLocalPath())) {
+                    setShowToast(getAppString(R.string.repoAlreadyAdded));
+                    return;
+                }
             }
         }
 

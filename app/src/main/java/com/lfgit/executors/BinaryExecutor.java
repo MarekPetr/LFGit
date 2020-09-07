@@ -13,7 +13,7 @@ import java.util.Map;
 import static com.lfgit.utilites.Constants.BIN_DIR;
 import static com.lfgit.utilites.Constants.FILES_DIR;
 import static com.lfgit.utilites.Constants.LIB_DIR;
-import static com.lfgit.utilites.Logger.LogMsg;
+import static com.lfgit.utilites.Logger.LogDebugMsg;
 
 /**
  * Execute a compiled program.
@@ -38,7 +38,7 @@ class BinaryExecutor {
         args.add(exeBin);
         args.addAll(Arrays.asList(strings));
 
-        LogMsg("exe: " + Arrays.toString(args.toArray()));
+        LogDebugMsg("exe: " + Arrays.toString(args.toArray()));
 
         ProcessBuilder pb = new ProcessBuilder(args);
         pb.redirectErrorStream(true); // redirect error stream to input stream
