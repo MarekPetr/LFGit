@@ -56,7 +56,7 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
         super(application);
         mApplication = application;
         mRepository = new RepoRepository(application);
-        mGitExec = new GitExec(this, this);
+        mGitExec = new GitExec(this, this, application);
         mState = new TaskState(FOR_APP, NONE);
     }
 
