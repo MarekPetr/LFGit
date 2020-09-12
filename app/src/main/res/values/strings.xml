@@ -74,8 +74,8 @@
     <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="git_username">Your username</string>
-    <string name="git_email">Your email</string>
+    <string name="git_username">Username</string>
+    <string name="git_email">Email</string>
     <string name="reply_title">Default reply action</string>
 
     <string name="git_username_key">git_username</string>

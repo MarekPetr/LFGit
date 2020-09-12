@@ -1,13 +1,18 @@
 package com.lfgit.fragments;
 
+import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.lfgit.R;
+import com.lfgit.activities.RepoListActivity;
 import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
 import com.lfgit.executors.GitExecListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import static com.lfgit.utilites.Logger.LogDebugMsg;
 
@@ -16,12 +21,7 @@ import static com.lfgit.utilites.Logger.LogDebugMsg;
  * */
 public class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener, ExecListener, GitExecListener {
-
-    private GitExec mGitExec = new GitExec(
-            this,
-            this,
-            requireActivity().getApplication()
-    );
+    private GitExec mGitExec;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -51,6 +51,22 @@ public class SettingsFragment extends PreferenceFragmentCompat
     public void onPause() {
         super.onPause();
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onAttach(@NotNull Context context) {
+        super.onAttach(context);
+         mGitExec = new GitExec(
+                this,
+                this,
+                 context
+        );
+    }
+
+    @Override
+    public void onDetach() {
+        mGitExec = null;
+        super.onDetach();
     }
 
     @Override
