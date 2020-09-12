@@ -1,6 +1,7 @@
 package com.lfgit.executors;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.lfgit.R;
 import com.lfgit.database.model.Repo;
@@ -18,7 +19,7 @@ import static com.lfgit.utilites.Logger.LogDebugMsg;
 public class GitExec {
     private GitExecListener mGitExecListener;
     private BinaryExecutor mExecutor;
-    private Application mApplication;
+    private Context mContext;
 
     private String mGitPath = "git";
     private String mLfsPath = "git-lfs";
@@ -26,11 +27,11 @@ public class GitExec {
 
     public GitExec(ExecListener execCallback,
                    GitExecListener errorCallback,
-                   Application application)
+                   Context context)
     {
         mExecutor = new BinaryExecutor(execCallback);
         mGitExecListener = errorCallback;
-        mApplication = application;
+        mContext = context;
     }
 
     /** Check if directory is a Git repository */
@@ -120,7 +121,7 @@ public class GitExec {
 
         String httpRegex = "^https?://(?!.*//).*$";
         if (!remoteURL.matches(httpRegex)) {
-            mGitExecListener.onError(mApplication.getString(R.string.http_only));
+            mGitExecListener.onError(mContext.getString(R.string.http_only));
             return;
         }
 
@@ -128,7 +129,7 @@ public class GitExec {
         String username = repo.getUsername();
         String password = repo.getPassword();
         if (username.isEmpty() || password.isEmpty()) {
-            mGitExecListener.onError(mApplication.getString(R.string.no_creds));
+            mGitExecListener.onError(mContext.getString(R.string.no_creds));
             return;
         }
 
@@ -137,14 +138,14 @@ public class GitExec {
             password = URLEncoder.encode(repo.getPassword(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             LogDebugMsg("Encoding failed");
-            mGitExecListener.onError(mApplication.getString(R.string.encoding_creds_err));
+            mGitExecListener.onError(mContext.getString(R.string.encoding_creds_err));
             return;
         }
 
         String splitSeq = "://";
         String[] parts = remoteURL.split(splitSeq);
         if (parts.length != 2) {
-            mGitExecListener.onError(mApplication.getString(R.string.http_only));
+            mGitExecListener.onError(mContext.getString(R.string.http_only));
             return;
         }
         
