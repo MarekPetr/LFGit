@@ -88,10 +88,9 @@ public class InstallTask extends AsyncTask<Boolean, Void, ErrorWrapper>
         String errMsg = "";
         ErrorWrapper errWrapper;
         final File PREFIX_FILE = new File(USR_DIR);
-        if (PREFIX_FILE.isDirectory()) {
+        if (PREFIX_FILE.exists()) {
             try {
-                Boolean deleted = deleteFolder(PREFIX_FILE);
-                LogDebugMsg(deleted.toString());
+                deleteFolder(PREFIX_FILE);
             } catch (IOException e) {
                 errMsg = "Unable to delete PREFIX_FILE folder";
                 LogErr(errMsg);
@@ -228,10 +227,9 @@ public class InstallTask extends AsyncTask<Boolean, Void, ErrorWrapper>
 
             if (children != null) {
                 for (File child : children) {
-                    deleteFolder(child);
+                    if (!deleteFolder(child)) return false;
                 }
             }
-            return true;
         }
 
         if (!fileOrDirectory.delete()) {
