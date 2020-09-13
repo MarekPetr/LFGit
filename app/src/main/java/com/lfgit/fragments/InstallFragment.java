@@ -1,5 +1,4 @@
 package com.lfgit.fragments;
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -8,18 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.lfgit.R;
 import com.lfgit.activities.RepoListActivity;
 import com.lfgit.install.AsyncTaskListener;
 import com.lfgit.install.InstallTask;
-import com.lfgit.view_models.RepoListViewModel;
-import com.lfgit.view_models.RepoTasksViewModel;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 /**
  * Install packages.
@@ -54,7 +48,7 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
         if (isFirstRun) {
             InstallTask installer  = new InstallTask(
                     this,
-                    requireActivity().getApplication()
+                    mActivity
             );
             installer.execute(true);
             isFirstRun = false;
@@ -75,12 +69,12 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
     }
 
     @Override
-    public void onTaskFinished(Boolean success) {
+    public void onTaskFinished(Boolean installed) {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
         isTaskRunning = false;
-        mActivity.onPackagesInstalled(success);
+        mActivity.onPackagesInstalled(installed);
     }
 
     @Override

@@ -1,5 +1,5 @@
 package com.lfgit.install;
-import android.app.Application;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.system.ErrnoException;
 import android.system.Os;
@@ -17,14 +17,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import static com.lfgit.utilites.Constants.HOOKS_DIR;
 import static com.lfgit.utilites.Constants.USR_DIR;
 import static com.lfgit.utilites.Constants.USR_STAGING_DIR;
-import static com.lfgit.utilites.Logger.LogErr;
-import static com.lfgit.utilites.Logger.LogExc;
 
 /**
  * Install the bootstrap packages
@@ -36,9 +35,9 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
     private GitExec mGitExec;
     private AsyncTaskListener mListener;
 
-    public InstallTask(AsyncTaskListener listener, Application application)  {
+    public InstallTask(AsyncTaskListener listener, Context context)  {
         this.mListener = listener;
-        this.mGitExec = new GitExec(this, this, application);
+        this.mGitExec = new GitExec(this, this, context);
     }
 
     @Override
@@ -79,22 +78,14 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
      * source:
      * https://github.com/termux/termux-app/blob/master/app/src/main/java/com/termux/app/TermuxInstaller.java
      */
-
     private Boolean installFiles() {
-
         final File PREFIX_FILE = new File(USR_DIR);
         if (PREFIX_FILE.isDirectory()) {
-            return false;
+            return true;
         }
 
-        final String STAGING_PREFIX_PATH = USR_STAGING_DIR;
-        final File STAGING_PREFIX_FILE = new File(STAGING_PREFIX_PATH);
-
-        if (STAGING_PREFIX_FILE.exists()) {
-            try {
-                if(!deleteFolder(STAGING_PREFIX_FILE)) return false;
-            } catch (IOException ignored) {}
-        }
+        final File STAGING_PREFIX_FILE = new File(USR_STAGING_DIR);
+        deleteFolder(STAGING_PREFIX_FILE);
 
         final byte[] buffer = new byte[8096];
         final List<Pair<String, String>> symlinks = new ArrayList<>(50);
@@ -109,21 +100,25 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
                     while ((line = symlinksReader.readLine()) != null) {
                         String[] parts = line.split("→");
                         if (parts.length != 2){
-                            LogErr("Malformed symlink line: " + line);
-                            return false;
+                            throw new RuntimeException("Malformed symlink line: " + line);
                         }
                         String oldPath = parts[1];
-                        String newPath = STAGING_PREFIX_PATH + "/" + parts[0];
+                        String newPath = USR_STAGING_DIR + "/" + parts[0];
                         symlinks.add(Pair.create(oldPath, newPath));
 
-                        if (!ensureDirectoryExists(new File(newPath).getParentFile())) return false;
+                        File dir = new File(newPath).getParentFile();
+                        if (dir == null) {
+                            throw new RuntimeException(newPath + "is null");
+                        }
+
+                        ensureDirectoryExists(dir);
                     }
                 } else {
                     String zipEntryName = zipEntry.getName();
-                    File targetFile = new File(STAGING_PREFIX_PATH, zipEntryName);
+                    File targetFile = new File(USR_STAGING_DIR, zipEntryName);
                     boolean isDirectory = zipEntry.isDirectory();
 
-                    if (!ensureDirectoryExists(isDirectory ? targetFile : targetFile.getParentFile())) return false;
+                    ensureDirectoryExists(isDirectory ? targetFile : Objects.requireNonNull(targetFile.getParentFile()));
 
                     if (!isDirectory) {
                         try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
@@ -139,29 +134,24 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
                 }
             }
         } catch (IOException | ErrnoException e) {
-            LogExc("Unable to read zipBytes", e);
-            return false;
+            throw new RuntimeException("Unable to read zipBytes");
         }
 
         if (symlinks.isEmpty()) {
-            LogErr("No SYMLINKS.txt encountered");
-            return false;
+            throw new RuntimeException("No SYMLINKS.txt encountered");
         }
-
-        symlinks.add(Pair.create("/system/bin/sh", STAGING_PREFIX_PATH + "/sh"));
+        symlinks.add(Pair.create("/system/bin/sh", USR_STAGING_DIR + "/sh"));
 
         for (Pair<String, String> symlink : symlinks) {
             try {
                 Os.symlink(symlink.first, symlink.second);
             } catch (ErrnoException e) {
-                LogErr("Unable to create symlink: " + symlink.first + " → " + symlink.second);
-                return false;
+                throw new RuntimeException("Unable to create symlink: " + symlink.first + " → " + symlink.second);
             }
         }
 
         if (!STAGING_PREFIX_FILE.renameTo(PREFIX_FILE)) {
-            LogErr("Unable to rename staging folder");
-            return false;
+            throw new RuntimeException("Unable to rename staging folder");
         }
 
         // Create a directory for Git Hooks
@@ -171,16 +161,13 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
         }
         // Install Git Hooks
         mGitExec.configHooks();
-
         return true;
     }
 
-    private static Boolean ensureDirectoryExists(File directory) {
+    private static void ensureDirectoryExists(File directory) {
         if (!directory.isDirectory() && !directory.mkdirs()) {
-            LogErr("Unable to create directory: " + directory.getAbsolutePath());
-            return false;
+            throw new RuntimeException("Unable to create directory: " + directory.getAbsolutePath());
         }
-        return true;
     }
 
     private static byte[] loadZipBytes() {
@@ -192,22 +179,28 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
     public static native byte[] getZip();
 
     /** Delete a folder and all its content or throw. Don't follow symlinks. */
-    static Boolean deleteFolder(File fileOrDirectory) throws IOException {
-        if (fileOrDirectory.getCanonicalPath().equals(fileOrDirectory.getAbsolutePath()) && fileOrDirectory.isDirectory()) {
-            File[] children = fileOrDirectory.listFiles();
+    static void deleteFolder(File fileOrDirectory) {
+        if (!fileOrDirectory.exists()) {
+            return;
+        }
 
-            if (children != null) {
-                for (File child : children) {
-                    deleteFolder(child);
+        try {
+            if (fileOrDirectory.getCanonicalPath().equals(fileOrDirectory.getAbsolutePath()) && fileOrDirectory.isDirectory()) {
+                File[] children = fileOrDirectory.listFiles();
+
+                if (children != null) {
+                    for (File child : children) {
+                        deleteFolder(child);
+                    }
                 }
             }
+        } catch (IOException e) {
+            throw new RuntimeException("getCanonicalPath() IO exception");
         }
 
         if (!fileOrDirectory.delete()) {
-            LogErr("Unable to delete " + (fileOrDirectory.isDirectory() ? "directory " : "file ") + fileOrDirectory.getAbsolutePath());
-            return false;
+            throw new RuntimeException("Unable to delete " + (fileOrDirectory.isDirectory() ? "directory " : "file ") + fileOrDirectory.getAbsolutePath());
         }
-        return true;
     }
 
     @Override
@@ -221,7 +214,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
     }
 
     @Override
-    protected void onPostExecute(Boolean retVal) {
-        mListener.onTaskFinished(retVal);
+    protected void onPostExecute(Boolean installed) {
+        mListener.onTaskFinished(installed);
     }
 }
