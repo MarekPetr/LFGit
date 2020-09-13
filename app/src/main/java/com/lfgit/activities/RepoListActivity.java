@@ -93,6 +93,7 @@ public class RepoListActivity extends BasicAbstractActivity {
         if (installed) {
             mInstallPref.updateInstallPreference();
             checkAndRequestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            showToastMsg(getString(R.string.install_success));
         } else {
             showToastMsg(getString(R.string.install_failed));
             finishAffinity();

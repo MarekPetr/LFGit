@@ -15,21 +15,4 @@ public class Logger {
             Log.d(tag, msg);
         }
     }
-    public static void LogExc(String msg, Exception e) {
-        String tag = "LFGit_Err";
-        if (msg == null || msg.length() == 0) {
-            Log.e(tag, "", e);
-        } else {
-            Log.e(tag, msg, e);
-        }
-    }
-
-    public static void LogErr(String msg) {
-        String tag = "LFGit_Err";
-        if (msg == null || msg.length() == 0) {
-            Log.e(tag, "");
-        } else {
-            Log.e(tag, msg);
-        }
-    }
 }
