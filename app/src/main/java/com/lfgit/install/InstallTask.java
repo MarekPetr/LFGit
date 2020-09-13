@@ -1,5 +1,6 @@
 package com.lfgit.install;
 import android.app.Application;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.system.ErrnoException;
 import android.system.Os;
@@ -8,6 +9,7 @@ import android.util.Pair;
 import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
 import com.lfgit.executors.GitExecListener;
+import com.lfgit.utilites.ErrorWrapper;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -23,22 +25,23 @@ import java.util.zip.ZipInputStream;
 import static com.lfgit.utilites.Constants.HOOKS_DIR;
 import static com.lfgit.utilites.Constants.USR_DIR;
 import static com.lfgit.utilites.Constants.USR_STAGING_DIR;
+import static com.lfgit.utilites.Logger.LogDebugMsg;
 import static com.lfgit.utilites.Logger.LogErr;
 import static com.lfgit.utilites.Logger.LogExc;
 
 /**
  * Install the bootstrap packages
  * */
-public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
+public class InstallTask extends AsyncTask<Boolean, Void, ErrorWrapper>
         implements ExecListener,GitExecListener
 {
     private Boolean mInstalled = false;
     private GitExec mGitExec;
     private AsyncTaskListener mListener;
 
-    public InstallTask(AsyncTaskListener listener, Application application)  {
+    public InstallTask(AsyncTaskListener listener, Context context)  {
         this.mListener = listener;
-        this.mGitExec = new GitExec(this, this, application);
+        this.mGitExec = new GitExec(this, this, context);
     }
 
     @Override
@@ -80,11 +83,20 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
      * https://github.com/termux/termux-app/blob/master/app/src/main/java/com/termux/app/TermuxInstaller.java
      */
 
-    private Boolean installFiles() {
+    private ErrorWrapper installFiles() {
 
+        String errMsg = "";
+        ErrorWrapper errWrapper;
         final File PREFIX_FILE = new File(USR_DIR);
         if (PREFIX_FILE.isDirectory()) {
-            return false;
+            try {
+                Boolean deleted = deleteFolder(PREFIX_FILE);
+                LogDebugMsg(deleted.toString());
+            } catch (IOException e) {
+                errMsg = "Unable to delete PREFIX_FILE folder";
+                LogErr(errMsg);
+                return new ErrorWrapper(errMsg, false);
+            }
         }
 
         final String STAGING_PREFIX_PATH = USR_STAGING_DIR;
@@ -92,8 +104,12 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
 
         if (STAGING_PREFIX_FILE.exists()) {
             try {
-                if(!deleteFolder(STAGING_PREFIX_FILE)) return false;
-            } catch (IOException ignored) {}
+                deleteFolder(STAGING_PREFIX_FILE);
+            } catch (IOException e) {
+                errMsg = "Unable to delete STAGING_PREFIX_FILE folder";
+                LogErr(errMsg);
+                return new ErrorWrapper(errMsg, false);
+            }
         }
 
         final byte[] buffer = new byte[8096];
@@ -109,21 +125,29 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
                     while ((line = symlinksReader.readLine()) != null) {
                         String[] parts = line.split("→");
                         if (parts.length != 2){
-                            LogErr("Malformed symlink line: " + line);
-                            return false;
+                            errMsg = "Malformed symlink line: " + line;
+                            LogErr(errMsg);
+                            return new ErrorWrapper(errMsg, false);
                         }
                         String oldPath = parts[1];
                         String newPath = STAGING_PREFIX_PATH + "/" + parts[0];
                         symlinks.add(Pair.create(oldPath, newPath));
 
-                        if (!ensureDirectoryExists(new File(newPath).getParentFile())) return false;
+                        File dir = new File(newPath).getParentFile();
+                        if (dir == null) {
+                            return new ErrorWrapper("No parent directory for " + newPath + "", false);
+                        }
+
+                        errWrapper = ensureDirectoryExists(dir);
+                        if (!errWrapper.getSuccess()) return errWrapper;
                     }
                 } else {
                     String zipEntryName = zipEntry.getName();
                     File targetFile = new File(STAGING_PREFIX_PATH, zipEntryName);
                     boolean isDirectory = zipEntry.isDirectory();
 
-                    if (!ensureDirectoryExists(isDirectory ? targetFile : targetFile.getParentFile())) return false;
+                    errWrapper = ensureDirectoryExists(isDirectory ? targetFile : targetFile.getParentFile());
+                    if (!errWrapper.getSuccess()) return errWrapper;
 
                     if (!isDirectory) {
                         try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
@@ -139,13 +163,15 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
                 }
             }
         } catch (IOException | ErrnoException e) {
-            LogExc("Unable to read zipBytes", e);
-            return false;
+            errMsg = "Unable to read zipBytes";
+            LogExc(errMsg, e);
+            return new ErrorWrapper(errMsg, false);
         }
 
         if (symlinks.isEmpty()) {
+            errMsg = "No SYMLINKS.txt encountered";
             LogErr("No SYMLINKS.txt encountered");
-            return false;
+            return new ErrorWrapper(errMsg, false);
         }
 
         symlinks.add(Pair.create("/system/bin/sh", STAGING_PREFIX_PATH + "/sh"));
@@ -154,14 +180,16 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
             try {
                 Os.symlink(symlink.first, symlink.second);
             } catch (ErrnoException e) {
-                LogErr("Unable to create symlink: " + symlink.first + " → " + symlink.second);
-                return false;
+                errMsg = "Unable to create symlink: " + symlink.first + " → " + symlink.second;
+                LogExc(errMsg, e);
+                return new ErrorWrapper(errMsg, false);
             }
         }
 
         if (!STAGING_PREFIX_FILE.renameTo(PREFIX_FILE)) {
-            LogErr("Unable to rename staging folder");
-            return false;
+            errMsg = "Unable to rename staging folder";
+            LogErr(errMsg);
+            return new ErrorWrapper(errMsg, false);
         }
 
         // Create a directory for Git Hooks
@@ -172,15 +200,17 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
         // Install Git Hooks
         mGitExec.configHooks();
 
-        return true;
+        return new ErrorWrapper("", true);
     }
 
-    private static Boolean ensureDirectoryExists(File directory) {
+
+    private static ErrorWrapper ensureDirectoryExists(File directory) {
         if (!directory.isDirectory() && !directory.mkdirs()) {
-            LogErr("Unable to create directory: " + directory.getAbsolutePath());
-            return false;
+            String errMSg = "Unable to create directory: " + directory.getAbsolutePath();
+            LogErr(errMSg);
+            return new ErrorWrapper(errMSg, false);
         }
-        return true;
+        return new ErrorWrapper("", true);
     }
 
     private static byte[] loadZipBytes() {
@@ -201,6 +231,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
                     deleteFolder(child);
                 }
             }
+            return true;
         }
 
         if (!fileOrDirectory.delete()) {
@@ -211,7 +242,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
     }
 
     @Override
-    protected Boolean doInBackground(Boolean... params) {
+    protected ErrorWrapper doInBackground(Boolean... params) {
         return installFiles();
     }
 
@@ -221,7 +252,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
     }
 
     @Override
-    protected void onPostExecute(Boolean retVal) {
-        mListener.onTaskFinished(retVal);
+    protected void onPostExecute(ErrorWrapper errWrapper) {
+        mListener.onTaskFinished(errWrapper);
     }
 }
