@@ -1,6 +1,4 @@
 package com.lfgit.executors;
-
-import android.app.Application;
 import android.content.Context;
 
 import com.lfgit.R;
@@ -11,8 +9,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import static com.lfgit.utilites.Constants.HOOKS_DIR;
-import static com.lfgit.utilites.Logger.LogDebugMsg;
-import static com.lfgit.utilites.Logger.LogExc;
 
 /**
  * Git commands
@@ -138,7 +134,6 @@ public class GitExec {
             username = URLEncoder.encode(repo.getUsername(), "UTF-8");
             password = URLEncoder.encode(repo.getPassword(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            LogExc("Encoding failed",e);
             mGitExecListener.onError(mContext.getString(R.string.encoding_creds_err));
             return;
         }

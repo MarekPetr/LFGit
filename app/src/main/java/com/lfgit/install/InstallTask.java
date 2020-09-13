@@ -1,5 +1,4 @@
 package com.lfgit.install;
-import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.system.ErrnoException;
@@ -9,7 +8,6 @@ import android.util.Pair;
 import com.lfgit.executors.ExecListener;
 import com.lfgit.executors.GitExec;
 import com.lfgit.executors.GitExecListener;
-import com.lfgit.utilites.ErrorWrapper;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -19,20 +17,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import static com.lfgit.utilites.Constants.HOOKS_DIR;
 import static com.lfgit.utilites.Constants.USR_DIR;
 import static com.lfgit.utilites.Constants.USR_STAGING_DIR;
-import static com.lfgit.utilites.Logger.LogDebugMsg;
-import static com.lfgit.utilites.Logger.LogErr;
-import static com.lfgit.utilites.Logger.LogExc;
 
 /**
  * Install the bootstrap packages
  * */
-public class InstallTask extends AsyncTask<Boolean, Void, ErrorWrapper>
+public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
         implements ExecListener,GitExecListener
 {
     private Boolean mInstalled = false;
@@ -82,34 +78,14 @@ public class InstallTask extends AsyncTask<Boolean, Void, ErrorWrapper>
      * source:
      * https://github.com/termux/termux-app/blob/master/app/src/main/java/com/termux/app/TermuxInstaller.java
      */
-
-    private ErrorWrapper installFiles() {
-
-        String errMsg = "";
-        ErrorWrapper errWrapper;
+    private Boolean installFiles() {
         final File PREFIX_FILE = new File(USR_DIR);
-        if (PREFIX_FILE.exists()) {
-            try {
-                deleteFolder(PREFIX_FILE);
-            } catch (IOException e) {
-                errMsg = "Unable to delete PREFIX_FILE folder";
-                LogErr(errMsg);
-                return new ErrorWrapper(errMsg, false);
-            }
+        if (PREFIX_FILE.isDirectory()) {
+            return true;
         }
 
-        final String STAGING_PREFIX_PATH = USR_STAGING_DIR;
-        final File STAGING_PREFIX_FILE = new File(STAGING_PREFIX_PATH);
-
-        if (STAGING_PREFIX_FILE.exists()) {
-            try {
-                deleteFolder(STAGING_PREFIX_FILE);
-            } catch (IOException e) {
-                errMsg = "Unable to delete STAGING_PREFIX_FILE folder";
-                LogErr(errMsg);
-                return new ErrorWrapper(errMsg, false);
-            }
-        }
+        final File STAGING_PREFIX_FILE = new File(USR_STAGING_DIR);
+        deleteFolder(STAGING_PREFIX_FILE);
 
         final byte[] buffer = new byte[8096];
         final List<Pair<String, String>> symlinks = new ArrayList<>(50);
@@ -124,29 +100,25 @@ public class InstallTask extends AsyncTask<Boolean, Void, ErrorWrapper>
                     while ((line = symlinksReader.readLine()) != null) {
                         String[] parts = line.split("→");
                         if (parts.length != 2){
-                            errMsg = "Malformed symlink line: " + line;
-                            LogErr(errMsg);
-                            return new ErrorWrapper(errMsg, false);
+                            throw new RuntimeException("Malformed symlink line: " + line);
                         }
                         String oldPath = parts[1];
-                        String newPath = STAGING_PREFIX_PATH + "/" + parts[0];
+                        String newPath = USR_STAGING_DIR + "/" + parts[0];
                         symlinks.add(Pair.create(oldPath, newPath));
 
                         File dir = new File(newPath).getParentFile();
                         if (dir == null) {
-                            return new ErrorWrapper("No parent directory for " + newPath + "", false);
+                            throw new RuntimeException(newPath + "is null");
                         }
 
-                        errWrapper = ensureDirectoryExists(dir);
-                        if (!errWrapper.getSuccess()) return errWrapper;
+                        ensureDirectoryExists(dir);
                     }
                 } else {
                     String zipEntryName = zipEntry.getName();
-                    File targetFile = new File(STAGING_PREFIX_PATH, zipEntryName);
+                    File targetFile = new File(USR_STAGING_DIR, zipEntryName);
                     boolean isDirectory = zipEntry.isDirectory();
 
-                    errWrapper = ensureDirectoryExists(isDirectory ? targetFile : targetFile.getParentFile());
-                    if (!errWrapper.getSuccess()) return errWrapper;
+                    ensureDirectoryExists(isDirectory ? targetFile : Objects.requireNonNull(targetFile.getParentFile()));
 
                     if (!isDirectory) {
                         try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
@@ -162,33 +134,24 @@ public class InstallTask extends AsyncTask<Boolean, Void, ErrorWrapper>
                 }
             }
         } catch (IOException | ErrnoException e) {
-            errMsg = "Unable to read zipBytes";
-            LogExc(errMsg, e);
-            return new ErrorWrapper(errMsg, false);
+            throw new RuntimeException("Unable to read zipBytes");
         }
 
         if (symlinks.isEmpty()) {
-            errMsg = "No SYMLINKS.txt encountered";
-            LogErr("No SYMLINKS.txt encountered");
-            return new ErrorWrapper(errMsg, false);
+            throw new RuntimeException("No SYMLINKS.txt encountered");
         }
-
-        symlinks.add(Pair.create("/system/bin/sh", STAGING_PREFIX_PATH + "/sh"));
+        symlinks.add(Pair.create("/system/bin/sh", USR_STAGING_DIR + "/sh"));
 
         for (Pair<String, String> symlink : symlinks) {
             try {
                 Os.symlink(symlink.first, symlink.second);
             } catch (ErrnoException e) {
-                errMsg = "Unable to create symlink: " + symlink.first + " → " + symlink.second;
-                LogExc(errMsg, e);
-                return new ErrorWrapper(errMsg, false);
+                throw new RuntimeException("Unable to create symlink: " + symlink.first + " → " + symlink.second);
             }
         }
 
         if (!STAGING_PREFIX_FILE.renameTo(PREFIX_FILE)) {
-            errMsg = "Unable to rename staging folder";
-            LogErr(errMsg);
-            return new ErrorWrapper(errMsg, false);
+            throw new RuntimeException("Unable to rename staging folder");
         }
 
         // Create a directory for Git Hooks
@@ -198,18 +161,13 @@ public class InstallTask extends AsyncTask<Boolean, Void, ErrorWrapper>
         }
         // Install Git Hooks
         mGitExec.configHooks();
-
-        return new ErrorWrapper("", true);
+        return true;
     }
 
-
-    private static ErrorWrapper ensureDirectoryExists(File directory) {
+    private static void ensureDirectoryExists(File directory) {
         if (!directory.isDirectory() && !directory.mkdirs()) {
-            String errMSg = "Unable to create directory: " + directory.getAbsolutePath();
-            LogErr(errMSg);
-            return new ErrorWrapper(errMSg, false);
+            throw new RuntimeException("Unable to create directory: " + directory.getAbsolutePath());
         }
-        return new ErrorWrapper("", true);
     }
 
     private static byte[] loadZipBytes() {
@@ -221,26 +179,32 @@ public class InstallTask extends AsyncTask<Boolean, Void, ErrorWrapper>
     public static native byte[] getZip();
 
     /** Delete a folder and all its content or throw. Don't follow symlinks. */
-    static Boolean deleteFolder(File fileOrDirectory) throws IOException {
-        if (fileOrDirectory.getCanonicalPath().equals(fileOrDirectory.getAbsolutePath()) && fileOrDirectory.isDirectory()) {
-            File[] children = fileOrDirectory.listFiles();
+    static void deleteFolder(File fileOrDirectory) {
+        if (!fileOrDirectory.exists()) {
+            return;
+        }
 
-            if (children != null) {
-                for (File child : children) {
-                    if (!deleteFolder(child)) return false;
+        try {
+            if (fileOrDirectory.getCanonicalPath().equals(fileOrDirectory.getAbsolutePath()) && fileOrDirectory.isDirectory()) {
+                File[] children = fileOrDirectory.listFiles();
+
+                if (children != null) {
+                    for (File child : children) {
+                        deleteFolder(child);
+                    }
                 }
             }
+        } catch (IOException e) {
+            throw new RuntimeException("getCanonicalPath() IO exception");
         }
 
         if (!fileOrDirectory.delete()) {
-            LogErr("Unable to delete " + (fileOrDirectory.isDirectory() ? "directory " : "file ") + fileOrDirectory.getAbsolutePath());
-            return false;
+            throw new RuntimeException("Unable to delete " + (fileOrDirectory.isDirectory() ? "directory " : "file ") + fileOrDirectory.getAbsolutePath());
         }
-        return true;
     }
 
     @Override
-    protected ErrorWrapper doInBackground(Boolean... params) {
+    protected Boolean doInBackground(Boolean... params) {
         return installFiles();
     }
 
@@ -250,7 +214,7 @@ public class InstallTask extends AsyncTask<Boolean, Void, ErrorWrapper>
     }
 
     @Override
-    protected void onPostExecute(ErrorWrapper errWrapper) {
-        mListener.onTaskFinished(errWrapper);
+    protected void onPostExecute(Boolean installed) {
+        mListener.onTaskFinished(installed);
     }
 }

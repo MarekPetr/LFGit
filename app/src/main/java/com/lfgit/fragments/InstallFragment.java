@@ -12,7 +12,6 @@ import com.lfgit.R;
 import com.lfgit.activities.RepoListActivity;
 import com.lfgit.install.AsyncTaskListener;
 import com.lfgit.install.InstallTask;
-import com.lfgit.utilites.ErrorWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -70,12 +69,12 @@ public class InstallFragment extends Fragment implements AsyncTaskListener {
     }
 
     @Override
-    public void onTaskFinished(ErrorWrapper resWrapper) {
+    public void onTaskFinished(Boolean installed) {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
         isTaskRunning = false;
-        mActivity.onPackagesInstalled(resWrapper.getSuccess());
+        mActivity.onPackagesInstalled(installed);
     }
 
     @Override
