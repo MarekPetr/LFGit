@@ -29,6 +29,7 @@ public abstract class ExecViewModel extends AndroidViewModel implements ExecList
             this.result = result;
             this.errCode = errCode;
         }
+
         public String getResult() {
             return result;
         }
