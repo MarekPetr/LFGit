@@ -79,17 +79,13 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
      * https://github.com/termux/termux-app/blob/master/app/src/main/java/com/termux/app/TermuxInstaller.java
      */
     private Boolean installFiles() {
-
-
-        final File HOOKS_FILE = new File(HOOKS_DIR);
-        deleteFolder(HOOKS_FILE);
-
         final File PREFIX_FILE = new File(USR_DIR);
-        deleteFolder(PREFIX_FILE);
+        if (PREFIX_FILE.isDirectory()) {
+            return true;
+        }
 
         final File STAGING_PREFIX_FILE = new File(USR_STAGING_DIR);
         deleteFolder(STAGING_PREFIX_FILE);
-
 
         final byte[] buffer = new byte[8096];
         final List<Pair<String, String>> symlinks = new ArrayList<>(50);
@@ -144,7 +140,6 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
         if (symlinks.isEmpty()) {
             throw new RuntimeException("No SYMLINKS.txt encountered");
         }
-
         symlinks.add(Pair.create("/system/bin/sh", USR_STAGING_DIR + "/sh"));
 
         for (Pair<String, String> symlink : symlinks) {
@@ -185,6 +180,10 @@ public class InstallTask extends AsyncTask<Boolean, Void, Boolean>
 
     /** Delete a folder and all its content or throw. Don't follow symlinks. */
     static void deleteFolder(File fileOrDirectory) {
+        if (!fileOrDirectory.exists()) {
+            return;
+        }
+
         try {
             if (fileOrDirectory.getCanonicalPath().equals(fileOrDirectory.getAbsolutePath()) && fileOrDirectory.isDirectory()) {
                 File[] children = fileOrDirectory.listFiles();

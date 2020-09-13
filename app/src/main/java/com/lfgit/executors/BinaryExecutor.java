@@ -49,12 +49,12 @@ class BinaryExecutor {
         env.put("HOME", FILES_DIR);
         env.put("XDG_CONFIG_HOME",FILES_DIR);
 
-        Process javap = null;
+        Process javap;
         try {
             javap = pb.start();
         } catch (IOException e) {
             mProcess = null;
-            e.printStackTrace();
+            throw new RuntimeException ("Unable to start process", e);
         }
         mProcess = javap;
 
