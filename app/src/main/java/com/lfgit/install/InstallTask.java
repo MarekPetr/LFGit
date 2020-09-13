@@ -82,32 +82,46 @@ public class InstallTask extends AsyncTask<Boolean, Void, ErrorWrapper>
      * source:
      * https://github.com/termux/termux-app/blob/master/app/src/main/java/com/termux/app/TermuxInstaller.java
      */
-
     private ErrorWrapper installFiles() {
 
         String errMsg = "";
         ErrorWrapper errWrapper;
         final File PREFIX_FILE = new File(USR_DIR);
         if (PREFIX_FILE.exists()) {
+            String prefDelMsg = "Unable to delete " + USR_DIR;
             try {
-                deleteFolder(PREFIX_FILE);
+                if (!deleteFolder(PREFIX_FILE)) {
+                    LogErr(prefDelMsg);
+                    return new ErrorWrapper(prefDelMsg, false);
+                }
             } catch (IOException e) {
-                errMsg = "Unable to delete PREFIX_FILE folder";
-                LogErr(errMsg);
+                LogExc(errMsg, e);
                 return new ErrorWrapper(errMsg, false);
             }
+        }
+        errWrapper = deleteFolderLog(USR_DIR);
+        if (!errWrapper.getSuccess()) {
+            return errWrapper;
         }
 
         final String STAGING_PREFIX_PATH = USR_STAGING_DIR;
         final File STAGING_PREFIX_FILE = new File(STAGING_PREFIX_PATH);
 
+        errWrapper = deleteFolderLog(USR_STAGING_DIR);
+        if (!errWrapper.getSuccess()) {
+            return errWrapper;
+        }
+
         if (STAGING_PREFIX_FILE.exists()) {
+            String stageDelMsg = "Unable to delete " + USR_STAGING_DIR;
             try {
-                deleteFolder(STAGING_PREFIX_FILE);
+                if (!deleteFolder(STAGING_PREFIX_FILE)) {
+                    LogErr(stageDelMsg);
+                    return new ErrorWrapper(stageDelMsg, false);
+                }
             } catch (IOException e) {
-                errMsg = "Unable to delete STAGING_PREFIX_FILE folder";
-                LogErr(errMsg);
-                return new ErrorWrapper(errMsg, false);
+                LogExc(stageDelMsg, e);
+                return new ErrorWrapper(stageDelMsg, false);
             }
         }
 
@@ -202,7 +216,6 @@ public class InstallTask extends AsyncTask<Boolean, Void, ErrorWrapper>
         return new ErrorWrapper("", true);
     }
 
-
     private static ErrorWrapper ensureDirectoryExists(File directory) {
         if (!directory.isDirectory() && !directory.mkdirs()) {
             String errMSg = "Unable to create directory: " + directory.getAbsolutePath();
@@ -237,6 +250,23 @@ public class InstallTask extends AsyncTask<Boolean, Void, ErrorWrapper>
             return false;
         }
         return true;
+    }
+
+    private ErrorWrapper deleteFolderLog(String path) {
+        File folder = new File(path);
+        if (folder.exists()) {
+            String errMsg = "Unable to delete " + path;
+            try {
+                if (!deleteFolder(folder)) {
+                    LogErr(errMsg);
+                    return new ErrorWrapper(errMsg, false);
+                }
+            } catch (IOException e) {
+                LogExc(errMsg, e);
+                return new ErrorWrapper(errMsg, false);
+            }
+        }
+        return new ErrorWrapper("", true);
     }
 
     @Override
